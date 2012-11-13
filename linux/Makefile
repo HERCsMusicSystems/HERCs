@@ -143,10 +143,8 @@ hardware_hercs.o: $(pc)linux_midi.h $(hc)hardware_hercs.cpp $(hc)controls.h $(hc
 	g++ -fopenmp -lpthread -lasound -ldl -Wl,--export-dynamic `wx-config --libs` $(prolog_objects) $(common_objects) $(po)encoder.o $(po)prolog_resources.o $(po)neural.o controls.o front_panel.o hardware_hercs.o multiplatform_audio.o wx_audio_dialog.o -o ~/bin/hrcs -lreadline
 
 
-hrcs: ~/bin/hrcs
+hrcs: ../../dock/hrcs
 
-../dock/hrcs: ~/bin/hrcs
-	cp ~/bin/hrcs ../dock/hrcs
-
-all: hrcs ../dock/hrcs
+../../dock/hrcs: ~/bin/hrcs
+	cp ~/bin/hrcs ../../dock/hrcs
 
