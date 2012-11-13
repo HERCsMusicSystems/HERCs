@@ -1,0 +1,129 @@
+STANDARD SYNTAX
+
+<program> ::=
+	{import <atom>}
+	program <atom> [ #machine := <text> ] ( #auto | <atoms> )
+	{ ( <machine> | <clause> | auto := <clause> | <preprocessor> | protect <atoms> | private <atoms> ) }
+	end [ := <clause> ] .
+
+
+<atom> ::= ( "_" | <letter> ) { ( "_" | <letter> | <cipher> ) }
+<atoms> ::= "[" { <atom> } "]"
+<positive> ::= <cipher> { <cipher> }
+<number> ::= [ "-" ] <positive>
+<float_number> ::= <number> . <positive>
+<text> ::= "\"" { <anything> } "\""
+<variable> ::= "*" { ( "_" | <letter> | <cipher> ) }
+<element> ::= <atom> | <number> | <float_number> | <text> | / | fail | <list> | <variable>
+<tail> ::= { <element> } [ : <element> ] "]"
+<list> ::= "[" <element> <tail>
+<clause> ::= "[[" <atom> <tail> <tail>
+<machine> ::= #machine <atom> := <text>
+<preprocessor> ::= preprocessor := ( <atom> | "[" "]" )
+
+
+LEXICAL ANALYZER [in order of analysis]
+
+ 9: EOF / EOC
+ 1: ( =>
+	 6: ()
+51: [ =>
+	56: []
+ 2: )
+52: ]
+ 5: /
+ 3: : =>
+	11: := if_atom
+21: .
+22: @
+23: ,
+10: number =>
+	18: float number
+	11: atom
+31: #direct
+ 8: "text"
+11: 'atom'
+ 7: var =>
+	11: atom
+	 4: fail
+11: atom =>
+	 4: fail
+ 0: unknown character sequence
+
+
+SYNTAX ANALYZER (PrologReader)
+
+PrologElement readElement (void);
+	reads an element, possibly calls readRightSide with parenthesis switch
+	Usage:
+	prolog elements (starts from the first symbol)
+PrologElement readRightSide (PrologElement LEFT, boolean secondary);
+	1. if separators check for functor
+	2. check for tail
+	3. if separators check for separator
+	4. effectively read recursively PrologElements
+//PrologElement readAtomeList (void);
+//	1. if [] return null
+//	2. if [ return atome list as PrologElement (for private and protect)
+//	3. keep creating atoms checking separators until ]
+//	Usage:
+//	1. declarations (starts from [ or [])
+//	2. protect and private sections (starts from protect or private and no [] allowed)
+PrologElement readClause (void);
+	1. if [ then return readElement
+	2. check for +
+	3. check for [@directory.] clause name
+	4. check for actual parameters
+	5. check for possible . unary clause
+	6. elaborate check for clause conditions syntax
+	7. Until . read functor with actual parameters checkin clause and condition
+	Usage:
+	clauses (starts from the first symbol)
+
+
+NATIVE THREADS IMPLEMENTATION
+
+1. Create PrologRoot.
+2. Create start query, i.e. [[:null:] [command]].
+3. Call resolution method of the PrologRoot.
+4. Check the result code.
+5. Check the query.
+6. Delete query.
+
+GREEN THREADS IMPLEMENTATION
+
+1. Create PrologRoot.
+2. Create green threads with frequency value (default = 1kHz).
+3. Create start query, i.e. [[:null:] [command]].
+4. Keep calling move method of the root as long as the result code is 4.
+	OR
+4. Call resolution method of the PrologRoot.
+5. Check the result code.
+6. Check the query.
+7. Delete query.
+
+GARBAGE COLLECTOR IMPLEMENTATION
+
+Garbage collector is quite minimal and deals with atoms only.
+
+An atom can be created in three following ways:
+1. By module.
+2. By explicit instruction (into the top directory).
+3. By explicit instruction with or without name (free).
+
+An atom can be deleted in three following ways:
+1. Together with the directory (=> directory unplug).
+2. By explicit remove instruction (=> directory unplug).
+3. By collector.
+
+The first two possibilities not necessarily remove an atom.
+If the atom is referenced, it will be unplugged from the directory
+and scheduled for deletion by collector.
+If the atom is not plugged into any directory
+it will be deleted as soon as it is no longer referenced.
+
+
+
+
+
+

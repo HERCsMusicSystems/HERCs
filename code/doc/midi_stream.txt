@@ -1,0 +1,33 @@
+
+MIDI STREAM METHODS
+
+
+                                                                                                                 *insert_running_command (int value);--- internal_insert_running_command (int value);
+open_generic_system_exclusive (void);--------------------------------------------------------------------------- *insert_command (int value);----------- internal_insert_command (int value);------- internal_insert (int value);
+open_system_exclusive (void);----------------------------------------------------------------------------------| *insert_command (int value);----------- internal_insert_command (int value);------- internal_insert (int value);
+close_system_exclusive (void);---------------------------------------------------------------------------------| *insert_command (int value);----------- internal_insert_command (int value);------- internal_insert (int value);
+insert_keyoff (int channel, int key, int velocity = 0);------------------- insert (int v1, int v2, int v3);----| *insert_command (int value);----------- internal_insert_command (int value);------- internal_insert (int value);
+insert_keyon (int channel, int key, int velocity);------------------------ insert (int v1, int v2, int v3);----| *insert_command (int value);----------- internal_insert_command (int value);------- internal_insert (int value);
+insert_pat (int channel, int key, int value);----------------------------- insert (int v1, int v2, int v3);----| *insert_command (int value);----------- internal_insert_command (int value);------- internal_insert (int value);
+insert_control (int channel, int control, int value);--------------------- insert (int v1, int v2, int v3);----| *insert_command (int value);----------- internal_insert_command (int value);------- internal_insert (int value);
+insert_control (int channel, int control, int msb, int lsb);-------------- insert (int v1, int v2, int v3);----| *insert_command (int value);----------- internal_insert_command (int value);------- internal_insert (int value);
+insert_nrpn (int channel, int msb, int lsb, int msb_data);---------------- insert (int v1, int v2, int v3);----| *insert_command (int value);----------- internal_insert_command (int value);------- internal_insert (int value);
+insert_nrpn (int channel, int msb, int lsb, int msb_data, int lsb_data);-- insert (int v1, int v2, int v3);----| *insert_command (int value);----------- internal_insert_command (int value);------- internal_insert (int value);
+insert_nrpn_14 (int channel, int msb, int lsb, int data);----------------- insert (int v1, int v2, int v3);----| *insert_command (int value);----------- internal_insert_command (int value);------- internal_insert (int value);
+INSERT_NRPN (int channel, int msb, int lsb, int msb_data);---------------- insert (int v1, int v2, int v3);----| *insert_command (int value);----------- internal_insert_command (int value);------- internal_insert (int value);
+INSERT_NRPN (int channel, int msb, int lsb, int msb_data, int lsb_data);-- insert (int v1, int v2, int v3);----| *insert_command (int value);----------- internal_insert_command (int value);------- internal_insert (int value);
+insert_rpn (int channel, int msb, int lsb, int delta);-------------------- insert (int v1, int v2, int v3);----| *insert_command (int value);----------- internal_insert_command (int value);------- internal_insert (int value);
+insert_pitchbend (int channel, int value);-------------------------------- insert (int v1, int v2, int v3);----| *insert_command (int value);----------- internal_insert_command (int value);------- internal_insert (int value);
+insert_pitchbend (int channel, int msb, int lsb);------------------------- insert (int v1, int v2, int v3);----| *insert_command (int value);----------- internal_insert_command (int value);------- internal_insert (int value);
+insert_programchange (int channel, int program);-------------------------- insert (int v1, int v2);------------| *insert_command (int value);----------- internal_insert_command (int value);------- internal_insert (int value);
+insert_cat (int channel, int value);-------------------------------------- insert (int v1, int v2);------------| *insert_command (int value);----------- internal_insert_command (int value);------- internal_insert (int value);
+insert_channel_extension (int extension);--------------------------------- insert (int v1, int v2);------------| *insert_command (int value);----------- internal_insert_command (int value);------- internal_insert (int value);
+                                                                                                               | *insert (int value);--------------------------------------------------------------- internal_insert (int value);
+insert (char * text);------------------------------------------------------------------------------------------- *insert (int value);--------------------------------------------------------------- internal_insert (int value);
+insert_checksum (void);----------------------------------------------------------------------------------------- *insert (int value);--------------------------------------------------------------- internal_insert (int value);
+insert_data_xor (void);----------------------------------------------------------------------------------------- *insert (int value);--------------------------------------------------------------- internal_insert (int value);
+insert_manufacturers_id (void);--------------------------------------------------------------------------------- *insert (int value);--------------------------------------------------------------- internal_insert (int value);
+insert_product_id (void);--------------------------------------------------------------------------------------- *insert (int value);--------------------------------------------------------------- internal_insert (int value);
+insert_product_version (void);---------------------------------------------------------------------------------- *insert (int value);--------------------------------------------------------------- internal_insert (int value);
+
+* leaks the transmission to THRU connected line

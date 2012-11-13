@@ -1,0 +1,42 @@
+scripted pattern bank:
+
+	setup.txt entry = pattern ["msb_directory" bank_msb] (directory is expected to contain "pattern_msb.txt" file)
+
+	msb file commands:
+	msb [ .... ] => main command
+		name [ bank_name ] => name of the msb bank
+		lsb [ .... ] => sub bank command
+			location [ lsb ] => location of the lsb bank
+			default [] => default location of the lsb bank
+			name [ bank_name ] => name of the lsb bank
+			program [ .... ] => program command
+				location [ program ] => location of the program
+				default [] => default location of the program
+				file [ file_name ] => file containing the scripted pattern
+
+scripted pattern:
+
+	is referenced from "pattern_msb.txt" file
+
+	commands:
+	pattern [ .... ] => main command
+		name [ pattern_name ] => name of the pattern
+		end [] => track end
+		wt [ ticks ] => wait ticks
+		wb [ beat ] => wait beats
+		wbr [ bar ] => wait bars
+		wh [] => wait note length
+		uv [] => update variation
+		ut [] => update transcriptions
+		update [] => update (variation and transcription)
+		enter [ variation location ] => entry point 
+		change [ variation location ] => go to
+		cond [ counter variation location ] => if counter note doesn't exist then go to
+		ar [ key octave velocity ] => arrange
+		rel [ key velocity ] => relative
+		key [ key velocity ] => absolute
+		htv [ counter octave velocity ] => arpeggiated note top
+		ht [ counter octave ] => arpeggiated note top
+		htbv [ counter octave velocity ] => arpeggiated note bottom
+		htb [ counter octave velocity ] => arpeggiated note bottom
+		aoff [] => all keys off
