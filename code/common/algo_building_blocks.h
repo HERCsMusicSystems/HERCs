@@ -27,7 +27,8 @@ HERCs_SDK_EXPORT extern int amp_logs [16384];
 	feedp [ind] = (int) (0.5f + wave * 131072.0);\
 	wave *= (float) ap [ind];
 #define FM_SINE(ind)\
-	wave = (float) sine_wave [(tp [ind] + (int) (wave * fm_three_cycles)) >> 18] * (float) ap [ind];
+	wave = (float) sine_wave [(tp [ind] + (int) (wave * fm_three_cycles)) >> 18] * (float) ap [ind];\
+	wave *= (float) (16383 - ip [ind]) / 16383.0f;
 #define CH_SINE(ind)\
 	wave = (float) sine_wave [(tp [ind] + (int) (wave * chameleon_cycles)) >> 18] * (float) ap [ind];
 #define SINE(ind)\

@@ -357,8 +357,9 @@ void oscillator_pool_cpp :: constructor (synthesizer * sth, int horizontal, int 
 
 	lfo_connections = new int [polyphony];
 
-	amp_target = new int [total_stripes + total_stereo];
-	pan_target = & amp_target [total_stripes];
+	amp_target = new int [total_stripes + total_stripes + total_stereo];
+	index_target = & amp_target [total_stripes];
+	pan_target = & index_target [total_stripes];
 
 	int ind;
 	for (ind = 0; ind < multitimbral; ind++) retriggers_required [ind] = true;
@@ -490,12 +491,19 @@ void oscillator_pool_cpp :: move_oscillator (int counter, int samples) {
 		int stereo_data_shift = counter * stereo;
 		int * as = & amp_shift [stripe_data_shift];
 		int * at = & amp_target [stripe_data_shift];
+		int * is = & index_shift [stripe_data_shift];
+		int * it = & index_target [stripe_data_shift];
 		for (int ind = 0; ind < stripes; ind++) {
 			if (* as != * at) {
 				if (* as < * at) {sub = * at - * as; if (sub <= 1024) (* as)++; else if (sub <= 2048) (* as) += 2; else (* as) += 4;}
 				else {sub = * as - * at; if (sub <= 1024) (* as)--; else if (sub <= 2048) (* as) -= 2; else (* as) -= 4;}
 			}
 			as++; at++;
+			if (* is != *it) {
+				if (* is < * it) {sub = * it - * is; if (sub <= 1024) (* is)++; else if (sub <= 2048) (* is) += 2; else (* is) += 4;}
+				else {sub = * is - * it; if (sub <= 1024) (* is)--; else if (sub <= 2048) (* is) -= 2; else (* is) -= 4;}
+			}
+			is++; it++;
 		}
 		as = & pan_shift [stereo_data_shift];
 		at = & pan_target [stereo_data_shift];
@@ -668,6 +676,23 @@ void oscillator_pool_cpp :: move (void) {
 	// amplitude control filter
 	int * as = amp_shift;
 	int * at = amp_target;
+	for (ind = total_stripes; ind > 0; ind--) {
+		if (* as != * at) {
+			if (* as < * at) {
+				sub = * at - * as;
+				if (sub <= 1024) (* as)++;
+				else if (sub <= 2048) (* as) += 2;
+				else (* as) += 4;
+			} else {
+				sub = * as - * at;
+				if (sub <= 1024) (* as)--;
+				else if (sub <= 2048) (* as) -= 2;
+				else (* as) -= 4;
+			}
+		}
+		as++; at++;
+	}
+	as = index_shift;
 	for (ind = total_stripes; ind > 0; ind--) {
 		if (* as != * at) {
 			if (* as < * at) {
@@ -1473,7 +1498,8 @@ void oscillator_pool_cpp :: load_amp_shifts (int oscillator) {
 
 void oscillator_pool_cpp :: load_index_shifts (int oscillator) {
 	parameter_block * pb = osc [oscillator] . pb;
-	int * ip = & index_shift [oscillator * stripes];
+//	int * ip = & index_shift [oscillator * stripes];
+	int * ip = & index_target [oscillator * stripes];
 	int * vp = & velocities [oscillator * velocity_size + stripes2];
 	for (int ind = 0; ind < stripes; ind++)
 		* (ip++) = pb -> stripes [ind] -> index_lemat + * (vp++);
@@ -1510,7 +1536,8 @@ void oscillator_pool_cpp :: load_all_shifts (int oscillator, bool unfiltered) {
 		if (unfiltered) * ip = sub;
 		ip++;
 	}
-	ip += stripe_shift;
+//	ip += stripe_shift;
+	ip = & index_target [oscillator * stripes];
 	for (ind = 0; ind < stripes; ind++) {
 		* (ip++) = pb -> stripes [ind] -> index_lemat + * (vp++);
 		//@ index amp

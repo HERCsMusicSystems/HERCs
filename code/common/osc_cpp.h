@@ -284,6 +284,7 @@ private:
 	dsp_line_pool * dsp;
 private:
 	int * amp_target;
+	int * index_target;
 	int * pan_target;
 private:
 	void calculate_velocities (int oscillator, int velocity);
