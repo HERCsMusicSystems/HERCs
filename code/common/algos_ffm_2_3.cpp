@@ -15,6 +15,10 @@ static char * static_filter_parameter_name (int ind) {
 	}
 }
 
+///////////////////
+// FM 1 Filtered //
+///////////////////
+
 class ffm1_horizontal : public algo_cpp {
 	virtual char * toString (parameter_block * pb) {return "Filtered FM Horizontal";}
 	virtual char * toString (parameter_block * pb, int ind) {
@@ -34,6 +38,10 @@ class ffm1_horizontal : public algo_cpp {
 	}
 	STATE_NOISE_FILTER_GET_NAME (1)
 } the_ffm1_horizontal;
+
+///////////////////
+// FM 2 Filtered //
+///////////////////
 
 class ffm2_horizontal : public algo_cpp {
 	virtual char * toString (parameter_block * pb) {return "Filtered FM Horizontal";}
@@ -79,6 +87,10 @@ class ffm2_vertical : public algo_cpp {
 	}
 	STATE_NOISE_FILTER_GET_NAME (1)
 } the_ffm2_vertical;
+
+///////////////////
+// FM 3 Filtered //
+///////////////////
 
 class ffm3_horizontal : public algo_cpp {
 	virtual char * toString (parameter_block * pb) {return "Filtered FM Horizontal";}
@@ -205,6 +217,1333 @@ class ffm3_pyramid : public algo_cpp {
 	}
 	STATE_NOISE_FILTER_GET_NAME (1)
 } the_ffm3_pyramid;
+
+///////////////////
+// FM 4 Filtered //
+///////////////////
+
+class ffm4_horizontal : public algo_cpp {
+	virtual char * toString (parameter_block * pb) {return "Filtered FM Horizontal";}
+	virtual char * toString (parameter_block * pb, int ind) {
+		switch (ind) {
+		case 0: case 2: case 3: case 4: return "Carrier F";
+		case 1: return static_filter_parameter_name (pb -> controllers -> algo_parameters [1]);
+		default: return "inactive";
+		}
+	}
+	virtual int code (oscillator * osc) {
+		FM_DECLARATIONS;
+		STATE_FILTER_DECLARATIONS;
+		FM_FEEDBACK (0);
+		accu = wave;
+		FM_FEEDBACK (2);
+		accu += wave;
+		FM_FEEDBACK (3);
+		accu += wave;
+		FM_FEEDBACK (4);
+		wave += accu;
+		STATE_NOISE_FILTER (1, 16);
+		STATE_NOISE_FILTER_WAVE (1);
+		return (int) (wave + 0.5f);
+	}
+	STATE_NOISE_FILTER_GET_NAME (1)
+} the_ffm4_horizontal;
+
+class ffm4_half_horizontal : public algo_cpp {
+	virtual char * toString (parameter_block * pb) {return "Filtered FM Half Horizontal";}
+	virtual char * toString (parameter_block * pb, int ind) {
+		switch (ind) {
+		case 0: return "Carrier";
+		case 1: return static_filter_parameter_name (pb -> controllers -> algo_parameters [1]);
+		case 2: return "Top Modulator F => 1";
+		case 3: case 4: return "Carrier F";
+		default: return "inactive";
+		}
+	}
+	virtual int code (oscillator * osc) {
+		FM_DECLARATIONS;
+		STATE_FILTER_DECLARATIONS;
+		FM_FEEDBACK (2);
+		FM_SINE (0);
+		accu = wave;
+		FM_FEEDBACK (3);
+		accu += wave;
+		FM_FEEDBACK (4);
+		wave += accu;
+		STATE_NOISE_FILTER (1, 16);
+		STATE_NOISE_FILTER_WAVE (1);
+		return (int) (wave + 0.5f);
+	}
+	STATE_NOISE_FILTER_GET_NAME (1)
+} the_ffm4_half_horizontal;
+
+class ffm4_tree_horizontal : public algo_cpp {
+	virtual char * toString (parameter_block * pb) {return "Filtered FM Tree Horizontal";}
+	virtual char * toString (parameter_block * pb, int ind) {
+		switch (ind) {
+		case 0: return "Carrier";
+		case 1: return static_filter_parameter_name (pb -> controllers -> algo_parameters [1]);
+		case 2: case 3: return "Top Modulator F => 1";
+		case 4: return "Carrier F";
+		default: return "inactive";
+		}
+	}
+	virtual int code (oscillator * osc) {
+		FM_DECLARATIONS;
+		STATE_FILTER_DECLARATIONS;
+		FM_FEEDBACK (2);
+		accu = wave;
+		FM_FEEDBACK (3);
+		wave += accu;
+		FM_SINE (0);
+		accu = wave;
+		FM_FEEDBACK (4);
+		wave += accu;
+		STATE_NOISE_FILTER (1, 16);
+		STATE_NOISE_FILTER_WAVE (1);
+		return (int) (wave + 0.5f);
+	}
+	STATE_NOISE_FILTER_GET_NAME (1)
+} the_ffm4_tree_horizontal;
+
+class ffm4_bottom_tree : public algo_cpp {
+	virtual char * toString (parameter_block * pb) {return "Filtered FM Bottom Tree";}
+	virtual char * toString (parameter_block * pb, int ind) {
+		switch (ind) {
+		case 0: return "Carrier";
+		case 1: return static_filter_parameter_name (pb -> controllers -> algo_parameters [1]);
+		case 2: return "Modulator => 1";
+		case 3: return "Top Modulator F => 3";
+		case 4: return "Carrier F";
+		default: return "inactive";
+		}
+	}
+	virtual int code (oscillator * osc) {
+		FM_DECLARATIONS;
+		STATE_FILTER_DECLARATIONS;
+		FM_FEEDBACK (3);
+		FM_SINE (2);
+		FM_SINE (0);
+		accu = wave;
+		FM_FEEDBACK (4);
+		wave += accu;
+		STATE_NOISE_FILTER (1, 16);
+		STATE_NOISE_FILTER_WAVE (1);
+		return (int) (wave + 0.5f);
+	}
+	STATE_NOISE_FILTER_GET_NAME (1)
+} the_ffm4_bottom_tree;
+
+class ffm4_half_pyramid : public algo_cpp {
+	virtual char * toString (parameter_block * pb) {return "Filtered FM Half Pyramid";}
+	virtual char * toString (parameter_block * pb, int ind) {
+		switch (ind) {
+		case 0: case 2: return "Carrier";
+		case 1: return static_filter_parameter_name (pb -> controllers -> algo_parameters [1]);
+		case 3: return "Top Modulator F => 1, 3";
+		case 4: return "Carrier F";
+		default: return "inactive";
+		}
+	}
+	virtual int code (oscillator * osc) {
+		FM_DECLARATIONS;
+		STATE_FILTER_DECLARATIONS;
+		FM_FEEDBACK (3);
+		float sub = wave;
+		FM_SINE (0);
+		accu = wave; wave = sub;
+		FM_SINE (2);
+		accu += wave;
+		FM_FEEDBACK (4);
+		wave += accu;
+		STATE_NOISE_FILTER (1, 16);
+		STATE_NOISE_FILTER_WAVE (1);
+		return (int) (wave + 0.5f);
+	}
+	STATE_NOISE_FILTER_GET_NAME (1)
+} the_ffm4_half_pyramid;
+
+class ffm4_double_decker : public algo_cpp {
+	virtual char * toString (parameter_block * pb) {return "Filtered FM Double Decker";}
+	virtual char * toString (parameter_block * pb, int ind) {
+		switch (ind) {
+		case 0: return "Carrier";
+		case 1: return static_filter_parameter_name (pb -> controllers -> algo_parameters [1]);
+		case 2: return "Top Modulator F => 1";
+		case 3: return "Carrier";
+		case 4: return "Top Modulator F => 4";
+		default: return "inactive";
+		}
+	}
+	virtual int code (oscillator * osc) {
+		FM_DECLARATIONS;
+		STATE_FILTER_DECLARATIONS;
+		FM_FEEDBACK (2);
+		FM_SINE (0);
+		accu = wave;
+		FM_FEEDBACK (4);
+		FM_SINE (3);
+		wave += accu;
+		STATE_NOISE_FILTER (1, 16);
+		STATE_NOISE_FILTER_WAVE (1);
+		return (int) (wave += 0.5f);
+	}
+	STATE_NOISE_FILTER_GET_NAME (1);
+} the_ffm4_double_decker;
+
+class ffm4_tree : public algo_cpp {
+	virtual char * toString (parameter_block * pb) {return "Filtered FM Tree";}
+	virtual char * toString (parameter_block * pb, int ind) {
+		switch (ind) {
+		case 0: return "Carrier";
+		case 1: return static_filter_parameter_name (pb -> controllers -> algo_parameters [1]);
+		case 2: case 3: case 4: return "Top Modulator F => 1";
+		default: return "inactive";
+		}
+	}
+	virtual int code (oscillator * osc) {
+		FM_DECLARATIONS;
+		STATE_FILTER_DECLARATIONS;
+		FM_FEEDBACK (2);
+		accu = wave;
+		FM_FEEDBACK (3);
+		accu += wave;
+		FM_FEEDBACK (4);
+		wave += accu;
+		FM_SINE (0);
+		STATE_NOISE_FILTER (1, 16);
+		STATE_NOISE_FILTER_WAVE (1);
+		return (int) (wave + 0.5f);
+	}
+	STATE_NOISE_FILTER_GET_NAME (1)
+} the_ffm4_tree;
+
+class ffm4_low_tree : public algo_cpp {
+	virtual char * toString (parameter_block * pb) {return "Filtered FM Low Tree";}
+	virtual char * toString (parameter_block * pb, int ind) {
+		switch (ind) {
+		case 0: return "Carrier";
+		case 1: return static_filter_parameter_name (pb -> controllers -> algo_parameters [1]);
+		case 2: return "Modulator => 1";
+		case 3: return "Top Modulator F => 3";
+		case 4: return "Top Modulator F => 1";
+		default: return "inactive";
+		}
+	}
+	virtual int code (oscillator * osc) {
+		FM_DECLARATIONS;
+		STATE_FILTER_DECLARATIONS;
+		FM_FEEDBACK (3);
+		FM_SINE (2);
+		accu = wave;
+		FM_FEEDBACK (4);
+		wave += accu;
+		FM_SINE (0);
+		STATE_NOISE_FILTER (1, 16);
+		STATE_NOISE_FILTER_WAVE (1);
+		return (int) (wave + 0.5f);
+	}
+	STATE_NOISE_FILTER_GET_NAME (1)
+} the_ffm4_low_tree;
+
+class ffm4_high_tree : public algo_cpp {
+	virtual char * toString (parameter_block * pb) {return "Filtered FM High Tree";}
+	virtual char * toString (parameter_block * pb, int ind) {
+		switch (ind) {
+		case 0: return "Carrier";
+		case 1: return static_filter_parameter_name (pb -> controllers -> algo_parameters [1]);
+		case 2: return "Modulator => 1";
+		case 3: return "Top Modulator F => 3";
+		case 4: return "Top Modulator F => 3";
+		default: return "inactive";
+		}
+	}
+	virtual int code (oscillator * osc) {
+		FM_DECLARATIONS;
+		STATE_FILTER_DECLARATIONS;
+		FM_FEEDBACK (3);
+		accu = wave;
+		FM_FEEDBACK (4);
+		wave += accu;
+		FM_SINE (2);
+		FM_SINE (0);
+		STATE_NOISE_FILTER (1, 16);
+		STATE_NOISE_FILTER_WAVE (1);
+		return (int) (wave + 0.5f);
+	}
+	STATE_NOISE_FILTER_GET_NAME (1)
+} the_ffm4_high_tree;
+
+class ffm4_vertical : public algo_cpp {
+	virtual char * toString (parameter_block * pb) {return "Filtered FM Vertical";}
+	virtual char * toString (parameter_block * pb, int ind) {
+		switch (ind) {
+		case 0: return "Carrier";
+		case 1: return static_filter_parameter_name (pb -> controllers -> algo_parameters [1]);
+		case 2: return "Modulator => 1";
+		case 3: return "Modulator => 3";
+		case 4: return "Top Modulator F => 4";
+		default: return "inactive";
+		}
+	}
+	virtual int code (oscillator * osc) {
+		FM_DECLARATIONS;
+		STATE_FILTER_DECLARATIONS;
+		FM_FEEDBACK (4);
+		FM_SINE (3)
+		FM_SINE (2);
+		FM_SINE (0);
+		STATE_NOISE_FILTER (1, 16);
+		STATE_NOISE_FILTER_WAVE (1);
+		return (int) (wave + 0.5f);
+	}
+	STATE_NOISE_FILTER_GET_NAME (1)
+} the_ffm4_vertical;
+
+class ffm4_pyramid : public algo_cpp {
+	virtual char * toString (parameter_block * pb) {return "Filtered FM Pyramid";}
+	virtual char * toString (parameter_block * pb, int ind) {
+		switch (ind) {
+		case 0: case 2: case 3: return "Carrier";
+		case 1: return static_filter_parameter_name (pb -> controllers -> algo_parameters [1]);
+		case 4: return "Top Modulator F => 1, 3, 4";
+		default: return "inactive";
+		}
+	}
+	virtual int code (oscillator * osc) {
+		FM_DECLARATIONS;
+		STATE_FILTER_DECLARATIONS;
+		FM_FEEDBACK (4);
+		float sub = wave;
+		FM_SINE (0);
+		accu = wave; wave = sub;
+		FM_SINE (2);
+		accu += wave; wave = sub;
+		FM_SINE (3);
+		wave += accu;
+		STATE_NOISE_FILTER (1, 16);
+		STATE_NOISE_FILTER_WAVE (1);
+		return (int) (wave + 0.5f);
+	}
+	STATE_NOISE_FILTER_GET_NAME (1)
+} the_ffm4_pyramid;
+
+class ffm4_bottleneck : public algo_cpp {
+	virtual char * toString (parameter_block * pb) {return "Filtered FM Bottleneck";}
+	virtual char * toString (parameter_block * pb, int ind) {
+		switch (ind) {
+		case 0: case 2: return "Carrier";
+		case 1: return static_filter_parameter_name (pb -> controllers -> algo_parameters [1]);
+		case 3: case 4: return "Top Modulator F => 1, 3";
+		default: return "inactive";
+		}
+	}
+	virtual int code (oscillator * osc) {
+		FM_DECLARATIONS;
+		STATE_FILTER_DECLARATIONS;
+		FM_FEEDBACK (3);
+		accu = wave;
+		FM_FEEDBACK (4);
+		float sub = wave + accu;
+		FM_SINE (0);
+		accu = wave; wave = sub;
+		FM_SINE (2);
+		wave += accu;
+		STATE_NOISE_FILTER (1, 16);
+		STATE_NOISE_FILTER_WAVE (1);
+		return (int) (wave + 0.5f);
+	}
+	STATE_NOISE_FILTER_GET_NAME (1)
+} the_ffm4_bottleneck;
+
+class ffm4_spear : public algo_cpp {
+	virtual char * toString (parameter_block * pb) {return "Filtered FM Spear";}
+	virtual char * toString (parameter_block * pb, int ind) {
+		switch (ind) {
+		case 0: case 2: return "Carrier";
+		case 1: return static_filter_parameter_name (pb -> controllers -> algo_parameters [1]);
+		case 3: return "Modulator => 1, 3";
+		case 4: return "Top Modulator F => 4";
+		default: return "inactive";
+		}
+	}
+	virtual int code (oscillator * osc) {
+		FM_DECLARATIONS;
+		STATE_FILTER_DECLARATIONS;
+		FM_FEEDBACK (4)
+		FM_SINE (3)
+		float sub = wave;
+		FM_SINE (0);
+		accu = wave; wave = sub;
+		FM_SINE (2);
+		wave += accu;
+		STATE_NOISE_FILTER (1, 16);
+		STATE_NOISE_FILTER_WAVE (1);
+		return (int) (wave + 0.5f);
+	}
+	STATE_NOISE_FILTER_GET_NAME (1)
+} the_ffm4_spear;
+
+///////////////////
+// FM 5 Filtered //
+///////////////////
+
+class ffm5_horizontal : public algo_cpp {
+	virtual char * toString (parameter_block * pb) {return "Filtered FM Horizontal";}
+	virtual char * toString (parameter_block * pb, int ind) {
+		switch (ind) {
+		case 0: case 2: case 3: case 4: case 5: return "Carrier F";
+		case 1: return static_filter_parameter_name (pb -> controllers -> algo_parameters [1]);
+		default: return "inactive";
+		}
+	}
+	virtual int code (oscillator * osc) {
+		FM_DECLARATIONS;
+		STATE_FILTER_DECLARATIONS;
+		FM_FEEDBACK (0);
+		accu = wave;
+		FM_FEEDBACK (2);
+		accu += wave;
+		FM_FEEDBACK (3);
+		accu += wave;
+		FM_FEEDBACK (4);
+		accu += wave;
+		FM_FEEDBACK (5);
+		wave += accu;
+		STATE_NOISE_FILTER (1, 16);
+		STATE_NOISE_FILTER_WAVE (1);
+		return (int) (wave + 0.5f);
+	}
+	STATE_NOISE_FILTER_GET_NAME (1)
+} the_ffm5_horizontal;
+
+class ffm5_half_horizontal : public algo_cpp {
+	virtual char * toString (parameter_block * pb) {return "Filtered FM Half Horizontal";}
+	virtual char * toString (parameter_block * pb, int ind) {
+		switch (ind) {
+		case 0: return "Carrier";
+		case 1: return static_filter_parameter_name (pb -> controllers -> algo_parameters [1]);
+		case 2: return "Top Modulator F => 1";
+		case 3: case 4: case 5: return "Carrier F";
+		default: return "inactive";
+		}
+	}
+	virtual int code (oscillator * osc) {
+		FM_DECLARATIONS;
+		STATE_FILTER_DECLARATIONS;
+		FM_FEEDBACK (2);
+		FM_SINE (0);
+		accu = wave;
+		FM_FEEDBACK (3);
+		accu += wave;
+		FM_FEEDBACK (4);
+		accu += wave;
+		FM_FEEDBACK (5);
+		wave += accu;
+		STATE_NOISE_FILTER (1, 16);
+		STATE_NOISE_FILTER_WAVE (1);
+		return (int) (wave + 0.5f);
+	}
+	STATE_NOISE_FILTER_GET_NAME (1)
+} the_ffm5_half_horizontal;
+
+class ffm5_tree_horizontal : public algo_cpp {
+	virtual char * toString (parameter_block * pb) {return "Filtered FM Tree Horizontal";}
+	virtual char * toString (parameter_block * pb, int ind) {
+		switch (ind) {
+		case 0: return "Carrier";
+		case 1: return static_filter_parameter_name (pb -> controllers -> algo_parameters [1]);
+		case 2: case 3: return "Top Modulator F => 1";
+		case 4: case 5: return "Carrier F";
+		default: return "inactive";
+		}
+	}
+	virtual int code (oscillator * osc) {
+		FM_DECLARATIONS;
+		STATE_FILTER_DECLARATIONS;
+		FM_FEEDBACK (2);
+		accu = wave;
+		FM_FEEDBACK (3);
+		wave += accu;
+		FM_SINE (0);
+		accu = wave;
+		FM_FEEDBACK (4);
+		accu += wave;
+		FM_FEEDBACK (5);
+		wave += accu;
+		STATE_NOISE_FILTER (1, 16);
+		STATE_NOISE_FILTER_WAVE (1);
+		return (int) (wave + 0.5f);
+	}
+	STATE_NOISE_FILTER_GET_NAME (1)
+} the_ffm5_tree_horizontal;
+
+class ffm5_bottom_tree : public algo_cpp {
+	virtual char * toString (parameter_block * pb) {return "Filtered FM Bottom Tree";}
+	virtual char * toString (parameter_block * pb, int ind) {
+		switch (ind) {
+		case 0: return "Carrier";
+		case 1: return static_filter_parameter_name (pb -> controllers -> algo_parameters [1]);
+		case 2: return "Modulator => 1";
+		case 3: return "Top Modulator F => 3";
+		case 4: case 5: return "Carrier F";
+		default: return "inactive";
+		}
+	}
+	virtual int code (oscillator * osc) {
+		FM_DECLARATIONS;
+		STATE_FILTER_DECLARATIONS;
+		FM_FEEDBACK (3);
+		FM_SINE (2);
+		FM_SINE (0);
+		accu = wave;
+		FM_FEEDBACK (4);
+		accu += wave;
+		FM_FEEDBACK (5);
+		wave += accu;
+		STATE_NOISE_FILTER (1, 16);
+		STATE_NOISE_FILTER_WAVE (1);
+		return (int) (wave + 0.5f);
+	}
+	STATE_NOISE_FILTER_GET_NAME (1)
+} the_ffm5_bottom_tree;
+
+class ffm5_half_pyramid : public algo_cpp {
+	virtual char * toString (parameter_block * pb) {return "Filtered FM Half Pyramid";}
+	virtual char * toString (parameter_block * pb, int ind) {
+		switch (ind) {
+		case 0: case 2: return "Carrier";
+		case 1: return static_filter_parameter_name (pb -> controllers -> algo_parameters [1]);
+		case 3: return "Top Modulator F => 1, 3";
+		case 4: case 5: return "Carrier F";
+		default: return "inactive";
+		}
+	}
+	virtual int code (oscillator * osc) {
+		FM_DECLARATIONS;
+		STATE_FILTER_DECLARATIONS;
+		FM_FEEDBACK (3);
+		float sub = wave;
+		FM_SINE (0);
+		accu = wave; wave = sub;
+		FM_SINE (2);
+		accu += wave;
+		FM_FEEDBACK (4);
+		accu += wave;
+		FM_FEEDBACK (5);
+		wave += accu;
+		STATE_NOISE_FILTER (1, 16);
+		STATE_NOISE_FILTER_WAVE (1);
+		return (int) (wave + 0.5f);
+	}
+	STATE_NOISE_FILTER_GET_NAME (1)
+} the_ffm5_half_pyramid;
+
+class ffm5_double_decker : public algo_cpp {
+	virtual char * toString (parameter_block * pb) {return "Filtered FM Double Decker";}
+	virtual char * toString (parameter_block * pb, int ind) {
+		switch (ind) {
+		case 0: return "Carrier";
+		case 1: return static_filter_parameter_name (pb -> controllers -> algo_parameters [1]);
+		case 2: return "Top Modulator F => 1";
+		case 3: return "Carrier";
+		case 4: return "Top Modulator F => 4";
+		case 5: return "Carrier F";
+		default: return "inactive";
+		}
+	}
+	virtual int code (oscillator * osc) {
+		FM_DECLARATIONS;
+		STATE_FILTER_DECLARATIONS;
+		FM_FEEDBACK (2);
+		FM_SINE (0);
+		accu = wave;
+		FM_FEEDBACK (4);
+		FM_SINE (3);
+		accu += wave;
+		FM_FEEDBACK (5);
+		wave += accu;
+		STATE_NOISE_FILTER (1, 16);
+		STATE_NOISE_FILTER_WAVE (1);
+		return (int) (wave += 0.5f);
+	}
+	STATE_NOISE_FILTER_GET_NAME (1);
+} the_ffm5_double_decker;
+
+class ffm5_tree : public algo_cpp {
+	virtual char * toString (parameter_block * pb) {return "Filtered FM Tree";}
+	virtual char * toString (parameter_block * pb, int ind) {
+		switch (ind) {
+		case 0: return "Carrier";
+		case 1: return static_filter_parameter_name (pb -> controllers -> algo_parameters [1]);
+		case 2: case 3: case 4: return "Top Modulator F => 1";
+		case 5: return "Carrier F";
+		default: return "inactive";
+		}
+	}
+	virtual int code (oscillator * osc) {
+		FM_DECLARATIONS;
+		STATE_FILTER_DECLARATIONS;
+		FM_FEEDBACK (2);
+		accu = wave;
+		FM_FEEDBACK (3);
+		accu += wave;
+		FM_FEEDBACK (4);
+		wave += accu;
+		FM_SINE (0);
+		accu = wave;
+		FM_FEEDBACK (5);
+		wave += accu;
+		STATE_NOISE_FILTER (1, 16);
+		STATE_NOISE_FILTER_WAVE (1);
+		return (int) (wave + 0.5f);
+	}
+	STATE_NOISE_FILTER_GET_NAME (1)
+} the_ffm5_tree;
+
+class ffm5_low_tree : public algo_cpp {
+	virtual char * toString (parameter_block * pb) {return "Filtered FM Low Tree";}
+	virtual char * toString (parameter_block * pb, int ind) {
+		switch (ind) {
+		case 0: return "Carrier";
+		case 1: return static_filter_parameter_name (pb -> controllers -> algo_parameters [1]);
+		case 2: return "Modulator => 1";
+		case 3: return "Top Modulator F => 3";
+		case 4: return "Top Modulator F => 1";
+		case 5: return "Carrier F";
+		default: return "inactive";
+		}
+	}
+	virtual int code (oscillator * osc) {
+		FM_DECLARATIONS;
+		STATE_FILTER_DECLARATIONS;
+		FM_FEEDBACK (3);
+		FM_SINE (2);
+		accu = wave;
+		FM_FEEDBACK (4);
+		wave += accu;
+		FM_SINE (0);
+		accu = wave;
+		FM_FEEDBACK (5);
+		wave += accu;
+		STATE_NOISE_FILTER (1, 16);
+		STATE_NOISE_FILTER_WAVE (1);
+		return (int) (wave + 0.5f);
+	}
+	STATE_NOISE_FILTER_GET_NAME (1)
+} the_ffm5_low_tree;
+
+class ffm5_high_tree : public algo_cpp {
+	virtual char * toString (parameter_block * pb) {return "Filtered FM High Tree";}
+	virtual char * toString (parameter_block * pb, int ind) {
+		switch (ind) {
+		case 0: return "Carrier";
+		case 1: return static_filter_parameter_name (pb -> controllers -> algo_parameters [1]);
+		case 2: return "Modulator => 1";
+		case 3: return "Top Modulator F => 3";
+		case 4: return "Top Modulator F => 3";
+		case 5: return "Carrier F";
+		default: return "inactive";
+		}
+	}
+	virtual int code (oscillator * osc) {
+		FM_DECLARATIONS;
+		STATE_FILTER_DECLARATIONS;
+		FM_FEEDBACK (3);
+		accu = wave;
+		FM_FEEDBACK (4);
+		wave += accu;
+		FM_SINE (2);
+		FM_SINE (0);
+		accu = wave;
+		FM_FEEDBACK (5);
+		wave += accu;
+		STATE_NOISE_FILTER (1, 16);
+		STATE_NOISE_FILTER_WAVE (1);
+		return (int) (wave + 0.5f);
+	}
+	STATE_NOISE_FILTER_GET_NAME (1)
+} the_ffm5_high_tree;
+
+class ffm5_vertical4 : public algo_cpp {
+	virtual char * toString (parameter_block * pb) {return "Filtered FM Vertical 4";}
+	virtual char * toString (parameter_block * pb, int ind) {
+		switch (ind) {
+		case 0: return "Carrier";
+		case 1: return static_filter_parameter_name (pb -> controllers -> algo_parameters [1]);
+		case 2: return "Modulator => 1";
+		case 3: return "Modulator => 3";
+		case 4: return "Top Modulator F => 4";
+		case 5: return "Carrier F";
+		default: return "inactive";
+		}
+	}
+	virtual int code (oscillator * osc) {
+		FM_DECLARATIONS;
+		STATE_FILTER_DECLARATIONS;
+		FM_FEEDBACK (4);
+		FM_SINE (3)
+		FM_SINE (2);
+		FM_SINE (0);
+		accu = wave;
+		FM_FEEDBACK (5);
+		wave += accu;
+		STATE_NOISE_FILTER (1, 16);
+		STATE_NOISE_FILTER_WAVE (1);
+		return (int) (wave + 0.5f);
+	}
+	STATE_NOISE_FILTER_GET_NAME (1)
+} the_ffm5_vertical4;
+
+class ffm5_pyramid3 : public algo_cpp {
+	virtual char * toString (parameter_block * pb) {return "Filtered FM Pyramid 3";}
+	virtual char * toString (parameter_block * pb, int ind) {
+		switch (ind) {
+		case 0: case 2: case 3: return "Carrier";
+		case 1: return static_filter_parameter_name (pb -> controllers -> algo_parameters [1]);
+		case 4: return "Top Modulator F => 1, 3, 4";
+		case 5: return "Carrier F";
+		default: return "inactive";
+		}
+	}
+	virtual int code (oscillator * osc) {
+		FM_DECLARATIONS;
+		STATE_FILTER_DECLARATIONS;
+		FM_FEEDBACK (4);
+		float sub = wave;
+		FM_SINE (0);
+		accu = wave; wave = sub;
+		FM_SINE (2);
+		accu += wave; wave = sub;
+		FM_SINE (3);
+		accu += wave;
+		FM_FEEDBACK (5);
+		wave += accu;
+		STATE_NOISE_FILTER (1, 16);
+		STATE_NOISE_FILTER_WAVE (1);
+		return (int) (wave + 0.5f);
+	}
+	STATE_NOISE_FILTER_GET_NAME (1)
+} the_ffm5_pyramid3;
+
+class ffm5_bottleneck2 : public algo_cpp {
+	virtual char * toString (parameter_block * pb) {return "Filtered FM Bottleneck 2";}
+	virtual char * toString (parameter_block * pb, int ind) {
+		switch (ind) {
+		case 0: case 2: return "Carrier";
+		case 1: return static_filter_parameter_name (pb -> controllers -> algo_parameters [1]);
+		case 3: case 4: return "Top Modulator F => 1, 3";
+		case 5: return "Carrier F";
+		default: return "inactive";
+		}
+	}
+	virtual int code (oscillator * osc) {
+		FM_DECLARATIONS;
+		STATE_FILTER_DECLARATIONS;
+		FM_FEEDBACK (3);
+		accu = wave;
+		FM_FEEDBACK (4);
+		float sub = wave + accu;
+		FM_SINE (0);
+		accu = wave; wave = sub;
+		FM_SINE (2);
+		accu += wave;
+		FM_FEEDBACK (5);
+		wave += accu;
+		STATE_NOISE_FILTER (1, 16);
+		STATE_NOISE_FILTER_WAVE (1);
+		return (int) (wave + 0.5f);
+	}
+	STATE_NOISE_FILTER_GET_NAME (1)
+} the_ffm5_bottleneck2;
+
+class ffm5_spear2 : public algo_cpp {
+	virtual char * toString (parameter_block * pb) {return "Filtered FM Spear 2";}
+	virtual char * toString (parameter_block * pb, int ind) {
+		switch (ind) {
+		case 0: case 2: return "Carrier";
+		case 1: return static_filter_parameter_name (pb -> controllers -> algo_parameters [1]);
+		case 3: return "Modulator => 1, 3";
+		case 4: return "Top Modulator F => 4";
+		case 5: return "Carrier F";
+		default: return "inactive";
+		}
+	}
+	virtual int code (oscillator * osc) {
+		FM_DECLARATIONS;
+		STATE_FILTER_DECLARATIONS;
+		FM_FEEDBACK (4)
+		FM_SINE (3)
+		float sub = wave;
+		FM_SINE (0);
+		accu = wave; wave = sub;
+		FM_SINE (2);
+		accu += wave;
+		FM_FEEDBACK (5);
+		wave += accu;
+		STATE_NOISE_FILTER (1, 16);
+		STATE_NOISE_FILTER_WAVE (1);
+		return (int) (wave + 0.5f);
+	}
+	STATE_NOISE_FILTER_GET_NAME (1)
+} the_ffm5_spear2;
+
+class ffm5_rooted_horizontal : public algo_cpp {
+	virtual char * toString (parameter_block * pb) {return "Filtered FM Rooted Horizontal";}
+	virtual char * toString (parameter_block * pb, int ind) {
+		switch (ind) {
+		case 0: return "Carrier";
+		case 1: return static_filter_parameter_name (pb -> controllers -> algo_parameters [1]);
+		case 2: case 3: case 4: case 5: return "Top Modulator F => 1";
+		default: return "inactive";
+		}
+	}
+	virtual int code (oscillator * osc) {
+		FM_DECLARATIONS;
+		STATE_FILTER_DECLARATIONS;
+		FM_FEEDBACK (2);
+		accu = wave;
+		FM_FEEDBACK (3);
+		accu += wave;
+		FM_FEEDBACK (4);
+		accu += wave;
+		FM_FEEDBACK (5);
+		wave += accu;
+		FM_SINE (0);
+		STATE_NOISE_FILTER (1, 16);
+		STATE_NOISE_FILTER_WAVE (1);
+		return (int) (wave + 0.5f);
+	}
+	STATE_NOISE_FILTER_GET_NAME (1)
+} the_ffm5_rooted_horizontal;
+
+class ffm5_rooted_half_horizontal : public algo_cpp {
+	virtual char * toString (parameter_block * pb) {return "Filtered FM Rooted Half Horizontal";}
+	virtual char * toString (parameter_block * pb, int ind) {
+		switch (ind) {
+		case 0: return "Carrier";
+		case 1: return static_filter_parameter_name (pb -> controllers -> algo_parameters [1]);
+		case 2: return "Modulator => 1";
+		case 3: return "Top Modulator => 3";
+		case 4: case 5: return "Top Modulator F => 1";
+		default: return "inactive";
+		}
+	}
+	virtual int code (oscillator * osc) {
+		FM_DECLARATIONS;
+		STATE_FILTER_DECLARATIONS;
+		FM_FEEDBACK (3);
+		FM_SINE (2);
+		accu = wave;
+		FM_FEEDBACK (4);
+		accu += wave;
+		FM_FEEDBACK (5);
+		wave += accu;
+		FM_SINE (0);
+		STATE_NOISE_FILTER (1, 16);
+		STATE_NOISE_FILTER_WAVE (1);
+		return (int) (wave + 0.5f);
+	}
+	STATE_NOISE_FILTER_GET_NAME (1)
+} the_ffm5_rooted_half_horizontal;
+
+class ffm5_rooted_tree_horizontal : public algo_cpp {
+	virtual char * toString (parameter_block * pb) {return "Filtered FM Rooted Tree Horizontal";}
+	virtual char * toString (parameter_block * pb, int ind) {
+		switch (ind) {
+		case 0: return "Carrier";
+		case 1: return static_filter_parameter_name (pb -> controllers -> algo_parameters [1]);
+		case 2: return "Modulator => 1";
+		case 3: case 4: return "Top Modulator F => 1";
+		case 5: return "Top Modulator F => 1";
+		default: return "inactive";
+		}
+	}
+	virtual int code (oscillator * osc) {
+		FM_DECLARATIONS;
+		STATE_FILTER_DECLARATIONS;
+		FM_FEEDBACK (3);
+		accu = wave;
+		FM_FEEDBACK (4);
+		wave += accu;
+		FM_SINE (2);
+		accu = wave;
+		FM_FEEDBACK (5);
+		wave += accu;
+		FM_SINE (0);
+		STATE_NOISE_FILTER (1, 16);
+		STATE_NOISE_FILTER_WAVE (1);
+		return (int) (wave + 0.5f);
+	}
+	STATE_NOISE_FILTER_GET_NAME (1)
+} the_ffm5_rooted_tree_horizontal;
+
+class ffm5_rooted_bottom_tree : public algo_cpp {
+	virtual char * toString (parameter_block * pb) {return "Filtered FM Rooted Bottom Tree";}
+	virtual char * toString (parameter_block * pb, int ind) {
+		switch (ind) {
+		case 0: return "Carrier";
+		case 1: return static_filter_parameter_name (pb -> controllers -> algo_parameters [1]);
+		case 2: return "Modulator => 1";
+		case 3: return "Modulator => 3";
+		case 4: return "Top Modulator F => 4";
+		case 5: return "Top Modulator F => 1";
+		default: return "inactive";
+		}
+	}
+	virtual int code (oscillator * osc) {
+		FM_DECLARATIONS;
+		STATE_FILTER_DECLARATIONS;
+		FM_FEEDBACK (4);
+		FM_SINE (3);
+		FM_SINE (2);
+		accu = wave;
+		FM_FEEDBACK (5);
+		wave += accu;
+		FM_SINE (0);
+		STATE_NOISE_FILTER (1, 16);
+		STATE_NOISE_FILTER_WAVE (1);
+		return (int) (wave + 0.5f);
+	}
+	STATE_NOISE_FILTER_GET_NAME (1)
+} the_ffm5_rooted_bottom_tree;
+
+class ffm5_rooted_double_decker : public algo_cpp {
+	virtual char * toString (parameter_block * pb) {return "Filtered FM Rooted Double Decker";}
+	virtual char * toString (parameter_block * pb, int ind) {
+		switch (ind) {
+		case 0: return "Carrier";
+		case 1: return static_filter_parameter_name (pb -> controllers -> algo_parameters [1]);
+		case 2: return "Modulator => 1";
+		case 3: return "Top Modulator F => 3";
+		case 4: return "Modulator => 1";
+		case 5: return "Top Modulator F => 5";
+		default: return "inactive";
+		}
+	}
+	virtual int code (oscillator * osc) {
+		FM_DECLARATIONS;
+		STATE_FILTER_DECLARATIONS;
+		FM_FEEDBACK (5);
+		FM_SINE (4);
+		accu = wave;
+		FM_FEEDBACK (3);
+		FM_SINE (2);
+		wave += accu;
+		FM_SINE (0);
+		STATE_NOISE_FILTER (1, 16);
+		STATE_NOISE_FILTER_WAVE (1);
+		return (int) (wave + 0.5f);
+	}
+	STATE_NOISE_FILTER_GET_NAME (1)
+} the_ffm5_rooted_double_decker;
+
+class ffm5_rooted_tree : public algo_cpp {
+	virtual char * toString (parameter_block * pb) {return "Filtered FM Rooted Tree";}
+	virtual char * toString (parameter_block * pb, int ind) {
+		switch (ind) {
+		case 0: return "Carrier";
+		case 1: return static_filter_parameter_name (pb -> controllers -> algo_parameters [1]);
+		case 2: return "Modulator => 1";
+		case 3: case 4: case 5: return "Top Modulator F => 3";
+		default: return "inactive";
+		}
+	}
+	virtual int code (oscillator * osc) {
+		FM_DECLARATIONS;
+		STATE_FILTER_DECLARATIONS;
+		FM_FEEDBACK (5);
+		accu = wave;
+		FM_FEEDBACK (4);
+		accu += wave;
+		FM_FEEDBACK (3);
+		wave += accu;
+		FM_SINE (2);
+		FM_SINE (0);
+		STATE_NOISE_FILTER (1, 16);
+		STATE_NOISE_FILTER_WAVE (1);
+		return (int) (wave + 0.5f);
+	}
+	STATE_NOISE_FILTER_GET_NAME (1)
+} the_ffm5_rooted_tree;
+
+class ffm5_rooted_low_tree : public algo_cpp {
+	virtual char * toString (parameter_block * pb) {return "Filtered FM Rooted Low Tree";}
+	virtual char * toString (parameter_block * pb, int ind) {
+		switch (ind) {
+		case 0: return "Carrier";
+		case 1: return static_filter_parameter_name (pb -> controllers -> algo_parameters [1]);
+		case 2: return "Modulator => 1";
+		case 3: return "Modulator => 3";
+		case 4: return "Top Modulator F => 4";
+		case 5: return "Top Modulator F => 3";
+		default: return "inactive";
+		}
+	}
+	virtual int code (oscillator * osc) {
+		FM_DECLARATIONS;
+		STATE_FILTER_DECLARATIONS;
+		FM_FEEDBACK (4);
+		FM_SINE (3);
+		accu = wave;
+		FM_FEEDBACK (5);
+		wave += accu;
+		FM_SINE (2);
+		FM_SINE (0);
+		STATE_NOISE_FILTER (1, 16);
+		STATE_NOISE_FILTER_WAVE (1);
+		return (int) (wave + 0.5f);
+	}
+	STATE_NOISE_FILTER_GET_NAME (1)
+} the_ffm5_rooted_low_tree;
+
+class ffm5_rooted_high_tree : public algo_cpp {
+	virtual char * toString (parameter_block * pb) {return "Filtered FM Rooted High Tree";}
+	virtual char * toString (parameter_block * pb, int ind) {
+		switch (ind) {
+		case 0: return "Carrier";
+		case 1: return static_filter_parameter_name (pb -> controllers -> algo_parameters [1]);
+		case 2: return "Modulator => 1";
+		case 3: return "Modulator => 3";
+		case 4: return "Top Modulator F => 4";
+		case 5: return "Top Modulator F => 4";
+		default: return "inactive";
+		}
+	}
+	virtual int code (oscillator * osc) {
+		FM_DECLARATIONS;
+		STATE_FILTER_DECLARATIONS;
+		FM_FEEDBACK (4);
+		accu = wave;
+		FM_FEEDBACK (5);
+		wave += accu;
+		FM_SINE (3);
+		FM_SINE (2);
+		FM_SINE (0);
+		STATE_NOISE_FILTER (1, 16);
+		STATE_NOISE_FILTER_WAVE (1);
+		return (int) (wave + 0.5f);
+	}
+	STATE_NOISE_FILTER_GET_NAME (1)
+} the_ffm5_rooted_high_tree;
+
+class ffm5_vertical : public algo_cpp {
+	virtual char * toString (parameter_block * pb) {return "Filtered FM Vertical";}
+	virtual char * toString (parameter_block * pb, int ind) {
+		switch (ind) {
+		case 0: return "Carrier";
+		case 1: return static_filter_parameter_name (pb -> controllers -> algo_parameters [1]);
+		case 2: return "Modulator => 1";
+		case 3: return "Modulator => 3";
+		case 4: return "Modulator => 4";
+		case 5: return "Top Modulator F => 5";
+		default: return "inactive";
+		}
+	}
+	virtual int code (oscillator * osc) {
+		FM_DECLARATIONS;
+		STATE_FILTER_DECLARATIONS;
+		FM_FEEDBACK (5);
+		FM_SINE (4);
+		FM_SINE (3);
+		FM_SINE (2);
+		FM_SINE (0);
+		STATE_NOISE_FILTER (1, 16);
+		STATE_NOISE_FILTER_WAVE (1);
+		return (int) (wave + 0.5f);
+	}
+	STATE_NOISE_FILTER_GET_NAME (1)
+} the_ffm5_vertical;
+
+class ffm5_extended_tree : public algo_cpp {
+	virtual char * toString (parameter_block * pb) {return "Filtered FM Extended Tree";}
+	virtual char * toString (parameter_block * pb, int ind) {
+		switch (ind) {
+		case 0: return "Carrier";
+		case 1: return static_filter_parameter_name (pb -> controllers -> algo_parameters [1]);
+		case 2: case 3: return "Top Modulator F => 1";
+		case 4: return "Carrier";
+		case 5: return "Top Modulator F => 4";
+		default: return "inactive";
+		}
+	}
+	virtual int code (oscillator * osc) {
+		FM_DECLARATIONS;
+		STATE_FILTER_DECLARATIONS;
+		FM_FEEDBACK (2);
+		accu = wave;
+		FM_FEEDBACK (3);
+		wave += accu;
+		FM_SINE (0);
+		accu = wave;
+		FM_FEEDBACK (5);
+		FM_SINE (4);
+		wave += accu;
+		STATE_NOISE_FILTER (1, 16);
+		STATE_NOISE_FILTER_WAVE (1);
+		return (int) (wave + 0.5f);
+	}
+	STATE_NOISE_FILTER_GET_NAME (1)
+} the_ffm5_extended_tree;
+
+class ffm5_extended_decker : public algo_cpp {
+	virtual char * toString (parameter_block * pb) {return "Filtered FM Extended Decker";}
+	virtual char * toString (parameter_block * pb, int ind) {
+		switch (ind) {
+		case 0: return "Carrier";
+		case 1: return static_filter_parameter_name (pb -> controllers -> algo_parameters [1]);
+		case 2: return "Modulator => 1";
+		case 3: return "Top Modulator F => 3";
+		case 4: return "Carrier";
+		case 5: return "Top Modulator F => 4";
+		default: return "inactive";
+		}
+	}
+	virtual int code (oscillator * osc) {
+		FM_DECLARATIONS;
+		STATE_FILTER_DECLARATIONS;
+		FM_FEEDBACK (3);
+		FM_SINE (2);
+		FM_SINE (0);
+		accu = wave;
+		FM_FEEDBACK (5);
+		FM_SINE (4);
+		wave += accu;
+		STATE_NOISE_FILTER (1, 16);
+		STATE_NOISE_FILTER_WAVE (1);
+		return (int) (wave + 0.5f);
+	}
+	STATE_NOISE_FILTER_GET_NAME (1)
+} the_ffm5_extended_decker;
+
+class ffm5_extended_byramid : public algo_cpp {
+	virtual char * toString (parameter_block * pb) {return "Filtered FM Extended Pyramid";}
+	virtual char * toString (parameter_block * pb, int ind) {
+		switch (ind) {
+		case 0: return "Carrier";
+		case 1: return static_filter_parameter_name (pb -> controllers -> algo_parameters [1]);
+		case 2: return "Carrier";
+		case 3: return "Top Modulator F => 1, 3";
+		case 4: return "Carrier";
+		case 5: return "Top Modulator F => 4";
+		default: return "inactive";
+		}
+	}
+	virtual int code (oscillator * osc) {
+		FM_DECLARATIONS;
+		STATE_FILTER_DECLARATIONS;
+		FM_FEEDBACK (4);
+		FM_SINE (3);
+		FM_SINE (2);
+		accu = wave;
+		FM_FEEDBACK (5);
+		wave += accu;
+		FM_SINE (0);
+		STATE_NOISE_FILTER (1, 16);
+		STATE_NOISE_FILTER_WAVE (1);
+		return (int) (wave + 0.5f);
+	}
+	STATE_NOISE_FILTER_GET_NAME (1)
+} the_ffm5_extended_pyramid;
+
+class ffm5_pyramid : public algo_cpp {
+	virtual char * toString (parameter_block * pb) {return "Filtered FM Pyramid";}
+	virtual char * toString (parameter_block * pb, int ind) {
+		switch (ind) {
+		case 0: case 2: case 3: case 4: return "Carrier";
+		case 1: return static_filter_parameter_name (pb -> controllers -> algo_parameters [1]);
+		case 5: return "Top Modulator F => 1, 3, 4, 5";
+		default: return "inactive";
+		}
+	}
+	virtual int code (oscillator * osc) {
+		FM_DECLARATIONS;
+		STATE_FILTER_DECLARATIONS;
+		FM_FEEDBACK (5);
+		float sub = wave;
+		FM_SINE (4); accu = wave; wave = sub;
+		FM_SINE (3); accu += wave; wave = sub;
+		FM_SINE (2); accu += wave; wave = sub;
+		FM_SINE (0); wave += accu;
+		STATE_NOISE_FILTER (1, 16);
+		STATE_NOISE_FILTER_WAVE (1);
+		return (int) (wave + 0.5f);
+	}
+	STATE_NOISE_FILTER_GET_NAME (1)
+} the_ffm5_pyramid;
+
+class ffm5_pyramid3_horizontal : public algo_cpp {
+	virtual char * toString (parameter_block * pb) {return "Filtered FM Pyramid 3 Horizontal";}
+	virtual char * toString (parameter_block * pb, int ind) {
+		switch (ind) {
+		case 0: case 2: case 3: return "Carrier";
+		case 1: return static_filter_parameter_name (pb -> controllers -> algo_parameters [1]);
+		case 4: case 5: return "Top Modulator F => 1, 3, 4";
+		default: return "inactive";
+		}
+	}
+	virtual int code (oscillator * osc) {
+		FM_DECLARATIONS;
+		STATE_FILTER_DECLARATIONS;
+		FM_FEEDBACK (5);
+		float sub = wave;
+		FM_FEEDBACK (4); sub += wave; wave = sub;
+		FM_SINE (3); accu = wave; wave = sub;
+		FM_SINE (2); accu += wave; wave = sub;
+		FM_SINE (0); wave += accu;
+		STATE_NOISE_FILTER (1, 16);
+		STATE_NOISE_FILTER_WAVE (1);
+		return (int) (wave + 0.5f);
+	}
+	STATE_NOISE_FILTER_GET_NAME (1)
+} the_ffm5_pyramid3_horizontal;
+
+class ffm5_pyramid3_vertical : public algo_cpp {
+	virtual char * toString (parameter_block * pb) {return "Filtered FM Pyramid 3 Vertical";}
+	virtual char * toString (parameter_block * pb, int ind) {
+		switch (ind) {
+		case 0: case 2: case 3: return "Carrier";
+		case 1: return static_filter_parameter_name (pb -> controllers -> algo_parameters [1]);
+		case 4: return "Modulator => 1, 3, 4";
+		case 5: return "Top Modulator F => 5";
+		default: return "inactive";
+		}
+	}
+	virtual int code (oscillator * osc) {
+		FM_DECLARATIONS;
+		STATE_FILTER_DECLARATIONS;
+		FM_FEEDBACK (5);
+		FM_SINE (4);
+		float sub = wave;
+		FM_SINE (3); accu = wave; wave = sub;
+		FM_SINE (2); accu += wave; wave = sub;
+		FM_SINE (0); wave += accu;
+		STATE_NOISE_FILTER (1, 16);
+		STATE_NOISE_FILTER_WAVE (1);
+		return (int) (wave + 0.5f);
+	}
+	STATE_NOISE_FILTER_GET_NAME (1)
+} the_ffm5_pyramid3_vertical;
+
+class ffm5_pyramid2_horizontal : public algo_cpp {
+	virtual char * toString (parameter_block * pb) {return "Filtered FM Pyramid 2 Horizontal";}
+	virtual char * toString (parameter_block * pb, int ind) {
+		switch (ind) {
+		case 0: case 2: return "Carrier";
+		case 1: return static_filter_parameter_name (pb -> controllers -> algo_parameters [1]);
+		case 3: case 4: case 5: return "Top Modulator F => 1, 3";
+		default: return "inactive";
+		}
+	}
+	virtual int code (oscillator * osc) {
+		FM_DECLARATIONS;
+		STATE_FILTER_DECLARATIONS;
+		FM_FEEDBACK (5);
+		accu = wave;
+		FM_FEEDBACK (4);
+		accu += wave;
+		FM_FEEDBACK (3);
+		wave += accu;
+		float sub = wave;
+		FM_SINE (2); accu = wave; wave = sub;
+		FM_SINE (0); wave += accu;
+		STATE_NOISE_FILTER (1, 16);
+		STATE_NOISE_FILTER_WAVE (1);
+		return (int) (wave + 0.5f);
+	}
+	STATE_NOISE_FILTER_GET_NAME (1)
+} the_ffm5_pyramid2_horizontal;
+
+class ffm5_pyramid2_half_horizontal : public algo_cpp {
+	virtual char * toString (parameter_block * pb) {return "Filtered FM Pyramid 2 Half Horizontal";}
+	virtual char * toString (parameter_block * pb, int ind) {
+		switch (ind) {
+		case 0: case 2: return "Carrier";
+		case 1: return static_filter_parameter_name (pb -> controllers -> algo_parameters [1]);
+		case 3: return "Modulator => 1, 3";
+		case 4: return "Top Modulator F => 4";
+		case 5: return "Top Modulator F => 1, 3";
+		default: return "inactive";
+		}
+	}
+	virtual int code (oscillator * osc) {
+		FM_DECLARATIONS;
+		STATE_FILTER_DECLARATIONS;
+		FM_FEEDBACK (4);
+		FM_SINE (3);
+		accu = wave;
+		FM_FEEDBACK (5);
+		wave += accu;
+		float sub = wave;
+		FM_SINE (2); accu = wave; wave = sub;
+		FM_SINE (0); wave += accu;
+		STATE_NOISE_FILTER (1, 16);
+		STATE_NOISE_FILTER_WAVE (1);
+		return (int) (wave + 0.5f);
+	}
+	STATE_NOISE_FILTER_GET_NAME (1)
+} the_ffm5_pyramid2_half_horizontal;
+
+class ffm5_pyramid2_tree : public algo_cpp {
+	virtual char * toString (parameter_block * pb) {return "Filtered FM Pyramid 2 Tree";}
+	virtual char * toString (parameter_block * pb, int ind) {
+		switch (ind) {
+		case 0: case 2: return "Carrier";
+		case 1: return static_filter_parameter_name (pb -> controllers -> algo_parameters [1]);
+		case 3: return "Modulator => 1, 3";
+		case 4: case 5: return "Top Modulator F => 4";
+		default: return "inactive";
+		}
+	}
+	virtual int code (oscillator * osc) {
+		FM_DECLARATIONS;
+		STATE_FILTER_DECLARATIONS;
+		FM_FEEDBACK (5);
+		accu = wave;
+		FM_FEEDBACK (4);
+		wave += accu;
+		FM_SINE (3);
+		float sub = wave;
+		FM_SINE (2); accu = wave; wave = sub;
+		FM_SINE (0); wave += accu;
+		STATE_NOISE_FILTER (1, 16);
+		STATE_NOISE_FILTER_WAVE (1);
+		return (int) (wave + 0.5f);
+	}
+	STATE_NOISE_FILTER_GET_NAME (1)
+} the_ffm5_pyramid2_tree;
+
+class ffm5_spear : public algo_cpp {
+	virtual char * toString (parameter_block * pb) {return "Filtered FM Spear";}
+	virtual char * toString (parameter_block * pb, int ind) {
+		switch (ind) {
+		case 0: case 2: return "Carrier";
+		case 1: return static_filter_parameter_name (pb -> controllers -> algo_parameters [1]);
+		case 3: return "Modulator => 1, 3";
+		case 4: return "Modulator => 4";
+		case 5: return "Top Modulator F => 5";
+		default: return "inactive";
+		}
+	}
+	virtual int code (oscillator * osc) {
+		FM_DECLARATIONS;
+		STATE_FILTER_DECLARATIONS;
+		FM_FEEDBACK (5);
+		FM_SINE (4);
+		FM_SINE (3);
+		float sub = wave;
+		FM_SINE (2); accu = wave; wave = sub;
+		FM_SINE (0); wave += accu;
+		STATE_NOISE_FILTER (1, 16);
+		STATE_NOISE_FILTER_WAVE (1);
+		return (int) (wave + 0.5f);
+	}
+	STATE_NOISE_FILTER_GET_NAME (1)
+} the_ffm5_spear;
+
+////////////////////////////////////
+// Sawtooth, Square, Multifilters //
+////////////////////////////////////
 
 class sawtooth_1 : public algo_cpp {
 	virtual char * toString (parameter_block * pb) {return "Sawtooth";}
@@ -578,6 +1917,60 @@ algo_pointer get_ffm_2_3_algo (int ind, int program) {
 		case 2: return & the_ffm3_tree;
 		case 3: return & the_ffm3_vertical;
 		case 4: return & the_ffm3_pyramid;
+		default: break;
+		}
+		break;
+	case 5:
+		switch (program) {
+		case 0: return & the_ffm4_horizontal;
+		case 1: return & the_ffm4_half_horizontal;
+		case 2: return & the_ffm4_tree_horizontal;
+		case 3: return & the_ffm4_bottom_tree;
+		case 4: return & the_ffm4_half_pyramid;
+		case 5: return & the_ffm4_double_decker;
+		case 6: return & the_ffm4_tree;
+		case 7: return & the_ffm4_low_tree;
+		case 8: return & the_ffm4_high_tree;
+		case 9: return & the_ffm4_vertical;
+		case 10: return & the_ffm4_pyramid;
+		case 11: return & the_ffm4_bottleneck;
+		case 12: return & the_ffm4_spear;
+		}
+		break;
+	case 6:
+		switch (program) {
+		case 0: return & the_ffm5_horizontal;
+		case 1: return & the_ffm5_half_horizontal;
+		case 2: return & the_ffm5_tree_horizontal;
+		case 3: return & the_ffm5_bottom_tree;
+		case 4: return & the_ffm5_half_pyramid;
+		case 5: return & the_ffm5_double_decker;
+		case 6: return & the_ffm5_tree;
+		case 7: return & the_ffm5_low_tree;
+		case 8: return & the_ffm5_high_tree;
+		case 9: return & the_ffm5_vertical4;
+		case 10: return & the_ffm5_pyramid3;
+		case 11: return & the_ffm5_bottleneck2;
+		case 12: return & the_ffm5_spear2;
+		case 13: return & the_ffm5_rooted_horizontal;
+		case 14: return & the_ffm5_rooted_half_horizontal;
+		case 15: return & the_ffm5_rooted_tree_horizontal;
+		case 16: return & the_ffm5_rooted_bottom_tree;
+		case 17: return & the_ffm5_rooted_double_decker;
+		case 18: return & the_ffm5_rooted_tree;
+		case 19: return & the_ffm5_rooted_low_tree;
+		case 20: return & the_ffm5_rooted_high_tree;
+		case 21: return & the_ffm5_vertical;
+		case 22: return & the_ffm5_extended_tree;
+		case 23: return & the_ffm5_extended_decker;
+		case 24: return & the_ffm5_extended_pyramid;
+		case 25: return & the_ffm5_pyramid;
+		case 26: return & the_ffm5_pyramid3_horizontal;
+		case 27: return & the_ffm5_pyramid3_vertical;
+		case 28: return & the_ffm5_pyramid2_horizontal;
+		case 29: return & the_ffm5_pyramid2_half_horizontal;
+		case 30: return & the_ffm5_pyramid2_tree;
+		case 31: return & the_ffm5_spear;
 		default: break;
 		}
 		break;
