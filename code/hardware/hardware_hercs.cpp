@@ -229,14 +229,21 @@ MidiCommandPrompt * command_console = NULL;
 
 #ifdef LINUX_OPERATING_SYSTEM
 MidiCommandPrompt * command_console = NULL;
+
+#ifdef MAC_OPERATING_SYSTEM
+#include "mac_midi.h"
+mac_midi_service midi_service ("HERCs CORE");
+#else
+#include "linux_midi.h"
+linux_midi_service midi_service (NULL);
+#endif
+
 #endif
 
 void build_synthesizer (void) {
 	core . build_synthesizer (cfg, & resource_loader, & service_class_loader);
 	core . conn_midi_out -> connect_thru (& console_feedback);
-#ifdef WINDOWS_OPERATING_SYSTEM
 	core . root -> setMidiPortServiceClass (& midi_service);
-#endif
 	command_console = new MidiCommandPrompt (core . conn_midi_in, cfg -> prolog_console_horizontal);
 	command_console -> open ();
 }
@@ -440,7 +447,7 @@ public:
 	keyboard_controller (wxWindow * parent, wxWindowID id, wxBitmap * bitmap, int size_selector) : wxPictureKeyboard (parent, id, bitmap, size_selector) {}
 };
 
-#ifdef MAC_OPERATING_SYSTEM
+#ifdef MAC_OPERATING_SYSTEM_BAK
 #define menu_height 24
 
 ////////////////
@@ -839,11 +846,9 @@ void close_audio (void) {if (audio != NULL) delete audio; audio = NULL;}
 #endif
 
 #ifdef LINUX_OPERATING_SYSTEM
-#ifndef MAC_OPERATING_SYSTEM
+
 #define menu_height 24
 
-#include "linux_midi.h"
-linux_midi_service midi_service (NULL);
 //prolog_midi_reader * midi_reader = NULL;
 static int active_main_midi_input = -1;
 static int active_main_midi_output = -1;
@@ -970,7 +975,6 @@ void external_midi_transmission (void) {}
 
 void console_midi_transmission (void) {core . conn_move ();}
 
-#endif
 #endif
 
 #ifdef WINDOWS_OPERATING_SYSTEM
@@ -1449,7 +1453,7 @@ public:
 		return wxApp :: OnExit ();
 	}
 #ifdef LINUX_OPERATING_SYSTEM
-#ifndef MAC_OPERATING_SYSTEM
+#ifndef MAC_OPERATING_SYSTEM_BAK
 	int FilterEvent (wxEvent & event) {
 		if (event . GetEventType () != wxEVT_KEY_DOWN) return -1;
 		int key = ((wxKeyEvent &) event) . GetKeyCode ();
