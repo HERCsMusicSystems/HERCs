@@ -91,6 +91,7 @@ void default_dsp_algo_cpp :: parameter_change (dsp_line * dsp, int ind) {
 }
 void default_dsp_algo_cpp :: all_parameters_changed (dsp_line * dsp) {
 	dsp -> indices [0] = 0;
+	dsp_algo_cpp :: all_parameters_changed (dsp);
 }
 default_dsp_algo_cpp default_dsp_algo;
 
