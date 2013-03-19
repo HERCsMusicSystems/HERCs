@@ -81,7 +81,9 @@
 #define VECTOR_Y_SENS              0x43
 #define LFO_X_SENS                 0x44
 #define LFO_Y_SENS                 0x45
+#define KEY_ATTACK_EG_SCALING      0x15
 #define KEY_EG_SCALING             0x46
+#define VELOCITY_ATTACK_EG_SCALING 0x16
 #define VELOCITY_EG_SCALING        0x47
 #define FREQ_PITCH_SENS            0x48
 #define FREQ_SENS                  0x49
@@ -96,7 +98,9 @@
 #define FREQ_VECTOR_Y_SENS         0x52
 #define FREQ_LFO_X_SENS            0x53
 #define FREQ_LFO_Y_SENS            0x54
+#define FREQ_KEY_ATTACK_EG_SCALING 0x04
 #define FREQ_KEY_EG_SCALING        0x55
+#define FREQ_VELOCITY_ATTACK_EG_SCALING 0x05
 #define FREQ_VELOCITY_EG_SCALING   0x56
 #define AMP_PITCH_SENS             0x57
 #define AMP_SENS                   0x58
@@ -111,7 +115,9 @@
 #define AMP_VECTOR_Y_SENS          0x61
 #define AMP_LFO_X_SENS             0x62
 #define AMP_LFO_Y_SENS             0x63
+#define AMP_KEY_ATTACK_EG_SCALING  0x11
 #define AMP_KEY_EG_SCALING         0x64
+#define AMP_VELOCITY_ATTACK_EG_SCALING 0x12
 #define AMP_VELOCITY_EG_SCALING    0x65
 #define INDEX_PITCH_SENS           0x66
 #define INDEX_SENS                 0x67
@@ -126,7 +132,9 @@
 #define INDEX_VECTOR_Y_SENS        0x70
 #define INDEX_LFO_X_SENS           0x71
 #define INDEX_LFO_Y_SENS           0x72
+#define INDEX_KEY_ATTACK_EG_SCALING 0x13
 #define INDEX_KEY_EG_SCALING       0x73
+#define INDEX_VELOCITY_ATTACK_EG_SCALING 0x14
 #define INDEX_VELOCITY_EG_SCALING  0x74
 #define LFO_SPEED_SENS             0x75
 #define LFO_PITCH_SENS             0x76

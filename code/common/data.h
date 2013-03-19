@@ -113,7 +113,9 @@ public:
 	sub_parameter_block vector_y;
 	sub_parameter_block lfo_x;
 	sub_parameter_block lfo_y;
+	sub_parameter_block key_attack_eg_scaling;
 	sub_parameter_block key_eg_scaling;
+	sub_parameter_block velocity_attack_eg_scaling;
 	sub_parameter_block velocity_eg_scaling;
 	void voice_init (int selector);
 };
@@ -515,7 +517,7 @@ public:
 	void control_vector_x (int x);
 	void control_vector_y (int y);
 	void control_vector (int x, int y);
-	void send_sub_parameter_block (int channel, int nrpn_msb, int nrpn_lsb, sub_parameter_block * pb);
+	void send_sub_parameter_block (int channel, int nrpn_msb, int nrpn_lsb, sub_parameter_block * pb, sub_parameter_block * pb2 = NULL);
 	void send_adsr_level (int channel, int nrpn_msb, int nrpn_lsb, adsr_parameter_block * pb);
 	void send_adsr_time (int channel, int nrpn_msb, int nrpn_lsb, adsr_parameter_block * pb);
 	void send_parameter_value (int channel);

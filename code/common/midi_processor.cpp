@@ -1265,9 +1265,13 @@ void parameter_block :: nrpn (int data) {
 	case 75: case 91: case 107: case 123:
 		spb -> lfo_y . nrpn (xxx, positive, negative); break;
 	case 76: case 92: case 108: case 124:
-		spb -> key_eg_scaling . nrpn (xxx, positive, negative); break;
+		if (xxx < 4) spb -> key_eg_scaling . nrpn (xxx, positive, negative);
+		else spb -> key_attack_eg_scaling . nrpn (xxx, positive, negative);
+		break;
 	case 77: case 93: case 109: case 125:
-		spb -> velocity_eg_scaling . nrpn (xxx, positive, negative); break;
+		if (xxx < 4) spb -> velocity_eg_scaling . nrpn (xxx, positive, negative);
+		else spb -> velocity_attack_eg_scaling . nrpn (xxx, positive, negative);
+		break;
 	case 78: case 94: case 110: case 126:
 		spb -> pitch . nrpn (xxx, positive, negative); break;
 	default:

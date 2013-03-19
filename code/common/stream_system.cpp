@@ -270,7 +270,9 @@ void parameter_block :: store_program (midi_stream * line) {
 		spb -> freq_sens . vector_y . drop (line, 0, FREQ_VECTOR_Y_SENS);
 		spb -> freq_sens . lfo_x . drop (line, 0, FREQ_LFO_X_SENS);
 		spb -> freq_sens . lfo_y . drop (line, 0, FREQ_LFO_Y_SENS);
+		spb -> freq_sens . key_attack_eg_scaling . drop (line, 0, FREQ_KEY_ATTACK_EG_SCALING);
 		spb -> freq_sens . key_eg_scaling . drop (line, 0, FREQ_KEY_EG_SCALING);
+		spb -> freq_sens . velocity_attack_eg_scaling . drop (line, 0, FREQ_VELOCITY_ATTACK_EG_SCALING);
 		spb -> freq_sens . velocity_eg_scaling . drop (line, 0, FREQ_VELOCITY_EG_SCALING);
 		//-------------
 		spb -> amp_sens . pitch . drop (line, 0, AMP_PITCH_SENS);
@@ -286,7 +288,9 @@ void parameter_block :: store_program (midi_stream * line) {
 		spb -> amp_sens . vector_y . drop (line, 0, AMP_VECTOR_Y_SENS);
 		spb -> amp_sens . lfo_x . drop (line, 0, AMP_LFO_X_SENS);
 		spb -> amp_sens . lfo_y . drop (line, 0, AMP_LFO_Y_SENS);
+		spb -> amp_sens . key_attack_eg_scaling . drop (line, 0, AMP_KEY_ATTACK_EG_SCALING);
 		spb -> amp_sens . key_eg_scaling . drop (line, 0, AMP_KEY_EG_SCALING);
+		spb -> amp_sens . velocity_attack_eg_scaling . drop (line, 0, AMP_VELOCITY_ATTACK_EG_SCALING);
 		spb -> amp_sens . velocity_eg_scaling . drop (line, 0, AMP_VELOCITY_EG_SCALING);
 		//-------------
 		spb -> index_sens . pitch . drop (line, 0, INDEX_PITCH_SENS);
@@ -302,7 +306,9 @@ void parameter_block :: store_program (midi_stream * line) {
 		spb -> index_sens . vector_y . drop (line, 0, INDEX_VECTOR_Y_SENS);
 		spb -> index_sens . lfo_x . drop (line, 0, INDEX_LFO_X_SENS);
 		spb -> index_sens . lfo_y . drop (line, 0, INDEX_LFO_Y_SENS);
+		spb -> index_sens . key_attack_eg_scaling . drop (line, 0, INDEX_KEY_ATTACK_EG_SCALING);
 		spb -> index_sens . key_eg_scaling . drop (line, 0, INDEX_KEY_EG_SCALING);
+		spb -> index_sens . velocity_attack_eg_scaling . drop (line, 0, INDEX_VELOCITY_ATTACK_EG_SCALING);
 		spb -> index_sens . velocity_eg_scaling . drop (line, 0, INDEX_VELOCITY_EG_SCALING);
 		//-------------
 		spb -> lfo_sens . pitch . drop (line, 0, LFO_PITCH_SENS);
@@ -344,7 +350,9 @@ void parameter_block :: store_program (midi_stream * line) {
 		stpb -> sens . vector_y . drop (line, 0, VECTOR_Y_SENS);
 		stpb -> sens . lfo_x . drop (line, 0, LFO_X_SENS);
 		stpb -> sens . lfo_y . drop (line, 0, LFO_Y_SENS);
+		stpb -> sens . key_attack_eg_scaling . drop (line, 0, KEY_ATTACK_EG_SCALING);
 		stpb -> sens . key_eg_scaling . drop (line, 0, KEY_EG_SCALING);
+		stpb -> sens . velocity_attack_eg_scaling . drop (line, 0, VELOCITY_ATTACK_EG_SCALING);
 		stpb -> sens . velocity_eg_scaling . drop (line, 0, VELOCITY_EG_SCALING);
 		//-------------
 		stpb -> lfo_sens . pitch . drop (line, 0, LFO_PITCH_SENS);
@@ -649,7 +657,9 @@ void parameter_block :: read_program (midi_stream * line) {
 				case FREQ_VECTOR_Y_SENS: sp -> freq_sens . vector_y . read (line); break;
 				case FREQ_LFO_X_SENS: sp -> freq_sens . lfo_x . read (line); break;
 				case FREQ_LFO_Y_SENS: sp -> freq_sens . lfo_y . read (line); break;
+				case FREQ_KEY_ATTACK_EG_SCALING: sp -> freq_sens . key_attack_eg_scaling . read (line); break;
 				case FREQ_KEY_EG_SCALING: sp -> freq_sens . key_eg_scaling . read (line); break;
+				case FREQ_VELOCITY_ATTACK_EG_SCALING: sp -> freq_sens . velocity_attack_eg_scaling . read (line); break;
 				case FREQ_VELOCITY_EG_SCALING: sp -> freq_sens . velocity_eg_scaling . read (line); break;
 
 				case AMP_PITCH_SENS: sp -> amp_sens . pitch . read (line); break;
@@ -665,7 +675,9 @@ void parameter_block :: read_program (midi_stream * line) {
 				case AMP_VECTOR_Y_SENS: sp -> amp_sens . vector_y . read (line); break;
 				case AMP_LFO_X_SENS: sp -> amp_sens . lfo_x . read (line); break;
 				case AMP_LFO_Y_SENS: sp -> amp_sens . lfo_y . read (line); break;
+				case AMP_KEY_ATTACK_EG_SCALING: sp -> amp_sens . key_attack_eg_scaling . read (line); break;
 				case AMP_KEY_EG_SCALING: sp -> amp_sens . key_eg_scaling . read (line); break;
+				case AMP_VELOCITY_ATTACK_EG_SCALING: sp -> amp_sens . velocity_attack_eg_scaling . read (line); break;
 				case AMP_VELOCITY_EG_SCALING: sp -> amp_sens . velocity_eg_scaling . read (line); break;
 
 				case INDEX_PITCH_SENS: sp -> index_sens . pitch . read (line); break;
@@ -681,7 +693,9 @@ void parameter_block :: read_program (midi_stream * line) {
 				case INDEX_VECTOR_Y_SENS: sp -> index_sens . vector_y . read (line); break;
 				case INDEX_LFO_X_SENS: sp -> index_sens . lfo_x . read (line); break;
 				case INDEX_LFO_Y_SENS: sp -> index_sens . lfo_y . read (line); break;
+				case INDEX_KEY_ATTACK_EG_SCALING: sp -> index_sens . key_attack_eg_scaling . read (line); break;
 				case INDEX_KEY_EG_SCALING: sp -> index_sens . key_eg_scaling . read (line); break;
+				case INDEX_VELOCITY_ATTACK_EG_SCALING: sp -> index_sens . velocity_attack_eg_scaling . read (line); break;
 				case INDEX_VELOCITY_EG_SCALING: sp -> index_sens . velocity_eg_scaling . read (line); break;
 
 				case LFO_SPEED_SENS: sp -> lfo_sens . speed . read (line); break;
@@ -728,7 +742,9 @@ void parameter_block :: read_program (midi_stream * line) {
 				case VECTOR_Y_SENS: stp -> sens . vector_y . read (line); break;
 				case LFO_X_SENS: stp -> sens . lfo_x . read (line); break;
 				case LFO_Y_SENS: stp -> sens . lfo_y . read (line); break;
+				case KEY_ATTACK_EG_SCALING: stp -> sens . key_attack_eg_scaling . read (line); break;
 				case KEY_EG_SCALING: stp -> sens . key_eg_scaling . read (line); break;
+				case VELOCITY_ATTACK_EG_SCALING: stp -> sens . velocity_attack_eg_scaling . read (line); break;
 				case VELOCITY_EG_SCALING: stp -> sens . velocity_eg_scaling . read (line); break;
 
 				case LFO_SPEED_SENS: stp -> lfo_sens . speed . read (line); break;

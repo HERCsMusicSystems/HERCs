@@ -329,14 +329,18 @@ void parameter_block :: send_vector_recorded_info (void) {
 	midi_out -> close_system_exclusive ();
 }
 
-void parameter_block :: send_sub_parameter_block (int channel, int nrpn_msb, int nrpn_lsb, sub_parameter_block * pb) {
+void parameter_block :: send_sub_parameter_block (int channel, int nrpn_msb, int nrpn_lsb, sub_parameter_block * pb, sub_parameter_block * pb2) {
 	int xxx = nrpn_lsb >> 4;
-	xxx &= 0x3;
+	xxx &= 0x7;
+	if (xxx > 2 && pb2 == NULL) {sth -> send_error (channel, 3, nrpn_msb, nrpn_lsb, "control processor attack substript wrong"); return;}
 	int msb;
 	switch (xxx) {
 	case 0: msb = pb -> bp; break;
 	case 1: msb = pb -> lc; break;
 	case 2: msb = pb -> rc; break;
+	case 4: msb = pb2 -> bp; break;
+	case 5: msb = pb2 -> lc; break;
+	case 6: msb = pb2 -> rc; break;
 	default: sth -> send_error (channel, 3, nrpn_msb, nrpn_lsb, "control processor subscript wrong"); return; break;
 	}
 	int lsb = msb & 0x7f;
@@ -860,8 +864,8 @@ void parameter_block :: send_parameter_value (int channel) {
 	case 73: send_sub_parameter_block (channel, nrpn_msb, nrpn_lsb, & stripes [nnnn] -> index_sens . vector_y); return;
 	case 74: send_sub_parameter_block (channel, nrpn_msb, nrpn_lsb, & stripes [nnnn] -> index_sens . lfo_x); return;
 	case 75: send_sub_parameter_block (channel, nrpn_msb, nrpn_lsb, & stripes [nnnn] -> index_sens . lfo_y); return;
-	case 76: send_sub_parameter_block (channel, nrpn_msb, nrpn_lsb, & stripes [nnnn] -> index_sens . key_eg_scaling); return;
-	case 77: send_sub_parameter_block (channel, nrpn_msb, nrpn_lsb, & stripes [nnnn] -> index_sens . velocity_eg_scaling); return;
+	case 76: send_sub_parameter_block (channel, nrpn_msb, nrpn_lsb, & stripes [nnnn] -> index_sens . key_eg_scaling, & stripes [nnnn] -> index_sens . key_attack_eg_scaling); return;
+	case 77: send_sub_parameter_block (channel, nrpn_msb, nrpn_lsb, & stripes [nnnn] -> index_sens . velocity_eg_scaling, & stripes [nnnn] -> index_sens . velocity_attack_eg_scaling); return;
 	case 78: send_sub_parameter_block (channel, nrpn_msb, nrpn_lsb, & stripes [nnnn] -> index_sens . pitch); return;
 
 	case 80: send_sub_parameter_block (channel, nrpn_msb, nrpn_lsb, & stripes [nnnn] -> freq_sens . shift); return;
@@ -876,8 +880,8 @@ void parameter_block :: send_parameter_value (int channel) {
 	case 89: send_sub_parameter_block (channel, nrpn_msb, nrpn_lsb, & stripes [nnnn] -> freq_sens . vector_y); return;
 	case 90: send_sub_parameter_block (channel, nrpn_msb, nrpn_lsb, & stripes [nnnn] -> freq_sens . lfo_x); return;
 	case 91: send_sub_parameter_block (channel, nrpn_msb, nrpn_lsb, & stripes [nnnn] -> freq_sens . lfo_y); return;
-	case 92: send_sub_parameter_block (channel, nrpn_msb, nrpn_lsb, & stripes [nnnn] -> freq_sens . key_eg_scaling); return;
-	case 93: send_sub_parameter_block (channel, nrpn_msb, nrpn_lsb, & stripes [nnnn] -> freq_sens . velocity_eg_scaling); return;
+	case 92: send_sub_parameter_block (channel, nrpn_msb, nrpn_lsb, & stripes [nnnn] -> freq_sens . key_eg_scaling, & stripes [nnnn] -> freq_sens . key_attack_eg_scaling); return;
+	case 93: send_sub_parameter_block (channel, nrpn_msb, nrpn_lsb, & stripes [nnnn] -> freq_sens . velocity_eg_scaling, & stripes [nnnn] -> freq_sens . velocity_attack_eg_scaling); return;
 	case 94: send_sub_parameter_block (channel, nrpn_msb, nrpn_lsb, & stripes [nnnn] -> freq_sens . pitch); return;
 
 	case 96: send_sub_parameter_block (channel, nrpn_msb, nrpn_lsb, & stripes [nnnn] -> amp_sens . shift); return;
@@ -892,8 +896,8 @@ void parameter_block :: send_parameter_value (int channel) {
 	case 105: send_sub_parameter_block (channel, nrpn_msb, nrpn_lsb, & stripes [nnnn] -> amp_sens . vector_y); return;
 	case 106: send_sub_parameter_block (channel, nrpn_msb, nrpn_lsb, & stripes [nnnn] -> amp_sens . lfo_x); return;
 	case 107: send_sub_parameter_block (channel, nrpn_msb, nrpn_lsb, & stripes [nnnn] -> amp_sens . lfo_y); return;
-	case 108: send_sub_parameter_block (channel, nrpn_msb, nrpn_lsb, & stripes [nnnn] -> amp_sens . key_eg_scaling); return;
-	case 109: send_sub_parameter_block (channel, nrpn_msb, nrpn_lsb, & stripes [nnnn] -> amp_sens . velocity_eg_scaling); return;
+	case 108: send_sub_parameter_block (channel, nrpn_msb, nrpn_lsb, & stripes [nnnn] -> amp_sens . key_eg_scaling, & stripes [nnnn] -> amp_sens . key_attack_eg_scaling); return;
+	case 109: send_sub_parameter_block (channel, nrpn_msb, nrpn_lsb, & stripes [nnnn] -> amp_sens . velocity_eg_scaling, & stripes [nnnn] -> amp_sens . velocity_attack_eg_scaling); return;
 	case 110: send_sub_parameter_block (channel, nrpn_msb, nrpn_lsb, & stripes [nnnn] -> amp_sens . pitch); return;
 
 	case 112: send_sub_parameter_block (channel, nrpn_msb, nrpn_lsb, & stereo [nnnn] -> sens . shift); return;
@@ -908,8 +912,8 @@ void parameter_block :: send_parameter_value (int channel) {
 	case 121: send_sub_parameter_block (channel, nrpn_msb, nrpn_lsb, & stereo [nnnn] -> sens . vector_y); return;
 	case 122: send_sub_parameter_block (channel, nrpn_msb, nrpn_lsb, & stereo [nnnn] -> sens . lfo_x); return;
 	case 123: send_sub_parameter_block (channel, nrpn_msb, nrpn_lsb, & stereo [nnnn] -> sens . lfo_y); return;
-	case 124: send_sub_parameter_block (channel, nrpn_msb, nrpn_lsb, & stereo [nnnn] -> sens . key_eg_scaling); return;
-	case 125: send_sub_parameter_block (channel, nrpn_msb, nrpn_lsb, & stereo [nnnn] -> sens . velocity_eg_scaling); return;
+	case 124: send_sub_parameter_block (channel, nrpn_msb, nrpn_lsb, & stereo [nnnn] -> sens . key_eg_scaling, & stereo [nnnn] -> sens . key_attack_eg_scaling); return;
+	case 125: send_sub_parameter_block (channel, nrpn_msb, nrpn_lsb, & stereo [nnnn] -> sens . velocity_eg_scaling, & stereo [nnnn] -> sens . velocity_attack_eg_scaling); return;
 	case 126: send_sub_parameter_block (channel, nrpn_msb, nrpn_lsb, & stereo [nnnn] -> sens . pitch); return;
 
 	case 127: return;

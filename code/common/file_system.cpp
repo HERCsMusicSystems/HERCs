@@ -634,7 +634,9 @@ void parameter_block :: read_program (SetupFileReader * fr) {
 					if (fr -> id ("freq_vector_y_sens")) {if (! sp -> freq_sens . vector_y . read (fr)) return;}
 					if (fr -> id ("freq_lfo_x_sens")) {if (! sp -> freq_sens . lfo_x . read (fr)) return;}
 					if (fr -> id ("freq_lfo_y_sens")) {if (! sp -> freq_sens . lfo_y . read (fr)) return;}
+					if (fr -> id ("freq_key_attack_eg_scaling")) {if (! sp -> freq_sens . key_attack_eg_scaling . read (fr)) return;}
 					if (fr -> id ("freq_key_eg_scaling")) {if (! sp -> freq_sens . key_eg_scaling . read (fr)) return;}
+					if (fr -> id ("freq_velocity_attack_eg_scaling")) {if (! sp -> freq_sens . velocity_attack_eg_scaling . read (fr)) return;}
 					if (fr -> id ("freq_velocity_eg_scaling")) {if (! sp -> freq_sens . velocity_eg_scaling . read (fr)) return;}
 
 					if (fr -> id ("amp_pitch_sens")) {if (! sp -> amp_sens . pitch . read (fr)) return;}
@@ -650,7 +652,9 @@ void parameter_block :: read_program (SetupFileReader * fr) {
 					if (fr -> id ("amp_vector_y_sens")) {if (! sp -> amp_sens . vector_y . read (fr)) return;}
 					if (fr -> id ("amp_lfo_x_sens")) {if (! sp -> amp_sens . lfo_x . read (fr)) return;}
 					if (fr -> id ("amp_lfo_y_sens")) {if (! sp -> amp_sens . lfo_y . read (fr)) return;}
+					if (fr -> id ("amp_key_attack_eg_scaling")) {if (! sp -> amp_sens . key_attack_eg_scaling . read (fr)) return;}
 					if (fr -> id ("amp_key_eg_scaling")) {if (! sp -> amp_sens . key_eg_scaling . read (fr)) return;}
+					if (fr -> id ("amp_velocity_attack_eg_scaling")) {if (! sp -> amp_sens . velocity_attack_eg_scaling . read (fr)) return;}
 					if (fr -> id ("amp_velocity_eg_scaling")) {if (! sp -> amp_sens . velocity_eg_scaling . read (fr)) return;}
 
 					if (fr -> id ("index_pitch_sens")) {if (! sp -> index_sens . pitch . read (fr)) return;}
@@ -666,7 +670,9 @@ void parameter_block :: read_program (SetupFileReader * fr) {
 					if (fr -> id ("index_vector_y_sens")) {if (! sp -> index_sens . vector_y . read (fr)) return;}
 					if (fr -> id ("index_lfo_x_sens")) {if (! sp -> index_sens . lfo_x . read (fr)) return;}
 					if (fr -> id ("index_lfo_y_sens")) {if (! sp -> index_sens . lfo_y . read (fr)) return;}
+					if (fr -> id ("index_key_attack_eg_scaling")) {if (! sp -> index_sens . key_attack_eg_scaling . read (fr)) return;}
 					if (fr -> id ("index_key_eg_scaling")) {if (! sp -> index_sens . key_eg_scaling . read (fr)) return;}
+					if (fr -> id ("index_velocity_attack_eg_scaling")) {if (! sp -> index_sens . velocity_attack_eg_scaling . read (fr)) return;}
 					if (fr -> id ("index_velocity_eg_scaling")) {if (! sp -> index_sens . velocity_eg_scaling . read (fr)) return;}
 
 					if (fr -> id ("lfo_speed_sens")) {if (! sp -> lfo_sens . speed . read (fr)) return;}
@@ -743,7 +749,9 @@ void parameter_block :: read_program (SetupFileReader * fr) {
 					if (fr -> id ("vector_y_sens")) {if (! stp -> sens . vector_y . read (fr)) return;}
 					if (fr -> id ("lfo_x_sens")) {if (! stp -> sens . lfo_x . read (fr)) return;}
 					if (fr -> id ("lfo_y_sens")) {if (! stp -> sens . lfo_y . read (fr)) return;}
+					if (fr -> id ("key_attack_eg_scaling")) {if (! stp -> sens . key_attack_eg_scaling . read (fr)) return;}
 					if (fr -> id ("key_eg_scaling")) {if (! stp -> sens . key_eg_scaling . read (fr)) return;}
+					if (fr -> id ("velocity_attack_eg_scaling")) {if (! stp -> sens . velocity_attack_eg_scaling . read (fr)) return;}
 					if (fr -> id ("velocity_eg_scaling")) {if (! stp -> sens . velocity_eg_scaling . read (fr)) return;}
 
 					if (fr -> id ("lfo_speed_sens")) {if (! stp -> lfo_sens . speed . read (fr)) return;}
@@ -1201,7 +1209,9 @@ void parameter_block :: store_program (SetupFileWriter * tc) {
 		spb -> freq_sens . vector_y . drop (tc, 0, "freq_vector_y_sens");
 		spb -> freq_sens . lfo_x . drop (tc, 0, "freq_lfo_x_sens");
 		spb -> freq_sens . lfo_y . drop (tc, 0, "freq_lfo_y_sens");
+		spb -> freq_sens . key_attack_eg_scaling . drop (tc, 0, "freq_key_attack_eg_scaling");
 		spb -> freq_sens . key_eg_scaling . drop (tc, 0, "freq_key_eg_scaling");
+		spb -> freq_sens . velocity_attack_eg_scaling . drop (tc, 0, "freq_velocity_attack_eg_scaling");
 		spb -> freq_sens . velocity_eg_scaling . drop (tc, 0, "freq_velocity_eg_scaling");
 		//-------------
 		spb -> amp_sens . pitch . drop (tc, 0, "amp_pitch_sens");
@@ -1217,7 +1227,9 @@ void parameter_block :: store_program (SetupFileWriter * tc) {
 		spb -> amp_sens . vector_y . drop (tc, 0, "amp_vector_y_sens");
 		spb -> amp_sens . lfo_x . drop (tc, 0, "amp_lfo_x_sens");
 		spb -> amp_sens . lfo_y . drop (tc, 0, "amp_lfo_y_sens");
+		spb -> amp_sens . key_attack_eg_scaling . drop (tc, 0, "amp_key_attack_eg_scaling");
 		spb -> amp_sens . key_eg_scaling . drop (tc, 0, "amp_key_eg_scaling");
+		spb -> amp_sens . velocity_attack_eg_scaling . drop (tc, 0, "amp_velocity_attack_eg_scaling");
 		spb -> amp_sens . velocity_eg_scaling . drop (tc, 0, "amp_velocity_eg_scaling");
 		//-------------
 		spb -> index_sens . pitch . drop (tc, 0, "index_pitch_sens");
@@ -1233,7 +1245,9 @@ void parameter_block :: store_program (SetupFileWriter * tc) {
 		spb -> index_sens . vector_y . drop (tc, 0, "index_vector_y_sens");
 		spb -> index_sens . lfo_x . drop (tc, 0, "index_lfo_x_sens");
 		spb -> index_sens . lfo_y . drop (tc, 0, "index_lfo_y_sens");
+		spb -> index_sens . key_attack_eg_scaling . drop (tc, 0, "index_key_attack_eg_scaling");
 		spb -> index_sens . key_eg_scaling . drop (tc, 0, "index_key_eg_scaling");
+		spb -> index_sens . velocity_attack_eg_scaling . drop (tc, 0, "index_velocity_attack_eg_scaling");
 		spb -> index_sens . velocity_eg_scaling . drop (tc, 0, "index_velocity_eg_scaling");
 		//-------------
 		spb -> lfo_sens . pitch . drop (tc, 0, "lfo_pitch_sens");
@@ -1274,7 +1288,9 @@ void parameter_block :: store_program (SetupFileWriter * tc) {
 		stpb -> sens . vector_y . drop (tc, 0, "vector_y_sens");
 		stpb -> sens . lfo_x . drop (tc, 0, "lfo_x_sens");
 		stpb -> sens . lfo_y . drop (tc, 0, "lfo_y_sens");
+		stpb -> sens . key_attack_eg_scaling . drop (tc, 0, "key_attack_eg_scaling");
 		stpb -> sens . key_eg_scaling . drop (tc, 0, "key_eg_scaling");
+		stpb -> sens . velocity_attack_eg_scaling . drop (tc, 0, "velocity_attack_eg_scaling");
 		stpb -> sens . velocity_eg_scaling . drop (tc, 0, "velocity_eg_scaling");
 		//-------------
 		stpb -> lfo_sens . pitch . drop (tc, 0, "lfo_pitch_sens");

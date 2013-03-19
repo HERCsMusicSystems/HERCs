@@ -542,8 +542,8 @@ void info_display :: midi_nrpn (int data_msb) {
 		case 9: strcat (edit_parameter_name, "VECTOR Y "); break;
 		case 10: strcat (edit_parameter_name, "LFO X "); break;
 		case 11: strcat (edit_parameter_name, "LFO Y "); break;
-		case 12: strcat (edit_parameter_name, "KEY EG SCAL "); break;
-		case 13: strcat (edit_parameter_name, "VELOCITY EG SCAL "); break;
+		case 12: strcat (edit_parameter_name, selector > 3 ? "KEY ATTACK EG SCAL" : "KEY EG SCAL "); break;
+		case 13: strcat (edit_parameter_name, selector > 3 ? "VELOCITY ATTACK EG SCAL" : "VELOCITY EG SCAL "); break;
 		case 14: strcat (edit_parameter_name, "PITCH "); break;
 		}
 		switch (selector) {

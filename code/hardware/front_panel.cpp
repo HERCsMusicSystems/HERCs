@@ -79,8 +79,8 @@ void hercs_front_panel :: calculate_sensitivity_block_display (void) {
 		case 9: parameter_name = "VECTOR Y"; break;
 		case 10: parameter_name = "LFO VECTOR X"; break;
 		case 11: parameter_name = "LFO VECTOR Y"; break;
-		case 12: parameter_name = "KEY EG SCAL"; break;
-		case 13: parameter_name = "VELOCITY EG SCAL"; break;
+		case 12: if (nrpn_lsb >= 64) parameter_name = "KEY ATTACK EG SCAL"; else parameter_name = "KEY EG SCAL"; break;
+		case 13: if (nrpn_lsb >= 64) parameter_name = "VELOCITY ATTACK EG SCAL"; else parameter_name = "VELOCITY EG SCAL"; break;
 		case 14: parameter_name = "PITCH"; break;
 		default: parameter_name = "UNKNOWN"; break;
 	}
@@ -1356,8 +1356,8 @@ void hercs_dx_type_panel :: set_button_names (void) {
 			change_parameter_name (8, "V/Y");
 			change_parameter_name (9, "KEY");
 			change_parameter_name (10, "VELOC");
-			change_parameter_name (11, "");
-			change_parameter_name (12, "");
+			change_parameter_name (11, "AEGK");
+			change_parameter_name (12, "AEGV");
 			change_parameter_name (13, "EGKEY");
 			change_parameter_name (14, "EGVEL");
 			change_parameter_name (15, "");
@@ -1546,6 +1546,7 @@ void hercs_dx_type_panel :: calculate_nrpn_from_mode (void) {
 		case 1: case 2: case 3: case 4: case 5: case 6: nrpn_msb += sensitivity_parameter - 1; break;
 		case 7: case 8: nrpn_msb += sensitivity_parameter + 1; break;
 		case 9: case 10: nrpn_msb += sensitivity_parameter - 3; break;
+		case 11: case 12: nrpn_msb += sensitivity_parameter + 1; nrpn_lsb += 64; break;
 		case 13: case 14: nrpn_msb += sensitivity_parameter - 1; break;
 		case 16: case 17: nrpn_msb += sensitivity_parameter - 6; break;
 		default: nrpn_msb = nrpn_lsb = 127; break;

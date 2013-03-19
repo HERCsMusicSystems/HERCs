@@ -92,7 +92,9 @@ void sensitivity_parameter_block :: voice_init (int selector) {
 	vector_y . voice_init (0);
 	lfo_x . voice_init (0);
 	lfo_y . voice_init (0);
+	key_attack_eg_scaling . voice_init (0);
 	key_eg_scaling . voice_init (0);
+	velocity_attack_eg_scaling . voice_init (0);
 	velocity_eg_scaling . voice_init (0);
 }
 
@@ -889,9 +891,15 @@ void parameter_block :: eg_copy (int channel, int source, int destination) {
 	destination_sens_eg -> release . bp = source_sens_eg -> release . bp;
 	destination_sens_eg -> release . lc = source_sens_eg -> release . lc;
 	destination_sens_eg -> release . rc = source_sens_eg -> release . rc;
+	destination_sens_eg -> key_attack_eg_scaling . bp = source_sens_eg -> key_attack_eg_scaling . bp;
+	destination_sens_eg -> key_attack_eg_scaling . lc = source_sens_eg -> key_attack_eg_scaling . lc;
+	destination_sens_eg -> key_attack_eg_scaling . rc = source_sens_eg -> key_attack_eg_scaling . rc;
 	destination_sens_eg -> key_eg_scaling . bp = source_sens_eg -> key_eg_scaling . bp;
 	destination_sens_eg -> key_eg_scaling . lc = source_sens_eg -> key_eg_scaling . lc;
 	destination_sens_eg -> key_eg_scaling . rc = source_sens_eg -> key_eg_scaling . rc;
+	destination_sens_eg -> velocity_attack_eg_scaling . bp = source_sens_eg -> velocity_attack_eg_scaling . bp;
+	destination_sens_eg -> velocity_attack_eg_scaling . lc = source_sens_eg -> velocity_attack_eg_scaling . lc;
+	destination_sens_eg -> velocity_attack_eg_scaling . rc = source_sens_eg -> velocity_attack_eg_scaling . rc;
 	destination_sens_eg -> velocity_eg_scaling . bp = source_sens_eg -> velocity_eg_scaling . bp;
 	destination_sens_eg -> velocity_eg_scaling . lc = source_sens_eg -> velocity_eg_scaling . lc;
 	destination_sens_eg -> velocity_eg_scaling . rc = source_sens_eg -> velocity_eg_scaling . rc;

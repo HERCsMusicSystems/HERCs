@@ -1257,12 +1257,10 @@ void oscillator_pool_cpp :: adsr_update_head (int ind, int adsr_ind, int type, i
 		target = apb -> level [index];
 		if (type == 1) target = - target;	// because of amp lut [0 .. 16383]
 
-		dx += spb -> key_eg_scaling . get (key);
-		dx += spb -> velocity_eg_scaling . get (velocity);
 		switch (index) {
-		case 0: case 1: dx += spb -> attack . get (cpb -> attack); break;
+		case 0: case 1: dx += spb -> attack . get (cpb -> attack) + spb -> key_attack_eg_scaling . get (key) + spb -> velocity_attack_eg_scaling . get (velocity); break;
 		case 2:
-			dx += spb -> decay . get (cpb -> decay);
+			dx += spb -> decay . get (cpb -> decay) + spb -> key_eg_scaling . get (key) + spb -> velocity_eg_scaling . get (velocity);
 			if (type != 1) target += spb -> sustain . get (cpb -> sustain);
 			else target -= spb -> sustain . get_negative (cpb -> sustain); // amp lut
 			break;
