@@ -14,7 +14,6 @@ prolog_prc_objects = \
 	$(pc)record.prc\
 	$(pc)neural.prc\
 	$(pc)keyboard.prc\
-	$(pc)notes.prc\
 	$(pc)sql.prc
 
 prolog_objects = \

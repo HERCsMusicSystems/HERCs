@@ -181,7 +181,6 @@ extern char resource_4 [];
 extern char resource_5 [];
 extern char resource_6 [];
 extern char resource_7 [];
-extern char resource_8 [];
 class resource_loader_class : public PrologResourceLoader {
 public:
 	char * load (char * name) {
@@ -193,8 +192,7 @@ public:
 		if (strcmp (name, "record") == 0) ret = resource_4;
 		if (strcmp (name, "neural") == 0) ret = resource_5;
 		if (strcmp (name, "keyboard") == 0) ret = resource_6;
-		if (strcmp (name, "notes") == 0) ret = resource_7;
-		if (strcmp (name, "sql") == 0) ret = resource_8;
+		if (strcmp (name, "sql") == 0) ret = resource_7;
 		if (strcmp (name, "studio.prc") == 0) ret = resource_0;
 		if (strcmp (name, "store.prc") == 0) ret = resource_1;
 		if (strcmp (name, "f1.prc") == 0) ret = resource_2;
@@ -202,8 +200,7 @@ public:
 		if (strcmp (name, "record.prc") == 0) ret = resource_4;
 		if (strcmp (name, "neural.prc") == 0) ret = resource_5;
 		if (strcmp (name, "keyboard.prc") == 0) ret = resource_6;
-		if (strcmp (name, "notes.prc") == 0) ret = resource_7;
-		if (strcmp (name, "sql.prc") == 0) ret = resource_8;
+		if (strcmp (name, "sql.prc") == 0) ret = resource_7;
 		return ret;
 	}
 } resource_loader;
