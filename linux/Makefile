@@ -10,13 +10,13 @@ oc = ../code/orakle/
 
 prolog_prc_objects = \
 	$(pc)studio.prc\
+	$(pc)http.prc\
 	$(pc)store.prc\
 	$(pc)f1.prc\
 	$(pc)help.prc\
 	$(pc)record.prc\
 	$(pc)neural.prc\
 	$(pc)keyboard.prc\
-	$(pc)notes.prc\
 	$(pc)sql.prc
 
 prolog_objects = \
@@ -25,12 +25,11 @@ prolog_objects = \
 	$(po)prolog_element.o $(po)prolog_loader.o $(po)prolog_match.o $(po)prolog_midi_command.o \
 	$(po)prolog_native_code.o $(po)prolog_query.o $(po)prolog_reader.o $(po)prolog_resolution.o \
 	$(po)prolog_resolution_pool.o $(po)prolog_root.o $(po)prolog_service_class.o \
-	$(po)prolog_studio.o \
+	$(po)prolog_studio.o $(po)prolog_http.o \
 	$(po)prolog_transport.o \
 	$(po)prolog_transport_pool.o $(po)prolog_variable.o \
 	$(po)prolog_linux_console.o\
 	$(po)midi_command_prompt.o\
-	$(po)notes.o\
 	$(po)linux_midi.o
 
 
