@@ -90,6 +90,9 @@ void orthogonal_core :: build_synthesizer (config * cfg, PrologResourceLoader * 
 	sth -> connect_midi_out (conn_midi_out);
 	sth -> configure ();
 	sth -> voice_init ();
+
+	sth -> active_sensing_delay = cfg -> horizontal;
+	if (cfg -> processors > 1) sth -> active_sensing_delay /= 40;
 }
 
 void orthogonal_core :: destroy_synthesizer (void) {

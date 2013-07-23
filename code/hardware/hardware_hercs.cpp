@@ -233,7 +233,7 @@ MidiCommandPrompt * command_console = NULL;
 mac_midi_service midi_service ("HERCs CORE");
 #else
 #include "linux_midi.h"
-linux_midi_service midi_service (NULL);
+linux_midi_service midi_service;
 #endif
 
 #endif
