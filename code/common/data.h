@@ -8,7 +8,8 @@
 
 #include "setup_file_reader.h"
 #include "config.h"
-#include "hercs_prolog_sdk.h"
+#include "prolog.h"
+#include "midi_stream.h"
 
 class HERCs_SDK_EXPORT sub_parameter_block;
 class HERCs_SDK_EXPORT adsr_parameter_block;

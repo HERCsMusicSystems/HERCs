@@ -4,7 +4,7 @@
 ///////////////////////////////////////
 
 #include "data.h"
-#include "hercs_prolog_sdk.h"
+#include "prolog.h"
 
 void synthesizer :: connect_prolog_root (PrologRoot * root) {this -> root = root;}
 

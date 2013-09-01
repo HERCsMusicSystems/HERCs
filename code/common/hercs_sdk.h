@@ -6,7 +6,7 @@
 #ifndef HERCs_SDK
 #define HERCs_SDK
 
-#include "hercs_prolog_sdk.h"
+#include "prolog.h"
 #include "data.h"
 #include "algo_building_blocks.h"
 #include "keyboard_calculator.h"

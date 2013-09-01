@@ -24,13 +24,11 @@ prolog_objects = \
 	$(po)midi_stream.o $(po)object_tracker.o $(po)prolog_atom.o $(po)prolog_command.o $(po)prolog_directory.o \
 	$(po)prolog_element.o $(po)prolog_loader.o $(po)prolog_match.o $(po)prolog_midi_command.o \
 	$(po)prolog_native_code.o $(po)prolog_query.o $(po)prolog_reader.o $(po)prolog_resolution.o \
-	$(po)prolog_resolution_pool.o $(po)prolog_root.o $(po)prolog_service_class.o \
+	$(po)prolog_root.o $(po)prolog_service_class.o \
 	$(po)prolog_studio.o $(po)prolog_http.o \
 	$(po)prolog_transport.o \
-	$(po)prolog_transport_pool.o $(po)prolog_variable.o \
-	$(po)prolog_linux_console.o\
-	$(po)midi_command_prompt.o\
-	$(po)linux_midi.o
+	$(po)prolog_variable.o \
+	$(po)prolog_linux_console.o
 
 
 common_objects = \
@@ -138,7 +136,7 @@ front_panel.o: $(hc)front_panel.h $(hc)front_panel.cpp $(cc)osc.h $(cc)osc_cpp.h
 hardware_hercs.o: $(pc)linux_midi.h $(hc)hardware_hercs.cpp $(hc)controls.h $(hc)core_layout.h $(hc)front_panel.h $(cc)osc.h $(cc)osc_cpp.h
 	g++ -Wno-write-strings -I. -I$(hc) -I$(cc) -I$(pc) `wx-config --cxxflags` $(hc)hardware_hercs.cpp -c -o hardware_hercs.o
 
-~/bin/hrcs: $(po)linux_midi.o $(po)encoder.o $(prolog_objects) $(po)prolog_resources.o $(prolog_prc_objects) $(common_objects) hardware_hercs.o $(po)neural.o front_panel.o controls.o multiplatform_audio.o wx_audio_dialog.o
+~/bin/hrcs: $(po)encoder.o $(prolog_objects) $(po)prolog_resources.o $(prolog_prc_objects) $(common_objects) hardware_hercs.o $(po)neural.o front_panel.o controls.o multiplatform_audio.o wx_audio_dialog.o
 	g++ -fopenmp -lpthread -lasound -ldl -Wl,--export-dynamic `wx-config --libs` $(prolog_objects) $(common_objects) $(po)encoder.o $(po)prolog_resources.o $(po)neural.o controls.o front_panel.o hardware_hercs.o multiplatform_audio.o wx_audio_dialog.o -o ~/bin/hrcs -lreadline
 
 
