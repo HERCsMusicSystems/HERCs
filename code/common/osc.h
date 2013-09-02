@@ -8,7 +8,7 @@
 
 #include "data.h"
 
-class HERCs_SDK_EXPORT dsp_line_pool;
+class dsp_line_pool;
 
 typedef int multi_line [2048];
 

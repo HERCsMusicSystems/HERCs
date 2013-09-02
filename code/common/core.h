@@ -9,9 +9,10 @@
 #include "data.h"
 #include "transport.h"
 #include "osc_cpp.h"
+#include "encoder.h"
 
-class HERCs_SDK_EXPORT orthogonal_core;
-class HERCs_SDK_EXPORT synthesizer_core;
+class orthogonal_core;
+class synthesizer_core;
 
 class orthogonal_core {
 private:

@@ -121,7 +121,7 @@ wavetable_bank_cpp.o: $(cc)wavetable_bank_cpp.cpp $(cc)data.h $(cc)wavetable_ban
 	g++ -Wno-write-strings -I. -I$(pc) $(cc)wavetable_bank_cpp.cpp -c -o wavetable_bank_cpp.o
 plugin_loader.o: $(cc)plugin_loader.cpp $(cc)data.h $(cc)osc_cpp.h $(cc)osc.h $(cc)osc_cpp.h
 	g++ -Wno-write-strings -I. -I$(pc) $(cc)plugin_loader.cpp -c -o plugin_loader.o
-core.o: $(cc)core.h $(cc)core.cpp $(cc)data.cpp $(cc)osc.h $(cc)osc_cpp.h
+core.o: $(cc)core.h $(cc)core.cpp $(cc)data.cpp $(cc)osc.h $(cc)osc_cpp.h $(pc)encoder.h
 	g++ -Wno-write-strings -I. -I$(cc) -I$(pc) $(cc)core.cpp -c -o core.o
 controls.o: $(hc)controls.h $(hc)controls.cpp $(cc)osc.h $(cc)osc_cpp.h
 	g++ -Wno-write-strings `wx-config --cxxflags` $(hc)controls.cpp -c -o controls.o

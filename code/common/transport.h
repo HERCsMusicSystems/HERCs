@@ -8,11 +8,11 @@
 
 #include "data.h"
 
-class HERCs_SDK_EXPORT transport;
-class HERCs_SDK_EXPORT arpeggiator_cpp;
-class HERCs_SDK_EXPORT arpeggiator_pool_cpp;
-class HERCs_SDK_EXPORT vector_cpp;
-class HERCs_SDK_EXPORT vector_pool_cpp;
+class transport;
+class arpeggiator_cpp;
+class arpeggiator_pool_cpp;
+class vector_cpp;
+class vector_pool_cpp;
 
 class transport {
 private:

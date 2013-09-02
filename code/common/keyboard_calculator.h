@@ -8,7 +8,7 @@
 
 #include "hercs_export_definitions.h"
 
-class HERCs_SDK_EXPORT keyboard_calculator;
+class keyboard_calculator;
 
 class keyboard_calculator {
 private:

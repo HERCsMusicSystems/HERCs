@@ -8,9 +8,9 @@
 
 #include "transport.h"
 
-class HERCs_SDK_EXPORT scripted_pattern_bank;
-class HERCs_SDK_EXPORT style_bank;
-class HERCs_SDK_EXPORT script_tables;
+class scripted_pattern_bank;
+class style_bank;
+class script_tables;
 
 // scripted instructions
 #define END_     0x00, 0 // end [] => end of sequence

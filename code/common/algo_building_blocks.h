@@ -8,12 +8,12 @@
 #include "osc.h"
 #include <math.h>
 
-HERCs_SDK_EXPORT extern double sine_wave [];
-HERCs_SDK_EXPORT extern double fm_one_cycle;
-HERCs_SDK_EXPORT extern double fm_three_cycles;
-HERCs_SDK_EXPORT extern double chameleon_cycles;
-HERCs_SDK_EXPORT extern int amp_logs [16384];
-//HERCs_SDK_EXPORT extern int * global_noise;
+extern double sine_wave [];
+extern double fm_one_cycle;
+extern double fm_three_cycles;
+extern double chameleon_cycles;
+extern int amp_logs [16384];
+
 #define FM_DECLARATIONS \
 	unsigned int * tp = osc -> time;\
 	unsigned int * fp = osc -> freq;\

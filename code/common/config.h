@@ -8,7 +8,7 @@
 
 #include "setup_file_reader.h"
 
-class HERCs_SDK_EXPORT config;
+class config;
 
 #define CONFIG_MULTITIMBRAL 16
 #define CONFIG_STRIPES 6
@@ -156,3 +156,4 @@ public:
 };
 
 #endif
+

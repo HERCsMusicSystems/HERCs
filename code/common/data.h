@@ -11,38 +11,38 @@
 #include "prolog.h"
 #include "midi_stream.h"
 
-class HERCs_SDK_EXPORT sub_parameter_block;
-class HERCs_SDK_EXPORT adsr_parameter_block;
-class HERCs_SDK_EXPORT sensitivity_parameter_block;
-class HERCs_SDK_EXPORT lfo_sensitivity_parameter_block;
-class HERCs_SDK_EXPORT stripe_parameter_block;
-class HERCs_SDK_EXPORT system_parameter_block;
-class HERCs_SDK_EXPORT stereo_stripe_parameter_block;
-class HERCs_SDK_EXPORT controllers_parameter_block;
-class HERCs_SDK_EXPORT oscillator_pool;
-class HERCs_SDK_EXPORT algo;
-class HERCs_SDK_EXPORT arranger;
-class HERCs_SDK_EXPORT arpeggiator_pool;
-class HERCs_SDK_EXPORT vector;
-class HERCs_SDK_EXPORT vector_pool;
-class HERCs_SDK_EXPORT pattern;
-class HERCs_SDK_EXPORT dsp_algo;
-class HERCs_SDK_EXPORT dsp_router;
-class HERCs_SDK_EXPORT dsp_parameter_block;
-class HERCs_SDK_EXPORT key_queue;
-class HERCs_SDK_EXPORT parameter_block;
-class HERCs_SDK_EXPORT bank;
-class HERCs_SDK_EXPORT synthesizer;
-class HERCs_SDK_EXPORT algo_bank;
-class HERCs_SDK_EXPORT pattern_bank;
-class HERCs_SDK_EXPORT dsp_algo_bank;
-class HERCs_SDK_EXPORT preset_algo_bank;
-class HERCs_SDK_EXPORT preset_pattern_bank;
-class HERCs_SDK_EXPORT preset_dsp_algo_bank;
-class HERCs_SDK_EXPORT sound_bank;
-class HERCs_SDK_EXPORT user_sound_bank;
-class HERCs_SDK_EXPORT dsp_bank;
-class HERCs_SDK_EXPORT user_dsp_bank;
+class sub_parameter_block;
+class adsr_parameter_block;
+class sensitivity_parameter_block;
+class lfo_sensitivity_parameter_block;
+class stripe_parameter_block;
+class system_parameter_block;
+class stereo_stripe_parameter_block;
+class controllers_parameter_block;
+class oscillator_pool;
+class algo;
+class arranger;
+class arpeggiator_pool;
+class vector;
+class vector_pool;
+class pattern;
+class dsp_algo;
+class dsp_router;
+class dsp_parameter_block;
+class key_queue;
+class parameter_block;
+class bank;
+class synthesizer;
+class algo_bank;
+class pattern_bank;
+class dsp_algo_bank;
+class preset_algo_bank;
+class preset_pattern_bank;
+class preset_dsp_algo_bank;
+class sound_bank;
+class user_sound_bank;
+class dsp_bank;
+class user_dsp_bank;
 
 
 
@@ -50,7 +50,7 @@ class HERCs_SDK_EXPORT user_dsp_bank;
 
 #define STRING_SIZE 128
 typedef char STRING [STRING_SIZE];
-HERCs_SDK_EXPORT extern void string_copy (char * to, char * from);
+extern void string_copy (char * to, char * from);
 
 
 class sub_parameter_block {
@@ -367,7 +367,7 @@ public:
 };
 
 typedef algo * algo_pointer;
-HERCs_SDK_EXPORT extern algo silence;
+extern algo silence;
 
 class pattern {
 public:
@@ -394,7 +394,7 @@ public:
 };
 
 typedef pattern * pattern_pointer;
-HERCs_SDK_EXPORT extern pattern silence_pattern;
+extern pattern silence_pattern;
 
 class dsp_algo {
 public:
@@ -404,7 +404,7 @@ public:
 };
 
 typedef dsp_algo * dsp_algo_pointer;
-HERCs_SDK_EXPORT extern dsp_algo silence_dsp_algo;
+extern dsp_algo silence_dsp_algo;
 
 class dsp_router {
 public:

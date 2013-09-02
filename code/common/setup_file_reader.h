@@ -9,12 +9,6 @@
 
 #include "stdio.h"
 
-#include "hercs_export_definitions.h"
-
-class HERCs_SDK_EXPORT SetupFileReader;
-class HERCs_SDK_EXPORT SetupFileWriter;
-
-
 #define SYMBOL_SIZE 1000
 
 class SetupFileReader {
@@ -80,11 +74,11 @@ public:
 	void close (void);
 };
 
-HERCs_SDK_EXPORT extern void message (char * head);
-HERCs_SDK_EXPORT extern void message (char * head, int ind);
-HERCs_SDK_EXPORT extern void message (char * head, int ind, int sub);
-HERCs_SDK_EXPORT extern void message (char * head, int ind, int sub, int id);
-HERCs_SDK_EXPORT extern void get_registry_key (char * root, char * key, char * value);
-HERCs_SDK_EXPORT extern unsigned long int get_volume_id (char * path);
+extern void message (char * head);
+extern void message (char * head, int ind);
+extern void message (char * head, int ind, int sub);
+extern void message (char * head, int ind, int sub, int id);
+extern void get_registry_key (char * root, char * key, char * value);
+extern unsigned long int get_volume_id (char * path);
 
 #endif

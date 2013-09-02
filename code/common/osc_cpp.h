@@ -9,14 +9,14 @@
 #include "data.h"
 #include "osc.h"
 
-class HERCs_SDK_EXPORT noise;
-class HERCs_SDK_EXPORT dsp_line;
-class HERCs_SDK_EXPORT dsp_algo_cpp;
-class HERCs_SDK_EXPORT float_stereo_dsp_line_pool;
-class HERCs_SDK_EXPORT oscillator;
-class HERCs_SDK_EXPORT oscillator_pool_cpp;
-class HERCs_SDK_EXPORT algo_cpp;
-class HERCs_SDK_EXPORT dsp_algo_cpp;
+class noise;
+class dsp_line;
+class dsp_algo_cpp;
+class float_stereo_dsp_line_pool;
+class oscillator;
+class oscillator_pool_cpp;
+class algo_cpp;
+class dsp_algo_cpp;
 
 class preset_algo_bank_cpp : public preset_algo_bank {
 public:
