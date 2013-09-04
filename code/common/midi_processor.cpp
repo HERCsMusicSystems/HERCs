@@ -665,17 +665,20 @@ void synthesizer :: midi_timing_clock (void) {
 
 void synthesizer :: midi_start (void) {
 	if (root == NULL) return;
-	root -> startTransport ();
+	// to do
+//	root -> startTransport ();
 }
 
 void synthesizer :: midi_continue (void) {
 	if (root == NULL) return;
-	root -> pauseTransport ();
+	// to do
+//	root -> pauseTransport ();
 }
 
 void synthesizer :: midi_stop (void) {
 	if (root == NULL) return;
-	root -> stopTransport ();
+	// to do
+//	root -> stopTransport ();
 }
 
 void parameter_block :: rpn (int data) {

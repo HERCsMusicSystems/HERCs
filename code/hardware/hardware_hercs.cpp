@@ -148,7 +148,7 @@ MultiplatformAudio * audio = NULL;
 // Multiplatform Audio Hardware End //
 //////////////////////////////////////
 
-#include "neural.h"
+#include "prolog_neural.h"
 #ifdef WINDOWS_OPERATING_SYSTEM
 #include "resource.h"
 class resource_loader_class : public PrologResourceLoader {
@@ -211,7 +211,7 @@ public:
 class service_class_loader_class : public PrologServiceClassLoader {
 public:
 	PrologServiceClass * load (char * name) {
-		if (strcmp (name, "neural.dll") == 0) return new neural_service ();
+		if (strcmp (name, "prolog.neural") == 0) return new PrologNeuralServiceClass ();
 		return NULL;
 	}
 } service_class_loader;
@@ -226,6 +226,7 @@ MidiCommandPrompt * command_console = NULL;
 #endif
 
 #ifdef LINUX_OPERATING_SYSTEM
+#include "midi_command_prompt.h"
 MidiCommandPrompt * command_console = NULL;
 
 #ifdef MAC_OPERATING_SYSTEM
@@ -241,7 +242,8 @@ mac_midi_service midi_service ("HERCs CORE");
 void build_synthesizer (void) {
 	core . build_synthesizer (cfg, & resource_loader, & service_class_loader);
 	core . conn_midi_out -> connect_thru (& console_feedback);
-	core . root -> setMidiPortServiceClass (& midi_service);
+	// to do
+//	core . root -> setMidiPortServiceClass (& midi_service);
 	command_console = new MidiCommandPrompt (core . conn_midi_in, cfg -> prolog_console_horizontal);
 	command_console -> open ();
 }
@@ -855,15 +857,18 @@ static int active_console_midi_output = -1;
 void set_main_midi_input (int ind) {
 	printf ("setting midi input to %i.\n", ind);
 	if (ind < 0) ind = -1;
-	midi_service . setInputPort (ind);
+	// to do
+//	midi_service . setInputPort (ind);
 	active_main_midi_input = ind;
 }
 void set_main_midi_output (int ind) {
 	printf ("setting midi output to %i.\n", ind);
 	if (ind < 0) ind = -1;
-	midi_service . setOutputPort (ind);
+	// to do
+//	midi_service . setOutputPort (ind);
 	active_main_midi_output = ind;
-	core . conn_midi_feed -> connect_thru (midi_service . getTransmissionLine ());
+	// to do
+//	core . conn_midi_feed -> connect_thru (midi_service . getTransmissionLine ());
 }
 
 void set_console_midi_input (int ind) {}
@@ -881,37 +886,41 @@ public:
 		grid -> Add (new wxStaticText (this, -1, _T ("Main Input")));
 		main_input_combo = new wxComboBox (this, 101, _T (""), wxDefaultPosition, wxSize (-1, -1), 0, NULL, wxCB_READONLY);
 		main_input_combo -> Append (_T ("Internal"));
-		sentinel = midi_service . getNumberOfInputs ();
-		for (ind = 0; ind < sentinel; ind++) {
-			main_input_combo -> Append (wxString :: From8BitData (midi_service . getInputInfo (ind)));
-		}
+		// to do
+//		sentinel = midi_service . getNumberOfInputs ();
+//		for (ind = 0; ind < sentinel; ind++) {
+//			main_input_combo -> Append (wxString :: From8BitData (midi_service . getInputInfo (ind)));
+//		}
 		main_input_combo -> SetSelection (active_main_midi_input + 1);
 		grid -> Add (main_input_combo);
 		grid -> Add (new wxStaticText (this, -1, _T ("Main Output")));
 		main_output_combo = new wxComboBox (this, 102, _T (""), wxDefaultPosition, wxSize (-1, -1), 0, NULL, wxCB_READONLY);
 		main_output_combo -> Append (_T ("Internal"));
-		sentinel = midi_service . getNumberOfOutputs ();
-		for (ind = 0; ind < sentinel; ind++) {
-			main_output_combo -> Append (wxString :: From8BitData (midi_service . getOutputInfo (ind)));
-		}
+		// to do
+//		sentinel = midi_service . getNumberOfOutputs ();
+//		for (ind = 0; ind < sentinel; ind++) {
+//			main_output_combo -> Append (wxString :: From8BitData (midi_service . getOutputInfo (ind)));
+//		}
 		main_output_combo -> SetSelection (active_main_midi_output + 1);
 		grid -> Add (main_output_combo);
 		grid -> Add (new wxStaticText (this, -1, _T ("Console Input")));
 		console_input_combo = new wxComboBox (this, 103, _T (""), wxDefaultPosition, wxSize (-1, -1), 0, NULL, wxCB_READONLY);
 		console_input_combo -> Append (_T ("Internal"));
-		sentinel = midi_service . getNumberOfInputs ();
-		for (ind = 0; ind < sentinel; ind++) {
-			console_input_combo -> Append (wxString :: From8BitData (midi_service . getInputInfo (ind)));
-		}
+		// to do
+//		sentinel = midi_service . getNumberOfInputs ();
+//		for (ind = 0; ind < sentinel; ind++) {
+//			console_input_combo -> Append (wxString :: From8BitData (midi_service . getInputInfo (ind)));
+//		}
 		console_input_combo -> SetSelection (active_console_midi_input + 1);
 		grid -> Add (console_input_combo);
 		grid -> Add (new wxStaticText (this, -1, _T ("Console Output")));
 		console_output_combo = new wxComboBox (this, 104, _T (""), wxDefaultPosition, wxSize (-1, -1), 0, NULL, wxCB_READONLY);
 		console_output_combo -> Append (_T ("Internal"));
-		sentinel = midi_service . getNumberOfOutputs ();
-		for (ind = 0; ind < sentinel; ind++) {
-			console_output_combo -> Append (wxString :: From8BitData (midi_service . getOutputInfo (ind)));
-		}
+		// to do
+//		sentinel = midi_service . getNumberOfOutputs ();
+//		for (ind = 0; ind < sentinel; ind++) {
+//			console_output_combo -> Append (wxString :: From8BitData (midi_service . getOutputInfo (ind)));
+//		}
 		console_output_combo -> SetSelection (active_console_midi_output + 1);
 		grid -> Add (console_output_combo);
 		SetSizer (grid);
@@ -1408,7 +1417,8 @@ public:
 #ifdef LINUX_OPERATING_SYSTEM
 		cfg = new config ();
 		build_synthesizer ();
-		midi_service . reader_line = core . external_midi_in;
+		// to do
+//		midi_service . reader_line = core . external_midi_in;
 #endif
 		panel . preset_bank_msb = cfg -> default_preset_sound_msb;
 		panel . preset_bank_lsb = cfg -> default_preset_sound_lsb;

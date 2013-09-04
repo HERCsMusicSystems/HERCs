@@ -115,13 +115,14 @@ void synthesizer :: send_transport_data (int sub_selector) {
 	if (midi_out == NULL) return;
 	if (root == NULL) return;
 	int sub = -1;
-	switch (sub_selector) {
-	case 0x8: sub = root -> getTransportBeatsPerSeconds (); break;
-	case 0x9: sub = root -> getTransportSeconds (); break;
-	case 0xa: sub = root -> getTransportBeatsPerBar (); break;
-	case 0xb: sub = root -> getTransportTicksPerBeat (); break;
-	default: break;
-	}
+	// to do
+//	switch (sub_selector) {
+//	case 0x8: sub = root -> getTransportBeatsPerSeconds (); break;
+//	case 0x9: sub = root -> getTransportSeconds (); break;
+//	case 0xa: sub = root -> getTransportBeatsPerBar (); break;
+//	case 0xb: sub = root -> getTransportTicksPerBeat (); break;
+//	default: break;
+//	}
 	if (sub < 0) return;
 	midi_out -> open_system_exclusive ();
 	midi_out -> insert (0x34);
@@ -135,26 +136,28 @@ void synthesizer :: send_transport_data (int sub_selector) {
 void synthesizer :: process_transport_request (int sub_selector, midi_stream * line) {
 	if (root == NULL) return;
 	int top;
-	switch (sub_selector) {
-	case 0x0: root -> stopTransport (); break;
-	case 0x1: root -> startTransport (); break;
-	case 0x2: root -> pauseTransport (); break;
-	case 0xc: top = line -> get (); root -> transportMetrum (top, line -> get ()); break;
-	default: send_transport_data (sub_selector); break;
-	}
+	// to do
+//	switch (sub_selector) {
+//	case 0x0: root -> stopTransport (); break;
+//	case 0x1: root -> startTransport (); break;
+//	case 0x2: root -> pauseTransport (); break;
+//	case 0xc: top = line -> get (); root -> transportMetrum (top, line -> get ()); break;
+//	default: send_transport_data (sub_selector); break;
+//	}
 }
 
 void synthesizer :: process_transport_data (int sub_selector, midi_stream * line) {
 	if (root == NULL) return;
 	switch (sub_selector) {
 	case 0x8:
-		if (transport_seconds != 0) root -> transportTempo (line -> get_int (), transport_seconds);
-		else root -> transportTempo (line -> get_int ());
+	// to do
+//		if (transport_seconds != 0) root -> transportTempo (line -> get_int (), transport_seconds);
+//		else root -> transportTempo (line -> get_int ());
 		transport_seconds = 0;
 		break;
 	case 0x9: transport_seconds = line -> get_int (); break;
-	case 0xa: root -> transportDivision (line -> get_int ()); break;
-	case 0xb: root -> transportTickDivision (line -> get_int ()); break;
+//	case 0xa: root -> transportDivision (line -> get_int ()); break;
+//	case 0xb: root -> transportTickDivision (line -> get_int ()); break;
 	}
 }
 
@@ -346,7 +349,7 @@ void parameter_block :: send_sub_parameter_block (int channel, int nrpn_msb, int
 	int lsb = msb & 0x7f;
 	msb >>= 7;
 	msb &= 0x7f;
-	sth -> midi_out -> INSERT_NRPN (channel, nrpn_msb, nrpn_lsb, msb, lsb);
+	sth -> midi_out -> insert_nrpn (channel, nrpn_msb, nrpn_lsb, msb, lsb);
 }
 
 void parameter_block :: send_adsr_level (int channel, int nrpn_msb, int nrpn_lsb, adsr_parameter_block * pb) {
@@ -356,7 +359,7 @@ void parameter_block :: send_adsr_level (int channel, int nrpn_msb, int nrpn_lsb
 	int lsb = msb& 0x7f;
 	msb >>= 7;
 	msb &= 0x7f;
-	sth -> midi_out -> INSERT_NRPN (channel, nrpn_msb, nrpn_lsb, msb, lsb);
+	sth -> midi_out -> insert_nrpn (channel, nrpn_msb, nrpn_lsb, msb, lsb);
 }
 
 void parameter_block :: send_adsr_time (int channel, int nrpn_msb, int nrpn_lsb, adsr_parameter_block * pb) {
@@ -366,7 +369,7 @@ void parameter_block :: send_adsr_time (int channel, int nrpn_msb, int nrpn_lsb,
 	int lsb = msb & 0x7f;
 	msb >>= 7;
 //	msb &= 0x7f;
-	sth -> midi_out -> INSERT_NRPN (channel, nrpn_msb, nrpn_lsb, msb, lsb);
+	sth -> midi_out -> insert_nrpn (channel, nrpn_msb, nrpn_lsb, msb, lsb);
 }
 
 void parameter_block :: send_parameter_value (int channel) {
@@ -920,7 +923,7 @@ void parameter_block :: send_parameter_value (int channel) {
 	default: sth -> send_error (channel, 1, nrpn_msb, nrpn_lsb, "parameter not found"); return;
 	}
 	if (data_msb > -70000) {
-		if (data_lsb > -70000) sth -> midi_out -> INSERT_NRPN (channel, nrpn_msb, nrpn_lsb, data_msb, data_lsb);
-		else sth -> midi_out -> INSERT_NRPN (channel, nrpn_msb, nrpn_lsb, data_msb);
+		if (data_lsb > -70000) sth -> midi_out -> insert_nrpn (channel, nrpn_msb, nrpn_lsb, data_msb, data_lsb);
+		else sth -> midi_out -> insert_nrpn (channel, nrpn_msb, nrpn_lsb, data_msb);
 	}
 }

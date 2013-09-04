@@ -23,10 +23,10 @@ private:
 
 	midi_stream * internal_midi_line;
 
-	PrologMidiCommand * prolog_console;
-	prolog_midi_reader * prolog_reader;
-	int prolog_ctrl;
-	PrologResolutionPool * pool;
+//	PrologMidiCommand * prolog_console;
+//	prolog_midi_reader * prolog_reader;
+//	int prolog_ctrl;
+//	PrologResolutionPool * pool;
 
 	int prolog_sample_counter, prolog_sample_sentinel;
 	int arp_sample_counter, arp_sample_sentinel;

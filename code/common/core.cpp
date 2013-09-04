@@ -26,7 +26,7 @@ void orthogonal_core :: build_synthesizer (config * cfg, PrologResourceLoader * 
 
 	horizontal = cfg -> horizontal;
 	set_security_crash_after (72);
-	prolog_ctrl = 4;
+//	prolog_ctrl = 4;
 	prolog_sample_counter = 0;
 	prolog_sample_sentinel = 50;
 	arp_sample_counter = 0;
@@ -51,22 +51,22 @@ void orthogonal_core :: build_synthesizer (config * cfg, PrologResourceLoader * 
 	root -> get_search_directories_from_environment ("HRCS_MODULE_SEARCH_PATHS");
 	root -> setResourceLoader (resource_loader);
 	root -> setServiceClassLoader (service_loader);
-	root -> setMidi (external_midi_in, internal_midi_line);
+//	root -> setMidi (external_midi_in, internal_midi_line);
 	root -> set_serial_number (cfg -> serial_number);
 	root -> set_key (cfg -> key);
 	root -> set_volume_id (get_volume_id (NULL));
 	root -> set_serial_shift (0);
 	root -> set_uap32_captions ();
-	root -> greenThreads (cfg -> prolog_horizontal);
-	root -> setRootDirectory (cfg -> prolog_root_directory);
+//	root -> greenThreads (cfg -> prolog_horizontal);
+//	root -> setRootDirectory (cfg -> prolog_root_directory);
 
-	prolog_console = new PrologMidiCommand (internal_midi_line);
-	root -> insertCommander (prolog_console);
+//	prolog_console = new PrologMidiCommand (internal_midi_line);
+//	root -> insertCommander (prolog_console);
 
-	root -> resolutionHead (cfg -> prolog_library_load);
-	root -> setQuery ();
-	prolog_reader = new prolog_midi_reader (root);
-	pool = root -> getResolutionPool ();
+//	root -> resolutionHead (cfg -> prolog_library_load);
+//	root -> setQuery ();
+//	prolog_reader = new prolog_midi_reader (root);
+//	pool = root -> getResolutionPool ();
 
 	sth = new synthesizer (cfg);
 	arps = new arpeggiator_pool_cpp (cfg, sth);
@@ -109,11 +109,11 @@ void orthogonal_core :: destroy_synthesizer (void) {
 
 	delete dsp;
 	delete osc;
-	delete prolog_console;
-	if (prolog_ctrl != 4) root -> removeMainQuery ();
-	root -> removeThreads ();
+//	delete prolog_console;
+//	if (prolog_ctrl != 4) root -> removeMainQuery ();
+//	root -> removeThreads ();
 	delete root;
-	delete prolog_reader;
+//	delete prolog_reader;
 }
 
 void orthogonal_core :: conn_move (midi_reader * conn) {
@@ -125,33 +125,34 @@ void orthogonal_core :: conn_move (midi_reader * conn) {
 void orthogonal_core :: conn_move (void) {sth -> read (conn_midi_in);}
 
 bool orthogonal_core :: move (void) {
-	if (prolog_reader -> is_ready ()) prolog_reader -> read (external_midi_in);
-	pool -> main_shift ();
-	if (--prolog_sample_counter <= 0) {
-		if (prolog_ctrl == 4) {
-			prolog_ctrl = root -> move ();
-			if (prolog_ctrl != 4) root -> removeMainQuery ();
-		}
-		prolog_sample_counter = prolog_sample_sentinel;
-	}
+//	if (prolog_reader -> is_ready ()) prolog_reader -> read (external_midi_in);
+//	pool -> main_shift ();
+//	if (--prolog_sample_counter <= 0) {
+//		if (prolog_ctrl == 4) {
+//			prolog_ctrl = root -> move ();
+//			if (prolog_ctrl != 4) root -> removeMainQuery ();
+//		}
+//		prolog_sample_counter = prolog_sample_sentinel;
+//	}
 	sth -> read (internal_midi_line);
 	if (--arp_sample_counter <= 0) {arps -> move (); arp_sample_counter = arp_sample_sentinel;}
 	if (--vector_sample_counter <= 0) {vects -> move (); vector_sample_counter = vector_sample_sentinel;}
 	osc -> move ();
-	return prolog_ctrl != 4;
+//	return prolog_ctrl != 4;
+	return true;
 }
 
 bool orthogonal_core :: multi_move (int samples) {
-	if (prolog_reader -> is_ready ()) prolog_reader -> read (external_midi_in);
-	pool -> main_shift ();
-	prolog_sample_counter -= samples;
-	while (prolog_sample_counter <= 0) {
-		if (prolog_ctrl == 4) {
-			prolog_ctrl = root -> move ();
-			if (prolog_ctrl != 4) root -> removeMainQuery ();
-		}
-		prolog_sample_counter += prolog_sample_sentinel;
-	}
+//	if (prolog_reader -> is_ready ()) prolog_reader -> read (external_midi_in);
+//	pool -> main_shift ();
+//	prolog_sample_counter -= samples;
+//	while (prolog_sample_counter <= 0) {
+//		if (prolog_ctrl == 4) {
+//			prolog_ctrl = root -> move ();
+//			if (prolog_ctrl != 4) root -> removeMainQuery ();
+//		}
+//		prolog_sample_counter += prolog_sample_sentinel;
+//	}
 	sth -> read (internal_midi_line);
 	arp_sample_counter -= samples;
 	while (arp_sample_counter <= 0) {arps -> move (); arp_sample_counter += arp_sample_sentinel;}
@@ -162,7 +163,8 @@ bool orthogonal_core :: multi_move (int samples) {
 	osc -> multi_move_oscillators (samples);
 	osc -> multi_move_dsp (samples);
 
-	return prolog_ctrl != 4;
+//	return prolog_ctrl != 4;
+	return true;
 }
 
 void orthogonal_core :: crash (void) {

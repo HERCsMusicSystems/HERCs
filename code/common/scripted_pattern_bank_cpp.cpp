@@ -396,7 +396,8 @@ void style_bank :: extract_program (SetupFileReader * fr, int lsb, int program, 
 								if (! fr -> get_int ()) return;
 								y = fr -> int_symbol;
 								root = pb -> sth -> root;
-								if (root != NULL) root -> transportTempo (x, y);
+								// to do
+//								if (root != NULL) root -> transportTempo (x, y);
 							}
 							if (fr -> id ("division") && program_location == program && pb -> system -> arranger_assign < 0x7f) {
 								if (! fr -> get_int ()) return;
@@ -404,7 +405,8 @@ void style_bank :: extract_program (SetupFileReader * fr, int lsb, int program, 
 								if (! fr -> get_int ()) return;
 								y = fr -> int_symbol;
 								root = pb -> sth -> root;
-								if (root != NULL) root -> transportDivision (x, y);
+								// to do
+//								if (root != NULL) root -> transportDivision (x, y);
 							}
 							if (fr -> id ("pattern")) {
 								if (! fr -> get_int ()) return;
