@@ -46,6 +46,9 @@ public:
 	midi_stream * conn_midi_out;
 	midi_stream * conn_midi_feed;
 
+	midi_stream * lines;
+	midi_stream * line;
+
 	float * left_out_pointer (void);
 	float * right_out_pointer (void);
 	float left_out (void);

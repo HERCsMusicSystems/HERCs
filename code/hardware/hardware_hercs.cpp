@@ -221,13 +221,11 @@ public:
 #include "windows_midi.h"
 windows_midi_service midi_service (NULL);
 windows_midi_service console_midi_service;
-MidiCommandPrompt * command_console = NULL;
 #define menu_height 36
 #endif
 
 #ifdef LINUX_OPERATING_SYSTEM
 #include "midi_command_prompt.h"
-MidiCommandPrompt * command_console = NULL;
 
 #ifdef MAC_OPERATING_SYSTEM
 #include "mac_midi.h"
@@ -239,17 +237,23 @@ mac_midi_service midi_service ("HERCs CORE");
 
 #endif
 
+
+buffered_midi_stream command_line (2048);
+MidiCommandPrompt command_console (& command_line);
+
+
 void build_synthesizer (void) {
 	core . build_synthesizer (cfg, & resource_loader, & service_class_loader);
 	core . conn_midi_out -> connect_thru (& console_feedback);
 	// to do
 //	core . root -> setMidiPortServiceClass (& midi_service);
-	command_console = new MidiCommandPrompt (core . conn_midi_in, cfg -> prolog_console_horizontal);
-	command_console -> open ();
+//	command_console = new MidiCommandPrompt (core . conn_midi_in, cfg -> prolog_console_horizontal);
+	command_console . open ();
 }
 
 void destroy_synthesizer (void) {
-	if (command_console != NULL) {command_console -> close (); delete command_console;}
+	command_console . close ();
+//	if (command_console != NULL) {command_console . close (); delete command_console;}
 	core . destroy_synthesizer ();
 	printf ("Synthesiser deallocated.\n");
 }
@@ -342,7 +346,8 @@ public:
 	virtual void change_status_text (void) {status_display -> SetLabel (towxstring (status_text));}
 	virtual void open_file_for_input (char * file_name) {if (audio != NULL) audio -> selectInputFile (file_name);}
 	virtual void open_file_for_record (int seconds, char * file_name) {if (audio != NULL) audio -> selectOutputFile (seconds, file_name);}
-	virtual void console_print (char * text) {if (command_console != NULL) command_console -> print (text);}
+	//virtual void console_print (char * text) {if (command_console != NULL) command_console -> print (text);}
+	virtual void console_print (char * text) {command_console . print (text);}
 #ifdef WINDOWS_OPERATING_SYSTEM
 	virtual void console_operations (int cc, int mm, int ll) {
 		if (command_console == NULL) return;
@@ -354,11 +359,11 @@ public:
 #endif
 #ifdef LINUX_OPERATING_SYSTEM
 	virtual void console_operations (int cc, int mm, int ll) {
-		if (command_console == NULL) return;
+		//if (command_console == NULL) return;
 		switch (cc) {
 		case 0x01: case 0x02: case 0x03: if (open_close_frame != NULL) open_close_frame -> Show (); break;
 		case 0x05: case 0x06: case 0x07: if (open_close_frame != NULL) open_close_frame -> Show (false); break;
-		case 0xb: command_console -> setColors (mm, ll); break;
+		case 0xb: command_console . setColors (mm, ll); break;
 		default: break;
 		}
 	}

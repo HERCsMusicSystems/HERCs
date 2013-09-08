@@ -47,6 +47,8 @@ void orthogonal_core :: build_synthesizer (config * cfg, PrologResourceLoader * 
 	external_midi_out -> connect_thru (conn_midi_feed);
 	internal_midi_line -> connect_thru (external_midi_out);
 
+	lines = line = 0;
+
 	root = new PrologRoot ();
 	root -> get_search_directories_from_environment ("HRCS_MODULE_SEARCH_PATHS");
 	root -> setResourceLoader (resource_loader);
@@ -139,7 +141,7 @@ bool orthogonal_core :: move (void) {
 	if (--vector_sample_counter <= 0) {vects -> move (); vector_sample_counter = vector_sample_sentinel;}
 	osc -> move ();
 //	return prolog_ctrl != 4;
-	return true;
+	return false;
 }
 
 bool orthogonal_core :: multi_move (int samples) {
@@ -164,7 +166,7 @@ bool orthogonal_core :: multi_move (int samples) {
 	osc -> multi_move_dsp (samples);
 
 //	return prolog_ctrl != 4;
-	return true;
+	return false;
 }
 
 void orthogonal_core :: crash (void) {
