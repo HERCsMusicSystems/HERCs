@@ -246,7 +246,7 @@ void build_synthesizer (void) {
 	core . build_synthesizer (cfg, & resource_loader, & service_class_loader);
 	core . conn_midi_out -> connect_thru (& console_feedback);
 	// to do
-	core . lines = & command_line;
+	core . insertMidiSource (& command_line);
 //	core . root -> setMidiPortServiceClass (& midi_service);
 //	command_console = new MidiCommandPrompt (core . conn_midi_in, cfg -> prolog_console_horizontal);
 	command_console . open ();

@@ -22,6 +22,21 @@ int orthogonal_core :: get_security_crash_after (void) {return security_crash_af
 void orthogonal_core :: set_volume_id (unsigned long int volume_id) {root -> set_volume_id (volume_id);}
 void orthogonal_core :: set_serial_shift (int shift) {root -> set_serial_shift (shift);}
 
+void orthogonal_core :: insertMidiSource (midi_stream * source) {
+	source -> next = this -> lines;
+	this -> lines = source;
+}
+
+void orthogonal_core :: removeMidiSource (midi_stream * source) {
+	if (source == 0) return;
+	if (lines == source) {lines = lines -> next; return;}
+	midi_stream * ptr = lines;
+	while (ptr -> next != 0) {
+		if (ptr -> next == source) {ptr -> next = source -> next; return;}
+		ptr = ptr -> next;
+	}
+}
+
 void orthogonal_core :: build_synthesizer (config * cfg, PrologResourceLoader * resource_loader, PrologServiceClassLoader * service_loader) {
 
 	horizontal = cfg -> horizontal;

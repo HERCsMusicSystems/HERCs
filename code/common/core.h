@@ -49,6 +49,9 @@ public:
 	midi_stream * lines;
 	midi_stream * line;
 
+	void insertMidiSource (midi_stream * source);
+	void removeMidiSource (midi_stream * source);
+
 	float * left_out_pointer (void);
 	float * right_out_pointer (void);
 	float left_out (void);
