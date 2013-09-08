@@ -246,6 +246,7 @@ void build_synthesizer (void) {
 	core . build_synthesizer (cfg, & resource_loader, & service_class_loader);
 	core . conn_midi_out -> connect_thru (& console_feedback);
 	// to do
+	core . lines = & command_line;
 //	core . root -> setMidiPortServiceClass (& midi_service);
 //	command_console = new MidiCommandPrompt (core . conn_midi_in, cfg -> prolog_console_horizontal);
 	command_console . open ();
@@ -444,10 +445,10 @@ public:
 class keyboard_controller : public wxPictureKeyboard {
 public:
 	virtual void keyon (int key) {
-		core . external_midi_in -> insert_keyon (panel . get_transmission_channel (panel . get_channel_extension ()), key, 100);
+		command_line . insert_keyon (panel . get_transmission_channel (panel . get_channel_extension ()), key, 100);
 	}
 	virtual void keyoff (int key) {
-		core . external_midi_in -> insert_keyoff (panel . get_transmission_channel (panel . get_channel_extension ()), key);
+		command_line . insert_keyoff (panel . get_transmission_channel (panel . get_channel_extension ()), key);
 	}
 	keyboard_controller (wxWindow * parent, wxWindowID id, wxBitmap * bitmap, int size_selector) : wxPictureKeyboard (parent, id, bitmap, size_selector) {}
 };

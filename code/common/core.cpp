@@ -122,9 +122,10 @@ void orthogonal_core :: conn_move (midi_reader * conn) {
 	sth -> read (conn_midi_in);
 	conn -> read (conn_midi_out);
 	conn -> read (conn_midi_feed);
+	if (lines) sth -> read (lines);
 }
 
-void orthogonal_core :: conn_move (void) {sth -> read (conn_midi_in);}
+void orthogonal_core :: conn_move (void) {sth -> read (conn_midi_in); if (lines) sth -> read (lines);}
 
 bool orthogonal_core :: move (void) {
 //	if (prolog_reader -> is_ready ()) prolog_reader -> read (external_midi_in);
