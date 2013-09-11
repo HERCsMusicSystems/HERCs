@@ -4,6 +4,7 @@
 ///////////////////////////////////////
 
 #include "core.h"
+#include "prolog_midi_command.h"
 
 #define MIDI_STREAM_SIZE 65536
 
@@ -77,8 +78,8 @@ void orthogonal_core :: build_synthesizer (config * cfg, PrologResourceLoader * 
 //	root -> greenThreads (cfg -> prolog_horizontal);
 //	root -> setRootDirectory (cfg -> prolog_root_directory);
 
-//	prolog_console = new PrologMidiCommand (internal_midi_line);
-//	root -> insertCommander (prolog_console);
+	PrologMidiCommand * prolog_console = new PrologMidiCommand (internal_midi_line);
+	root -> insertCommander (prolog_console);
 
 //	root -> resolutionHead (cfg -> prolog_library_load);
 //	root -> setQuery ();

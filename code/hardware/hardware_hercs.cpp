@@ -181,28 +181,34 @@ extern char resource_5 [];
 extern char resource_6 [];
 extern char resource_7 [];
 extern char resource_8 [];
+extern char resource_9 [];
+extern char resource_10 [];
 class resource_loader_class : public PrologResourceLoader {
 public:
 	char * load (char * name) {
 		char * ret = NULL;
 		if (strcmp (name, "studio") == 0) ret = resource_0;
-		if (strcmp (name, "http") == 0) ret = resource_1;
-		if (strcmp (name, "store") == 0) ret = resource_2;
-		if (strcmp (name, "f1") == 0) ret = resource_3;
-		if (strcmp (name, "help") == 0) ret = resource_4;
-		if (strcmp (name, "record") == 0) ret = resource_5;
-		if (strcmp (name, "neural") == 0) ret = resource_6;
-		if (strcmp (name, "keyboard") == 0) ret = resource_7;
-		if (strcmp (name, "sql") == 0) ret = resource_8;
+		if (strcmp (name, "conductor") == 0) ret = resource_1;
+		if (strcmp (name, "midi") == 0) ret = resource_2;
+		if (strcmp (name, "http") == 0) ret = resource_3;
+		if (strcmp (name, "store") == 0) ret = resource_4;
+		if (strcmp (name, "f1") == 0) ret = resource_5;
+		if (strcmp (name, "help") == 0) ret = resource_6;
+		if (strcmp (name, "record") == 0) ret = resource_7;
+		if (strcmp (name, "neural") == 0) ret = resource_8;
+		if (strcmp (name, "keyboard") == 0) ret = resource_9;
+		if (strcmp (name, "sql") == 0) ret = resource_10;
 		if (strcmp (name, "studio.prc") == 0) ret = resource_0;
-		if (strcmp (name, "http.prc") == 0) ret = resource_1;
-		if (strcmp (name, "store.prc") == 0) ret = resource_2;
-		if (strcmp (name, "f1.prc") == 0) ret = resource_3;
-		if (strcmp (name, "help.prc") == 0) ret = resource_4;
-		if (strcmp (name, "record.prc") == 0) ret = resource_5;
-		if (strcmp (name, "neural.prc") == 0) ret = resource_6;
-		if (strcmp (name, "keyboard.prc") == 0) ret = resource_7;
-		if (strcmp (name, "sql.prc") == 0) ret = resource_8;
+		if (strcmp (name, "conductor.prc") == 0) ret = resource_1;
+		if (strcmp (name, "midi.prc") == 0) ret = resource_2;
+		if (strcmp (name, "http.prc") == 0) ret = resource_3;
+		if (strcmp (name, "store.prc") == 0) ret = resource_4;
+		if (strcmp (name, "f1.prc") == 0) ret = resource_5;
+		if (strcmp (name, "help.prc") == 0) ret = resource_6;
+		if (strcmp (name, "record.prc") == 0) ret = resource_7;
+		if (strcmp (name, "neural.prc") == 0) ret = resource_8;
+		if (strcmp (name, "keyboard.prc") == 0) ret = resource_9;
+		if (strcmp (name, "sql.prc") == 0) ret = resource_10;
 		return ret;
 	}
 } resource_loader;
@@ -227,6 +233,18 @@ windows_midi_service console_midi_service;
 #ifdef LINUX_OPERATING_SYSTEM
 #include "midi_command_prompt.h"
 
+pthread_t prolog_thread;
+
+static void * prologRunner (void * parameters) {
+	PrologRoot * root = (PrologRoot *) parameters;
+	printf ("I am here!\n");
+	//root -> setResourceLoader (& resource_loader);
+	//root -> setServiceClassLoader (& service_class_loader);
+	root -> resolution ();
+	printf ("STOPPED\n");
+	return 0;
+}
+
 #ifdef MAC_OPERATING_SYSTEM
 #include "mac_midi.h"
 mac_midi_service midi_service ("HERCs CORE");
@@ -250,6 +268,9 @@ void build_synthesizer (void) {
 //	core . root -> setMidiPortServiceClass (& midi_service);
 //	command_console = new MidiCommandPrompt (core . conn_midi_in, cfg -> prolog_console_horizontal);
 	command_console . open ();
+	//core . root -> resolution ();
+	pthread_create (& prolog_thread, 0, prologRunner, core . root);
+	pthread_detach (prolog_thread);
 }
 
 void destroy_synthesizer (void) {
