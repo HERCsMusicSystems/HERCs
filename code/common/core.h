@@ -14,6 +14,8 @@
 class orthogonal_core;
 class synthesizer_core;
 
+extern char * hercs_resource;
+
 class orthogonal_core {
 private:
 	int horizontal;

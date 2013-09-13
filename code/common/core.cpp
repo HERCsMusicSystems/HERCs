@@ -13,6 +13,15 @@
 // ORTHOGONAL CORE //
 /////////////////////
 
+char * hercs_resource = "\
+\
+import studio \
+import conductor \
+import midi \
+\
+program hercs [] end .\
+";
+
 void orthogonal_core :: set_security_crash_after (int ind) {
 	security_crash_after = ind;
 	protection_counter = horizontal * security_crash_after;

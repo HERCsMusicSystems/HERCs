@@ -136,8 +136,8 @@ front_panel.o: $(hc)front_panel.h $(hc)front_panel.cpp $(cc)osc.h $(cc)osc_cpp.h
 hardware_hercs.o: $(pc)linux_midi.h $(hc)hardware_hercs.cpp $(hc)controls.h $(hc)core_layout.h $(hc)front_panel.h $(cc)osc.h $(cc)osc_cpp.h $(pc)midi_command_prompt.h $(pc)prolog_neural.h $(cc)core.h
 	g++ -Wno-write-strings -I. -I$(hc) -I$(cc) -I$(pc) `wx-config --cxxflags` $(hc)hardware_hercs.cpp -c -o hardware_hercs.o
 
-~/bin/hrcs: $(po)encoder.o $(prolog_objects) $(po)prolog_resources.o $(po)midi_command_prompt.o $(prolog_prc_objects) $(common_objects) hardware_hercs.o $(po)prolog_neural.o front_panel.o controls.o multiplatform_audio.o wx_audio_dialog.o
-	g++ -fopenmp -lpthread -lasound -ldl -Wl,--export-dynamic `wx-config --libs` $(prolog_objects) $(common_objects) $(po)encoder.o $(po)prolog_resources.o $(po)midi_command_prompt.o $(po)prolog_neural.o controls.o front_panel.o hardware_hercs.o multiplatform_audio.o wx_audio_dialog.o -o ~/bin/hrcs -lreadline
+~/bin/hrcs: $(po)encoder.o $(prolog_objects) $(po)prolog_resources.o $(po)midi_command_prompt.o $(prolog_prc_objects) $(common_objects) hardware_hercs.o $(po)prolog_neural.o $(po)prolog_conductor.o $(po)prolog_midi.o front_panel.o controls.o multiplatform_audio.o wx_audio_dialog.o
+	g++ -fopenmp -lpthread -lasound -ldl -Wl,--export-dynamic `wx-config --libs` $(prolog_objects) $(common_objects) $(po)encoder.o $(po)prolog_resources.o $(po)midi_command_prompt.o $(po)prolog_neural.o $(po)prolog_conductor.o $(po)prolog_midi.o controls.o front_panel.o hardware_hercs.o multiplatform_audio.o wx_audio_dialog.o -o ~/bin/hrcs -lreadline
 
 
 hrcs: ../../dock/hrcs

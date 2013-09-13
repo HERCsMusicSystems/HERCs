@@ -148,7 +148,10 @@ MultiplatformAudio * audio = NULL;
 // Multiplatform Audio Hardware End //
 //////////////////////////////////////
 
+#include "prolog_conductor.h"
+#include "prolog_midi.h"
 #include "prolog_neural.h"
+#include "prolog_http.h"
 #ifdef WINDOWS_OPERATING_SYSTEM
 #include "resource.h"
 class resource_loader_class : public PrologResourceLoader {
@@ -190,6 +193,7 @@ public:
 		if (strcmp (name, "studio") == 0) ret = resource_0;
 		if (strcmp (name, "conductor") == 0) ret = resource_1;
 		if (strcmp (name, "midi") == 0) ret = resource_2;
+		if (strcmp (name, "hercs") == 0) ret = hercs_resource;
 		if (strcmp (name, "http") == 0) ret = resource_3;
 		if (strcmp (name, "store") == 0) ret = resource_4;
 		if (strcmp (name, "f1") == 0) ret = resource_5;
@@ -201,6 +205,7 @@ public:
 		if (strcmp (name, "studio.prc") == 0) ret = resource_0;
 		if (strcmp (name, "conductor.prc") == 0) ret = resource_1;
 		if (strcmp (name, "midi.prc") == 0) ret = resource_2;
+		if (strcmp (name, "hercs.prc") == 0) ret = hercs_resource;
 		if (strcmp (name, "http.prc") == 0) ret = resource_3;
 		if (strcmp (name, "store.prc") == 0) ret = resource_4;
 		if (strcmp (name, "f1.prc") == 0) ret = resource_5;
@@ -217,6 +222,11 @@ public:
 class service_class_loader_class : public PrologServiceClassLoader {
 public:
 	PrologServiceClass * load (char * name) {
+		if (strcmp (name, "prolog.conductor") == 0) return new PrologConductorServiceClass ();
+		if (strcmp (name, "prolog.midi") == 0) return new PrologMidiServiceClass ();
+#ifdef LINUX_OPERATING_SYSTEM
+		if (strcmp (name, "prolog.http") == 0) return new PrologHttpServiceClass ();
+#endif
 		if (strcmp (name, "prolog.neural") == 0) return new PrologNeuralServiceClass ();
 		return NULL;
 	}
