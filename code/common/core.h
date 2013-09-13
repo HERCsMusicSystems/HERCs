@@ -51,6 +51,8 @@ public:
 
 	void insertMidiSource (midi_stream * source);
 	void removeMidiSource (midi_stream * source);
+	void insertMidiDestination (midi_stream * destination);
+	void removeMidiDestination (midi_stream * destination);
 
 	float * left_out_pointer (void);
 	float * right_out_pointer (void);

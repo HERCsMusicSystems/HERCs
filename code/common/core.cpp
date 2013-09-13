@@ -38,6 +38,21 @@ void orthogonal_core :: removeMidiSource (midi_stream * source) {
 	}
 }
 
+void orthogonal_core :: insertMidiDestination (midi_stream * destination) {
+	destination -> thru = this -> line;
+	this -> line = destination;
+}
+
+void orthogonal_core :: removeMidiDestination (midi_stream * destination) {
+	if (line == 0) return;
+	if (line == destination) {line = line -> thru; return;}
+	midi_stream * ptr = line;
+	while (ptr -> thru != 0) {
+		if (ptr -> thru == destination) {ptr -> thru = destination -> thru; return;}
+		ptr = ptr -> thru;
+	}
+}
+
 void orthogonal_core :: build_synthesizer (config * cfg, PrologResourceLoader * resource_loader, PrologServiceClassLoader * service_loader) {
 
 	horizontal = cfg -> horizontal;
