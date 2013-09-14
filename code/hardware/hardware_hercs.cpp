@@ -246,12 +246,7 @@ windows_midi_service console_midi_service;
 pthread_t prolog_thread;
 
 static void * prologRunner (void * parameters) {
-	PrologRoot * root = (PrologRoot *) parameters;
-	printf ("I am here!\n");
-	//root -> setResourceLoader (& resource_loader);
-	//root -> setServiceClassLoader (& service_class_loader);
-	root -> resolution ();
-	printf ("STOPPED\n");
+	core . root -> resolution (cfg -> prolog_library_load);
 	return 0;
 }
 
@@ -266,20 +261,23 @@ mac_midi_service midi_service ("HERCs CORE");
 #endif
 
 
-buffered_midi_stream command_line (2048);
-MidiCommandPrompt command_console (& command_line);
+
+class HardwareMidiCommandPrompt : public MidiCommandPrompt {
+public:
+	virtual midi_stream * getLine (void) {return core . conn_midi_in;}
+} command_console;
 
 
 void build_synthesizer (void) {
 	core . build_synthesizer (cfg, & resource_loader, & service_class_loader);
 	core . conn_midi_out -> connect_thru (& console_feedback);
 	// to do
-	core . insertMidiSource (& command_line);
+//	core . insertMidiSource (& command_line);
 //	core . root -> setMidiPortServiceClass (& midi_service);
 //	command_console = new MidiCommandPrompt (core . conn_midi_in, cfg -> prolog_console_horizontal);
 	command_console . open ();
 	//core . root -> resolution ();
-	pthread_create (& prolog_thread, 0, prologRunner, core . root);
+	pthread_create (& prolog_thread, 0, prologRunner, 0);
 	pthread_detach (prolog_thread);
 }
 
@@ -476,10 +474,10 @@ public:
 class keyboard_controller : public wxPictureKeyboard {
 public:
 	virtual void keyon (int key) {
-		command_line . insert_keyon (panel . get_transmission_channel (panel . get_channel_extension ()), key, 100);
+		core . conn_midi_in -> insert_keyon (panel . get_transmission_channel (panel . get_channel_extension ()), key, 100);
 	}
 	virtual void keyoff (int key) {
-		command_line . insert_keyoff (panel . get_transmission_channel (panel . get_channel_extension ()), key);
+		core . conn_midi_in -> insert_keyoff (panel . get_transmission_channel (panel . get_channel_extension ()), key);
 	}
 	keyboard_controller (wxWindow * parent, wxWindowID id, wxBitmap * bitmap, int size_selector) : wxPictureKeyboard (parent, id, bitmap, size_selector) {}
 };

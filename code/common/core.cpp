@@ -101,6 +101,7 @@ void orthogonal_core :: build_synthesizer (config * cfg, PrologResourceLoader * 
 	root -> set_uap32_captions ();
 //	root -> greenThreads (cfg -> prolog_horizontal);
 //	root -> setRootDirectory (cfg -> prolog_root_directory);
+	if (strlen (cfg -> prolog_root_directory) > 0) root -> addSearchDirectory (cfg -> prolog_root_directory);
 
 	PrologMidiCommand * prolog_console = new PrologMidiCommand (internal_midi_line);
 	root -> insertCommander (prolog_console);
