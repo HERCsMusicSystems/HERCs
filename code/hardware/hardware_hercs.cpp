@@ -228,6 +228,7 @@ public:
 		if (strcmp (name, "prolog.http") == 0) return new PrologHttpServiceClass ();
 #endif
 		if (strcmp (name, "prolog.neural") == 0) return new PrologNeuralServiceClass ();
+		if (strcmp (name, "hercs") == 0) return new HERCsServiceClass (& core);
 		return NULL;
 	}
 } service_class_loader;
@@ -247,6 +248,7 @@ pthread_t prolog_thread;
 
 static void * prologRunner (void * parameters) {
 	core . root -> resolution (cfg -> prolog_library_load);
+	core . resolution_finished = true;
 	return 0;
 }
 
@@ -264,7 +266,7 @@ mac_midi_service midi_service ("HERCs CORE");
 
 class HardwareMidiCommandPrompt : public MidiCommandPrompt {
 public:
-	virtual midi_stream * getLine (void) {return core . conn_midi_in;}
+	virtual midi_stream * getLine (void) {return & core . conn_midi_source;}
 } command_console;
 
 
@@ -474,10 +476,10 @@ public:
 class keyboard_controller : public wxPictureKeyboard {
 public:
 	virtual void keyon (int key) {
-		core . conn_midi_in -> insert_keyon (panel . get_transmission_channel (panel . get_channel_extension ()), key, 100);
+		core . conn_midi_source . insert_keyon (panel . get_transmission_channel (panel . get_channel_extension ()), key, 100);
 	}
 	virtual void keyoff (int key) {
-		core . conn_midi_in -> insert_keyoff (panel . get_transmission_channel (panel . get_channel_extension ()), key);
+		core . conn_midi_source . insert_keyoff (panel . get_transmission_channel (panel . get_channel_extension ()), key);
 	}
 	keyboard_controller (wxWindow * parent, wxWindowID id, wxBitmap * bitmap, int size_selector) : wxPictureKeyboard (parent, id, bitmap, size_selector) {}
 };
@@ -1085,8 +1087,8 @@ void button_callbackx (int controller_id, double value) {
 	if (controller_id >= sensitivity_button_lc && controller_id <= sensitivity_button_rc) {panel . press_sensitivity_button (controller_id - sensitivity_button_lc); return;}
 	if (controller_id >= pb0 && controller_id <= pb17) {panel . press_parameter_button_dx (controller_id - pb0); return;}
 	if (controller_id >= extra_1_button && controller_id <= extra_128_button) {panel . press_zoom_button (controller_id - extra_1_button); return;}
-	if (controller_id == extra_inc_button) {if (value != 0) panel . encoder_change (core . conn_midi_in, 1); return;}
-	if (controller_id == extra_dec_button) {if (value != 0) panel . encoder_change (core . conn_midi_in, -1); return;}
+	if (controller_id == extra_inc_button) {if (value != 0) panel . encoder_change (& core . conn_midi_source, 1); return;}
+	if (controller_id == extra_dec_button) {if (value != 0) panel . encoder_change (& core . conn_midi_source, -1); return;}
 	if (controller_id >= extra_reset_button && controller_id <= extra_store_button) {panel . press_command_button (controller_id - extra_reset_button); return;}
 }
 
@@ -1098,7 +1100,7 @@ void button_callback (int controller_id, double value) {
 	panel . send_parameter_request ();
 }
 
-void encoder_callback (int controller_id, double value) {panel . encoder_change (core . conn_midi_in, (int) value);}
+void encoder_callback (int controller_id, double value) {panel . encoder_change (& core . conn_midi_source, (int) value);}
 
 void controller_callback (int controller_id, double value) {panel . controller_change (controller_id, value);}
 
@@ -1474,7 +1476,7 @@ public:
 		panel . hercules_number = cfg -> stripes;
 		panel . hercules_stereo_number = cfg -> stereo;
 		panel . total_dsp = cfg -> local_dsp + cfg -> global_dsp;
-		panel . set_midi_out (core . conn_midi_in);
+		panel . set_midi_out (& core . conn_midi_source);
 		open_close_frame = main_frame = new EditorFrame (NULL, -1, _T ("HERCs CORE"));
 		main_frame -> Show ();
 		panel . send_panel_controllers_request ();

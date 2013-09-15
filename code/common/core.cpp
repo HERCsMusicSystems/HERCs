@@ -5,6 +5,7 @@
 
 #include "core.h"
 #include "prolog_midi_command.h"
+#include "prolog_midi.h"
 
 #define MIDI_STREAM_SIZE 65536
 
@@ -19,8 +20,35 @@ import studio \
 import conductor \
 import midi \
 \
-program hercs [] end .\
+program hercs #machine := \"hercs\" [insertSource] \
+#machine insertSource := \"insertSource\" \
+end .\
 ";
+
+class InsertSourceClass : public PrologNativeCode {
+private:
+	orthogonal_core * core;
+public:
+	bool code (PrologElement * parameters, PrologResolution * resolution) {
+		if (! parameters -> isPair ()) return false;
+		parameters = parameters -> getLeft ();
+		if (! parameters -> isAtom ()) return false;
+		PrologNativeCode * machine = parameters -> getAtom () -> getMachine ();
+		if (machine == 0) return false;
+		if (machine -> codeName () != PrologMidiNativeCode :: name ()) return false;
+		PrologMidiNativeCode * midi = (PrologMidiNativeCode *) machine;
+		core -> insertMidiSource (midi -> getLine ());
+		return true;
+	}
+	InsertSourceClass (orthogonal_core * core) {this -> core = core;}
+};
+
+PrologNativeCode * HERCsServiceClass :: getNativeCode (char * name) {
+	if (strcmp (name, "insertSource") == 0) return new InsertSourceClass (core);
+	return 0;
+}
+
+HERCsServiceClass :: HERCsServiceClass (orthogonal_core * core) {this -> core = core;}
 
 void orthogonal_core :: set_security_crash_after (int ind) {
 	security_crash_after = ind;
@@ -62,11 +90,13 @@ void orthogonal_core :: removeMidiDestination (midi_stream * destination) {
 	}
 }
 
-void orthogonal_core :: build_synthesizer (config * cfg, PrologResourceLoader * resource_loader, PrologServiceClassLoader * service_loader) {
+orthogonal_core :: orthogonal_core (void) : conn_midi_source (MIDI_STREAM_SIZE) {}
 
+void orthogonal_core :: build_synthesizer (config * cfg, PrologResourceLoader * resource_loader, PrologServiceClassLoader * service_loader) {
 	horizontal = cfg -> horizontal;
 	set_security_crash_after (72);
 //	prolog_ctrl = 4;
+	resolution_finished = false;
 	prolog_sample_counter = 0;
 	prolog_sample_sentinel = 50;
 	arp_sample_counter = 0;
@@ -81,7 +111,6 @@ void orthogonal_core :: build_synthesizer (config * cfg, PrologResourceLoader * 
 	external_midi_in = new delayed_buffered_midi_stream (MIDI_STREAM_SIZE);
 	external_midi_out = new buffered_midi_stream (MIDI_STREAM_SIZE);
 	internal_midi_line = new buffered_midi_stream (MIDI_STREAM_SIZE);
-	conn_midi_in = new buffered_midi_stream (MIDI_STREAM_SIZE);
 	conn_midi_out = new buffered_midi_stream (MIDI_STREAM_SIZE);
 	conn_midi_feed = new buffered_midi_stream (MIDI_STREAM_SIZE);
 	external_midi_out -> connect_thru (conn_midi_feed);
@@ -148,7 +177,6 @@ void orthogonal_core :: destroy_synthesizer (void) {
 	delete external_midi_out;
 	delete conn_midi_feed;
 	delete conn_midi_out;
-	delete conn_midi_in;
 
 	delete dsp;
 	delete osc;
@@ -160,13 +188,13 @@ void orthogonal_core :: destroy_synthesizer (void) {
 }
 
 void orthogonal_core :: conn_move (midi_reader * conn) {
-	sth -> read (conn_midi_in);
+	sth -> read (& conn_midi_source);
 	conn -> read (conn_midi_out);
 	conn -> read (conn_midi_feed);
 	if (lines) sth -> read (lines);
 }
 
-void orthogonal_core :: conn_move (void) {sth -> read (conn_midi_in); if (lines) sth -> read (lines);}
+void orthogonal_core :: conn_move (void) {sth -> read (& conn_midi_source); if (lines) sth -> read (lines);}
 
 bool orthogonal_core :: move (void) {
 //	if (prolog_reader -> is_ready ()) prolog_reader -> read (external_midi_in);
@@ -183,7 +211,7 @@ bool orthogonal_core :: move (void) {
 	if (--vector_sample_counter <= 0) {vects -> move (); vector_sample_counter = vector_sample_sentinel;}
 	osc -> move ();
 //	return prolog_ctrl != 4;
-	return false;
+	return resolution_finished;
 }
 
 bool orthogonal_core :: multi_move (int samples) {
@@ -208,7 +236,7 @@ bool orthogonal_core :: multi_move (int samples) {
 	osc -> multi_move_dsp (samples);
 
 //	return prolog_ctrl != 4;
-	return false;
+	return resolution_finished;
 }
 
 void orthogonal_core :: crash (void) {

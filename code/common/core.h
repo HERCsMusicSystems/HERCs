@@ -15,6 +15,13 @@ class orthogonal_core;
 class synthesizer_core;
 
 extern char * hercs_resource;
+class HERCsServiceClass : public PrologServiceClass {
+private:
+	orthogonal_core * core;
+public:
+	virtual PrologNativeCode * getNativeCode (char * name);
+	HERCsServiceClass (orthogonal_core * core);
+};
 
 class orthogonal_core {
 private:
@@ -42,9 +49,10 @@ private:
 
 public:
 	PrologRoot * root;
+	bool resolution_finished;
 	delayed_buffered_midi_stream * external_midi_in;
 	midi_stream * external_midi_out;
-	midi_stream * conn_midi_in;
+	buffered_midi_stream conn_midi_source;
 	midi_stream * conn_midi_out;
 	midi_stream * conn_midi_feed;
 
@@ -80,6 +88,7 @@ public:
 	// multi threading equivalent
 	void input_left (float left, int sample);
 	void input_right (float right, int sample);
+	orthogonal_core (void);
 };
 
 
