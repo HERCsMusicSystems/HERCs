@@ -15,7 +15,6 @@
 config * cfg = NULL;
 
 orthogonal_core core;
-buffered_midi_stream console_feedback (2048);
 
 static bool oscilloscope_visible = false;
 
@@ -272,8 +271,8 @@ public:
 
 void build_synthesizer (void) {
 	core . build_synthesizer (cfg, & resource_loader, & service_class_loader);
-	core . conn_midi_out -> connect_thru (& console_feedback);
 	// to do
+//	core . conn_midi_source . connect_thru (& console_feedback);
 //	core . insertMidiSource (& command_line);
 //	core . root -> setMidiPortServiceClass (& midi_service);
 //	command_console = new MidiCommandPrompt (core . conn_midi_in, cfg -> prolog_console_horizontal);
@@ -1320,8 +1319,7 @@ public:
 #endif
 	}
 	void Idle (wxIdleEvent & event) {
-		panel . read (& console_feedback);
-		panel . read (core . conn_midi_feed);
+		panel . read (& core . conn_midi_feed);
 		event . RequestMore ();
 	}
 //	void OnEraseBackground (wxEraseEvent & event) {wxPaintDC dc (this); dc . DrawBitmap (front_panel, 0, 0, true);}
