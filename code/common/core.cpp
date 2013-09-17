@@ -20,8 +20,10 @@ import studio \
 import conductor \
 import midi \
 \
-program hercs #machine := \"hercs\" [insertSource] \
+program hercs #machine := \"hercs\" [insertSource connSource connDestination] \
 #machine insertSource := \"insertSource\" \
+#machine connSource := \"connSource\" \
+#machine connDestination := \"connDestination\" \
 end .\
 ";
 
@@ -43,8 +45,46 @@ public:
 	InsertSourceClass (orthogonal_core * core) {this -> core = core;}
 };
 
+class ConnSource : public PrologMidiNativeCode {
+private:
+	orthogonal_core * core;
+public:
+	virtual bool connectThru (PrologMidiNativeCode * destination) {core -> conn_midi_source . connect_thru (destination != 0 ? destination -> getLine () : 0); return true;}
+	virtual midi_stream * getLine (void) {return & core -> conn_midi_source;}
+	bool code (PrologElement * parameters, PrologRoot * root) {
+		if (parameters -> isEarth ()) return connectThru (0);
+		if (! parameters -> isPair ()) return false;
+		parameters = parameters -> getLeft ();
+		if (! parameters -> isAtom ()) return false;
+		PrologNativeCode * machine = parameters -> getAtom () -> getMachine ();
+		if (machine != 0 && machine -> codeName () == PrologMidiNativeCode :: name ()) return connectThru ((PrologMidiNativeCode *) machine);
+		return false;
+	}
+	ConnSource (orthogonal_core * core) {this -> core = core;}
+};
+
+class ConnDestination : public PrologMidiNativeCode {
+private:
+	orthogonal_core * core;
+public:
+	virtual bool connectThru (PrologMidiNativeCode * destination) {core -> conn_midi_feed . connect_thru (destination != 0 ? destination -> getLine () : 0); return true;}
+	virtual midi_stream * getLine (void) {return & core -> conn_midi_feed;}
+	bool code (PrologElement * parameters, PrologRoot * root) {
+		if (parameters -> isEarth ()) return connectThru (0);
+		if (! parameters -> isPair ()) return false;
+		parameters = parameters -> getLeft ();
+		if (! parameters -> isAtom ()) return false;
+		PrologNativeCode * machine = parameters -> getAtom () -> getMachine ();
+		if (machine != 0 && machine -> codeName () == PrologMidiNativeCode :: name ()) return connectThru ((PrologMidiNativeCode *) machine);
+		return false;
+	}
+	ConnDestination (orthogonal_core * core) {this -> core = core;}
+};
+
 PrologNativeCode * HERCsServiceClass :: getNativeCode (char * name) {
 	if (strcmp (name, "insertSource") == 0) return new InsertSourceClass (core);
+	if (strcmp (name, "connSource") == 0) return new ConnSource (core);
+	if (strcmp (name, "connDestination") == 0) return new ConnDestination (core);
 	return 0;
 }
 
@@ -90,7 +130,10 @@ void orthogonal_core :: removeMidiDestination (midi_stream * destination) {
 	}
 }
 
-orthogonal_core :: orthogonal_core (void) : conn_midi_source (MIDI_STREAM_SIZE) {}
+orthogonal_core :: orthogonal_core (void)
+	: conn_midi_source (MIDI_STREAM_SIZE)
+	, conn_midi_feed (MIDI_STREAM_SIZE)
+{}
 
 void orthogonal_core :: build_synthesizer (config * cfg, PrologResourceLoader * resource_loader, PrologServiceClassLoader * service_loader) {
 	horizontal = cfg -> horizontal;
@@ -108,14 +151,6 @@ void orthogonal_core :: build_synthesizer (config * cfg, PrologResourceLoader * 
 	if (cfg -> arranger_horizontal > 0) arp_sample_sentinel = cfg -> horizontal / cfg -> arranger_horizontal;
 	if (cfg -> vector_horizontal > 0) vector_sample_sentinel = cfg -> horizontal / cfg -> vector_horizontal;
 
-	external_midi_in = new delayed_buffered_midi_stream (MIDI_STREAM_SIZE);
-	external_midi_out = new buffered_midi_stream (MIDI_STREAM_SIZE);
-	internal_midi_line = new buffered_midi_stream (MIDI_STREAM_SIZE);
-	conn_midi_out = new buffered_midi_stream (MIDI_STREAM_SIZE);
-	conn_midi_feed = new buffered_midi_stream (MIDI_STREAM_SIZE);
-	external_midi_out -> connect_thru (conn_midi_feed);
-	internal_midi_line -> connect_thru (external_midi_out);
-
 	lines = line = 0;
 
 	root = new PrologRoot ();
@@ -132,7 +167,7 @@ void orthogonal_core :: build_synthesizer (config * cfg, PrologResourceLoader * 
 //	root -> setRootDirectory (cfg -> prolog_root_directory);
 	if (strlen (cfg -> prolog_root_directory) > 0) root -> addSearchDirectory (cfg -> prolog_root_directory);
 
-	PrologMidiCommand * prolog_console = new PrologMidiCommand (internal_midi_line);
+	PrologMidiCommand * prolog_console = new PrologMidiCommand (& conn_midi_source);
 	root -> insertCommander (prolog_console);
 
 //	root -> resolutionHead (cfg -> prolog_library_load);
@@ -159,7 +194,7 @@ void orthogonal_core :: build_synthesizer (config * cfg, PrologResourceLoader * 
 	sth -> set_message (0x2e, cfg -> serial_number);
 	sth -> set_message (0x2f, cfg -> key);
 
-	sth -> connect_midi_out (conn_midi_out);
+	sth -> connect_midi_out (& conn_midi_feed);
 	sth -> configure ();
 	sth -> voice_init ();
 
@@ -172,11 +207,6 @@ void orthogonal_core :: destroy_synthesizer (void) {
 	delete arps;
 	delete vects;
 
-	delete external_midi_in;
-	delete internal_midi_line;
-	delete external_midi_out;
-	delete conn_midi_feed;
-	delete conn_midi_out;
 
 	delete dsp;
 	delete osc;
@@ -189,8 +219,7 @@ void orthogonal_core :: destroy_synthesizer (void) {
 
 void orthogonal_core :: conn_move (midi_reader * conn) {
 	sth -> read (& conn_midi_source);
-	conn -> read (conn_midi_out);
-	conn -> read (conn_midi_feed);
+	conn -> read (& conn_midi_feed);
 	if (lines) sth -> read (lines);
 }
 
@@ -206,7 +235,8 @@ bool orthogonal_core :: move (void) {
 //		}
 //		prolog_sample_counter = prolog_sample_sentinel;
 //	}
-	sth -> read (internal_midi_line);
+//	sth -> read (internal_midi_line);
+	if (lines) sth -> read (lines);
 	if (--arp_sample_counter <= 0) {arps -> move (); arp_sample_counter = arp_sample_sentinel;}
 	if (--vector_sample_counter <= 0) {vects -> move (); vector_sample_counter = vector_sample_sentinel;}
 	osc -> move ();
@@ -225,7 +255,8 @@ bool orthogonal_core :: multi_move (int samples) {
 //		}
 //		prolog_sample_counter += prolog_sample_sentinel;
 //	}
-	sth -> read (internal_midi_line);
+//	sth -> read (internal_midi_line);
+	if (lines) sth -> read (lines);
 	arp_sample_counter -= samples;
 	while (arp_sample_counter <= 0) {arps -> move (); arp_sample_counter += arp_sample_sentinel;}
 	vector_sample_counter -= samples;

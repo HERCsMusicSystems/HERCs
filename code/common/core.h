@@ -30,8 +30,6 @@ private:
 	unsigned int protection_counter;
 	encoder e;
 
-	midi_stream * internal_midi_line;
-
 //	PrologMidiCommand * prolog_console;
 //	prolog_midi_reader * prolog_reader;
 //	int prolog_ctrl;
@@ -50,11 +48,8 @@ private:
 public:
 	PrologRoot * root;
 	bool resolution_finished;
-	delayed_buffered_midi_stream * external_midi_in;
-	midi_stream * external_midi_out;
 	buffered_midi_stream conn_midi_source;
-	midi_stream * conn_midi_out;
-	midi_stream * conn_midi_feed;
+	buffered_midi_stream conn_midi_feed;
 
 	midi_stream * lines;
 	midi_stream * line;
