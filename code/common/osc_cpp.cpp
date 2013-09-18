@@ -640,7 +640,7 @@ void oscillator :: abstract_freq_to_real (int ind, int abstract_freq) {
 	int sub = ratio [ind];
 	if (sub > 0) {
 		float freq_calculator = (float) freq_logs [abstract_freq] * (float) sub;
-		float freq_sentinel = freq_logs [16383];
+		float freq_sentinel = (float) freq_logs [16383];
 		freq [ind] = freq_calculator > freq_sentinel ? (unsigned int) freq_sentinel : (unsigned int) freq_calculator;
 	} else freq [ind] = freq_logs [abstract_freq] >> - sub;
 }

@@ -198,8 +198,7 @@ void orthogonal_core :: build_synthesizer (config * cfg, PrologResourceLoader * 
 	sth -> configure ();
 	sth -> voice_init ();
 
-	sth -> active_sensing_delay = cfg -> horizontal;
-	if (cfg -> processors > 1) sth -> active_sensing_delay /= 40;
+	sth -> active_sensing_delay = cfg -> horizontal >> 1;
 }
 
 void orthogonal_core :: destroy_synthesizer (void) {
@@ -256,7 +255,7 @@ bool orthogonal_core :: multi_move (int samples) {
 //		prolog_sample_counter += prolog_sample_sentinel;
 //	}
 //	sth -> read (internal_midi_line);
-	if (lines) sth -> read (lines);
+	if (lines) sth -> read (lines, samples);
 	arp_sample_counter -= samples;
 	while (arp_sample_counter <= 0) {arps -> move (); arp_sample_counter += arp_sample_sentinel;}
 	vector_sample_counter -= samples;
