@@ -269,8 +269,8 @@ public:
 } command_console;
 
 
-void build_synthesizer (void) {
-	core . build_synthesizer (cfg, & resource_loader, & service_class_loader);
+void build_synthesiser (void) {
+	core . build_synthesiser (cfg, & resource_loader, & service_class_loader);
 	// to do
 //	core . conn_midi_source . connect_thru (& console_feedback);
 //	core . insertMidiSource (& command_line);
@@ -282,10 +282,10 @@ void build_synthesizer (void) {
 	pthread_detach (prolog_thread);
 }
 
-void destroy_synthesizer (void) {
+void destroy_synthesiser (void) {
 	command_console . close ();
 //	if (command_console != NULL) {command_console . close (); delete command_console;}
-	core . destroy_synthesizer ();
+	core . destroy_synthesiser ();
 	printf ("Synthesiser deallocated.\n");
 }
 
@@ -1451,7 +1451,7 @@ public:
 		previous_key_down = -1;
 #ifdef LINUX_OPERATING_SYSTEM
 		cfg = new config ();
-		build_synthesizer ();
+		build_synthesiser ();
 		// to do
 //		midi_service . reader_line = core . external_midi_in;
 #endif
@@ -1480,7 +1480,7 @@ public:
 		panel . send_panel_controllers_request ();
 		button_callback (pb0, 1.0);
 #ifdef LINUX_OPERATING_SYSTEM
-		if (! open_audio (cfg)) {destroy_synthesizer (); delete cfg; wxMessageBox (_T ("Jack server is not running."), _T ("INFO"), wxOK, NULL); return false;}
+		if (! open_audio (cfg)) {destroy_synthesiser (); delete cfg; wxMessageBox (_T ("Jack server is not running."), _T ("INFO"), wxOK, NULL); return false;}
 		midi_setup (cfg);
 #endif
 		return true;
@@ -1490,7 +1490,7 @@ public:
 			panel . send_control_store_request ();
 			core . conn_move ();
 		}
-		destroy_synthesizer ();
+		destroy_synthesiser ();
 		delete cfg;
 		printf ("Application exit.\n");
 		return wxApp :: OnExit ();
@@ -1691,7 +1691,7 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	CoInitialize (NULL);
 
 	cfg = new config ();
-	build_synthesizer ();
+	build_synthesiser ();
 	midi_service . set_external_midi_in_line (core . external_midi_in);
 
 	build_main_console ();
