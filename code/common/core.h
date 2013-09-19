@@ -10,6 +10,7 @@
 #include "transport.h"
 #include "osc_cpp.h"
 #include "encoder.h"
+#include "prolog_midi_command.h"
 
 class orthogonal_core;
 class synthesizer_core;
@@ -47,6 +48,7 @@ private:
 
 public:
 	PrologRoot * root;
+	PrologMidiCommand * prolog_console;
 	bool resolution_finished;
 	buffered_midi_stream conn_midi_source;
 	buffered_midi_stream conn_midi_feed;

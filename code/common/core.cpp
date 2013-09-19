@@ -167,7 +167,7 @@ void orthogonal_core :: build_synthesizer (config * cfg, PrologResourceLoader * 
 //	root -> setRootDirectory (cfg -> prolog_root_directory);
 	if (strlen (cfg -> prolog_root_directory) > 0) root -> addSearchDirectory (cfg -> prolog_root_directory);
 
-	PrologMidiCommand * prolog_console = new PrologMidiCommand (& conn_midi_feed);
+	prolog_console = new PrologMidiCommand (& conn_midi_feed);
 	root -> insertCommander (prolog_console);
 
 //	root -> resolutionHead (cfg -> prolog_library_load);
@@ -213,6 +213,7 @@ void orthogonal_core :: destroy_synthesizer (void) {
 //	if (prolog_ctrl != 4) root -> removeMainQuery ();
 //	root -> removeThreads ();
 	delete root;
+	delete prolog_console;
 //	delete prolog_reader;
 }
 
