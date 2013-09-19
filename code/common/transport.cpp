@@ -436,7 +436,7 @@ void arpeggiator_pool_cpp :: move (void) {
 	for (int ind = 0; ind < multitimbral; ind++) arps [ind] -> move ();
 }
 
-arpeggiator_pool_cpp :: arpeggiator_pool_cpp (config * cfg, synthesizer * sth) {
+arpeggiator_pool_cpp :: arpeggiator_pool_cpp (config * cfg, synthesiser * sth) {
 	this -> sth = sth;
 	multitimbral = cfg -> multitimbral;
 	arps = new arpeggiator_cpp_pointer [multitimbral];
@@ -476,7 +476,7 @@ void vector_pool_cpp :: move (void) {
 	for (int ind = 0; ind < multitimbral; ind++) vects [ind] -> move ();
 }
 
-vector_pool_cpp :: vector_pool_cpp (config * cfg, synthesizer * sth) {
+vector_pool_cpp :: vector_pool_cpp (config * cfg, synthesiser * sth) {
 	this -> sth = sth;
 	multitimbral = cfg -> multitimbral;
 	vects = new vector_cpp_pointer [multitimbral];

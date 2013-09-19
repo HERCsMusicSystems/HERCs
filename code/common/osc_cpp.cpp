@@ -160,11 +160,11 @@ default_algo_cpp default_algo;
 algo_pointer oscillator_pool_cpp :: get_default_algo (void) {return & default_algo;}
 dsp_algo_pointer oscillator_pool_cpp :: get_default_dsp_algo (void) {return dsp -> get_default_dsp_algo ();}
 preset_algo_bank * oscillator_pool_cpp :: create_preset_algo_bank (void) {return new preset_algo_bank_cpp ();}
-algo_bank * oscillator_pool_cpp :: create_rom_player_bank (char * text, synthesizer * sth) {return new rom_player_bank (text, sth, center_freq, horizontal, vertical, head_room);}
-algo_bank * oscillator_pool_cpp :: create_wavetable_bank (char * text, synthesizer * sth) {return new wavetable_bank_cpp (text, sth, vertical);}
+algo_bank * oscillator_pool_cpp :: create_rom_player_bank (char * text, synthesiser * sth) {return new rom_player_bank (text, sth, center_freq, horizontal, vertical, head_room);}
+algo_bank * oscillator_pool_cpp :: create_wavetable_bank (char * text, synthesiser * sth) {return new wavetable_bank_cpp (text, sth, vertical);}
 preset_dsp_algo_bank * oscillator_pool_cpp :: create_preset_dsp_algo_bank (void) {return new preset_dsp_algo_bank_cpp ();}
-pattern_bank * oscillator_pool_cpp :: create_scripted_pattern_bank (char * text, synthesizer * sth) {return new scripted_pattern_bank (text, sth, style_program_size);}
-bank * oscillator_pool_cpp :: create_style_bank (char * text, synthesizer * sth) {return new style_bank (text, sth, style_program_size);}
+pattern_bank * oscillator_pool_cpp :: create_scripted_pattern_bank (char * text, synthesiser * sth) {return new scripted_pattern_bank (text, sth, style_program_size);}
+bank * oscillator_pool_cpp :: create_style_bank (char * text, synthesiser * sth) {return new style_bank (text, sth, style_program_size);}
 
 
 void oscillator_pool_cpp :: initialize_math_support (void) {
@@ -270,7 +270,7 @@ oscillator_pool_cpp_runner :: ~ oscillator_pool_cpp_runner (void) {
 
 //static oscillator_pool_cpp_runner * second_processor = NULL;
 
-void oscillator_pool_cpp :: constructor (synthesizer * sth, int horizontal, int center_freq, int vertical, int head_room, int feed_space, dsp_line_pool * dsp, int style_program_size) {
+void oscillator_pool_cpp :: constructor (synthesiser * sth, int horizontal, int center_freq, int vertical, int head_room, int feed_space, dsp_line_pool * dsp, int style_program_size) {
 	this -> style_program_size = style_program_size;
 	this -> dsp = dsp;
 	this -> horizontal = horizontal;      // this figurative code
@@ -438,7 +438,7 @@ void oscillator_pool_cpp :: constructor (synthesizer * sth, int horizontal, int 
 	}
 }
 
-oscillator_pool_cpp :: oscillator_pool_cpp (config * cfg, synthesizer * sth, dsp_line_pool * dsp) :
+oscillator_pool_cpp :: oscillator_pool_cpp (config * cfg, synthesiser * sth, dsp_line_pool * dsp) :
 	oscillator_pool (cfg, sth) {
 	core_number = cfg -> processors;
 	int horizontal = cfg -> horizontal;
@@ -2188,7 +2188,7 @@ void oscillator_pool_cpp :: notify_dsp_program_loaded (parameter_block * pb) {
 	dsp -> notify_program_loaded (pb);
 }
 
-void oscillator_pool_cpp :: notify_global_dsp_program_loaded (synthesizer * sth) {
+void oscillator_pool_cpp :: notify_global_dsp_program_loaded (synthesiser * sth) {
 	dsp -> notify_global_dsp_program_loaded (sth);
 }
 

@@ -135,7 +135,7 @@ orthogonal_core :: orthogonal_core (void)
 	, conn_midi_feed (MIDI_STREAM_SIZE)
 {}
 
-void orthogonal_core :: build_synthesizer (config * cfg, PrologResourceLoader * resource_loader, PrologServiceClassLoader * service_loader) {
+void orthogonal_core :: build_synthesiser (config * cfg, PrologResourceLoader * resource_loader, PrologServiceClassLoader * service_loader) {
 	horizontal = cfg -> horizontal;
 	set_security_crash_after (72);
 //	prolog_ctrl = 4;
@@ -175,7 +175,7 @@ void orthogonal_core :: build_synthesizer (config * cfg, PrologResourceLoader * 
 //	prolog_reader = new prolog_midi_reader (root);
 //	pool = root -> getResolutionPool ();
 
-	sth = new synthesizer (cfg);
+	sth = new synthesiser (cfg);
 	arps = new arpeggiator_pool_cpp (cfg, sth);
 	vects = new vector_pool_cpp (cfg, sth);
 	dsp = new float_stereo_dsp_line_pool (cfg, sth);
@@ -201,7 +201,7 @@ void orthogonal_core :: build_synthesizer (config * cfg, PrologResourceLoader * 
 	sth -> active_sensing_delay = cfg -> horizontal >> 1;
 }
 
-void orthogonal_core :: destroy_synthesizer (void) {
+void orthogonal_core :: destroy_synthesiser (void) {
 	delete sth;
 	delete arps;
 	delete vects;
@@ -299,20 +299,20 @@ void orthogonal_core :: input_right (float right, int sample) {osc -> right_ins 
 
 
 //////////////////////
-// SYNTHESIZER CORE //
+// SYNTHESISER CORE //
 //////////////////////
 
-void synthesizer_core :: set_security_crash_after (int ind) {
+void synthesiser_core :: set_security_crash_after (int ind) {
 	security_crash_after = ind;
 	protection_counter = horizontal * security_crash_after;
 }
 
-int synthesizer_core :: get_security_crash_after (void) {return security_crash_after;}
+int synthesiser_core :: get_security_crash_after (void) {return security_crash_after;}
 
-void synthesizer_core :: set_volume_id (unsigned long int volume_id) {this -> volume_id = volume_id;}
-void synthesizer_core :: set_serial_shift (int shift) {this -> shift = shift;}
+void synthesiser_core :: set_volume_id (unsigned long int volume_id) {this -> volume_id = volume_id;}
+void synthesiser_core :: set_serial_shift (int shift) {this -> shift = shift;}
 
-void synthesizer_core :: build_synthesizer (config * cfg) {
+void synthesiser_core :: build_synthesiser (config * cfg) {
 
 	horizontal = cfg -> horizontal;
 	set_security_crash_after (72);
@@ -331,7 +331,7 @@ void synthesizer_core :: build_synthesizer (config * cfg) {
 	conn_midi_feed = new buffered_midi_stream (MIDI_STREAM_SIZE);
 	external_midi_in -> connect_thru (conn_midi_feed);
 
-	sth = new synthesizer (cfg);
+	sth = new synthesiser (cfg);
 	arps = new arpeggiator_pool_cpp (cfg, sth);
 	vects = new vector_pool_cpp (cfg, sth);
 	dsp = new float_stereo_dsp_line_pool (cfg, sth);
@@ -354,7 +354,7 @@ void synthesizer_core :: build_synthesizer (config * cfg) {
 	sth -> voice_init ();
 }
 
-void synthesizer_core :: destroy_synthesizer (void) {
+void synthesiser_core :: destroy_synthesiser (void) {
 	delete sth;
 	delete arps;
 	delete vects;
@@ -369,15 +369,15 @@ void synthesizer_core :: destroy_synthesizer (void) {
 	delete osc;
 }
 
-void synthesizer_core :: conn_move (midi_reader * conn) {
+void synthesiser_core :: conn_move (midi_reader * conn) {
 	sth -> read (conn_midi_in);
 	conn -> read (conn_midi_out);
 	conn -> read (conn_midi_feed);
 }
 
-void synthesizer_core :: conn_move (void) {sth -> read (conn_midi_in);}
+void synthesiser_core :: conn_move (void) {sth -> read (conn_midi_in);}
 
-bool synthesizer_core :: move (void) {
+bool synthesiser_core :: move (void) {
 	sth -> read (external_midi_in);
 	if (--arp_sample_counter <= 0) {arps -> move (); arp_sample_counter = arp_sample_sentinel;}
 	if (--vector_sample_counter <= 0) {vects -> move (); vector_sample_counter = vector_sample_sentinel;}
@@ -385,12 +385,12 @@ bool synthesizer_core :: move (void) {
 	return false;
 }
 
-void synthesizer_core :: crash (void) {
+void synthesiser_core :: crash (void) {
 	sth -> destroy_banks ();
 	sth -> voice_init ();
 }
 
-void synthesizer_core :: crash_check (unsigned int samples) {
+void synthesiser_core :: crash_check (unsigned int samples) {
 	if (protection_counter < samples) {
 		if (! e . check_serial (serial_number, volume_id, key, shift)) {
 			crash ();
@@ -399,10 +399,10 @@ void synthesizer_core :: crash_check (unsigned int samples) {
 	protection_counter -= samples;
 }
 
-//void synthesizer_core :: read (void) {sth -> read (internal_midi_line);}
-float * synthesizer_core :: left_out_pointer (void) {return & dsp -> left_out;}
-float * synthesizer_core :: right_out_pointer (void) {return & dsp -> right_out;}
-float synthesizer_core :: left_out (void) {return dsp -> left_out;}
-float synthesizer_core :: right_out (void) {return dsp -> right_out;}
-void synthesizer_core :: input_left (float left) {osc -> left_in = left;}
-void synthesizer_core :: input_right (float right) {osc -> right_in = right;}
+//void synthesiser_core :: read (void) {sth -> read (internal_midi_line);}
+float * synthesiser_core :: left_out_pointer (void) {return & dsp -> left_out;}
+float * synthesiser_core :: right_out_pointer (void) {return & dsp -> right_out;}
+float synthesiser_core :: left_out (void) {return dsp -> left_out;}
+float synthesiser_core :: right_out (void) {return dsp -> right_out;}
+void synthesiser_core :: input_left (float left) {osc -> left_in = left;}
+void synthesiser_core :: input_right (float right) {osc -> right_in = right;}

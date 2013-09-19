@@ -122,7 +122,7 @@ void dsp_line :: ground (void) {for (int ind = 0; ind < length; ind++) line [ind
 #include <semaphore.h>
 #endif
 
-float_stereo_dsp_line_pool :: float_stereo_dsp_line_pool (config * cfg, synthesizer * sth) {
+float_stereo_dsp_line_pool :: float_stereo_dsp_line_pool (config * cfg, synthesiser * sth) {
 #ifdef MULTITHREADED
 #ifdef LINUX_OPERATING_SYSTEM
 	sem_t * s = sem_open ("HRCs", O_CREAT, 0000777, 1);
@@ -166,7 +166,7 @@ float_stereo_dsp_line_pool :: ~ float_stereo_dsp_line_pool (void) {
 #endif
 }
 
-void float_stereo_dsp_line_pool :: configure (synthesizer * sth, int local_dsp, int global_dsp, bool global_dsp_multi, int multitimbral, int horizontal, int vertical, int head_room, int dco_blocking_freq, int data_size, int line_size) {
+void float_stereo_dsp_line_pool :: configure (synthesiser * sth, int local_dsp, int global_dsp, bool global_dsp_multi, int multitimbral, int horizontal, int vertical, int head_room, int dco_blocking_freq, int data_size, int line_size) {
 	int ind, sub, id;
 	this -> head_room = (float) head_room;
 	this -> multitimbral = multitimbral;
@@ -385,7 +385,7 @@ void float_stereo_dsp_line_pool :: notify_algo_change (parameter_block * pb, int
 	algo -> all_parameters_changed (dsp);
 	dsp -> ground ();
 }
-void float_stereo_dsp_line_pool :: notify_global_algo_change (synthesizer * sth, int ind) {
+void float_stereo_dsp_line_pool :: notify_global_algo_change (synthesiser * sth, int ind) {
 	int sub = total_local_dsp + ind;
 	dsp_algo_cpp_pointer algo = (dsp_algo_cpp_pointer) (sth -> dsp [ind] -> algo_head);
 	algos [sub] = algo;
@@ -431,7 +431,7 @@ void float_stereo_dsp_line_pool :: notify_dsp_change (parameter_block * pb, int 
 	lines [ind] . parameters [nnnn] = pb -> dsp [xxx] -> parameters [nnnn];
 	algos [ind] -> parameter_change (& lines [ind], nnnn);
 }
-void float_stereo_dsp_line_pool :: notify_global_dsp_change (synthesizer * sth, int ind, int parameter) {
+void float_stereo_dsp_line_pool :: notify_global_dsp_change (synthesiser * sth, int ind, int parameter) {
 	int location = total_local_dsp + ind;
 	dsp_line * dsp = & lines [location];
 	dsp -> parameters [parameter] = sth -> dsp [ind] -> parameters [parameter];
@@ -605,7 +605,7 @@ void float_stereo_dsp_line_pool :: notify_program_loaded (parameter_block * pb) 
 //	notify_dry_wet_change_all (pb);
 }
 
-void float_stereo_dsp_line_pool :: notify_global_dsp_program_loaded (synthesizer * sth) {
+void float_stereo_dsp_line_pool :: notify_global_dsp_program_loaded (synthesiser * sth) {
 	int ind, sub;
 	for (ind = 0; ind < global_dsp; ind++) {
 		notify_global_algo_change (sth, ind);

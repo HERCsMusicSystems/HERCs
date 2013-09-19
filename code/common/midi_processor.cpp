@@ -6,7 +6,7 @@
 #include "osc.h"
 #include "transport.h"
 
-void synthesizer :: midi_keyoff (int channel, int key) {
+void synthesiser :: midi_keyoff (int channel, int key) {
 	int midi_channel, channel_extension;
 	parameter_block * pb;
 	system_parameter_block * sb;
@@ -20,7 +20,7 @@ void synthesizer :: midi_keyoff (int channel, int key) {
 	}
 }
 
-void synthesizer :: midi_keyon (int channel, int key, int velocity) {
+void synthesiser :: midi_keyon (int channel, int key, int velocity) {
 	int midi_channel, channel_extension;
 	parameter_block * pb;
 	system_parameter_block * sb;
@@ -262,9 +262,9 @@ void parameter_block :: control_vector (int x, int y) {
 	notify_dry_wet_change ();
 }
 
-void synthesizer :: midi_active_sensed (void) {for (int part = 0; part < multitimbral; part++) data_blocks [part] -> ground ();}
+void synthesiser :: midi_active_sensed (void) {for (int part = 0; part < multitimbral; part++) data_blocks [part] -> ground ();}
 
-void synthesizer :: midi_control (int channel, int controller, int value) {
+void synthesiser :: midi_control (int channel, int controller, int value) {
 	parameter_block * pb;
 	system_parameter_block * sb;
 	controllers_parameter_block * cb;
@@ -328,7 +328,7 @@ void synthesizer :: midi_control (int channel, int controller, int value) {
 	}
 }
 
-void synthesizer :: midi_programchange (int channel, int program) {
+void synthesiser :: midi_programchange (int channel, int program) {
 	parameter_block * pb;
 	system_parameter_block * sb;
 	int midi_channel, channel_extension;
@@ -344,7 +344,7 @@ void synthesizer :: midi_programchange (int channel, int program) {
 	}
 }
 
-void synthesizer :: midi_parameter_request (int channel) {
+void synthesiser :: midi_parameter_request (int channel) {
 	parameter_block * pb;
 	int part_channel;
 	int part_channel_extension;
@@ -360,7 +360,7 @@ void synthesizer :: midi_parameter_request (int channel) {
 }
 
 extern void emit (midi_stream * line, char * text);
-void synthesizer :: midi_system_exclusive (midi_stream * line) {
+void synthesiser :: midi_system_exclusive (midi_stream * line) {
 	line -> mark ();
 	int channel;
 	int part_channel;
@@ -653,7 +653,7 @@ void synthesizer :: midi_system_exclusive (midi_stream * line) {
 	line -> get_f7 ();
 }
 
-void synthesizer :: midi_timing_clock (void) {
+void synthesiser :: midi_timing_clock (void) {
 	if (arps == NULL) return;
 	parameter_block * pb;
 	for (int ind = 0; ind < multitimbral; ind++) {
@@ -663,19 +663,19 @@ void synthesizer :: midi_timing_clock (void) {
 	}
 }
 
-void synthesizer :: midi_start (void) {
+void synthesiser :: midi_start (void) {
 	if (root == NULL) return;
 	// to do
 //	root -> startTransport ();
 }
 
-void synthesizer :: midi_continue (void) {
+void synthesiser :: midi_continue (void) {
 	if (root == NULL) return;
 	// to do
 //	root -> pauseTransport ();
 }
 
-void synthesizer :: midi_stop (void) {
+void synthesiser :: midi_stop (void) {
 	if (root == NULL) return;
 	// to do
 //	root -> stopTransport ();

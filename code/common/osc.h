@@ -46,7 +46,7 @@ public:
 	virtual void notify_dry_wet_change_all (parameter_block * pb);
 	virtual void notify_dry_wet_change (parameter_block * pb, int ind);
 	virtual void notify_program_loaded (parameter_block * pb);
-	virtual void notify_global_dsp_program_loaded (synthesizer * sth);
+	virtual void notify_global_dsp_program_loaded (synthesiser * sth);
 	virtual void notify_multi_global_dsp_program_loaded (parameter_block * pb);
 	virtual void notify_dsp_ground (int factory_id);
 	virtual dsp_algo_pointer get_default_dsp_algo (void);
@@ -82,11 +82,11 @@ public:
 	virtual dsp_algo_pointer get_default_dsp_algo (void);
 	virtual preset_algo_bank * create_preset_algo_bank (void);
 	virtual preset_dsp_algo_bank * create_preset_dsp_algo_bank (void);
-	virtual algo_bank * create_rom_player_bank (char * text, synthesizer * sth);
-	virtual algo_bank * create_wavetable_bank (char * text, synthesizer * sth);
-	virtual bank * create_plugin_algo_bank (char * plugin, char * parameter, synthesizer * sth);
-	virtual pattern_bank * create_scripted_pattern_bank (char * text, synthesizer * sth);
-	virtual bank * create_style_bank (char * text, synthesizer * sth);
+	virtual algo_bank * create_rom_player_bank (char * text, synthesiser * sth);
+	virtual algo_bank * create_wavetable_bank (char * text, synthesiser * sth);
+	virtual bank * create_plugin_algo_bank (char * plugin, char * parameter, synthesiser * sth);
+	virtual pattern_bank * create_scripted_pattern_bank (char * text, synthesiser * sth);
+	virtual bank * create_style_bank (char * text, synthesiser * sth);
 public:
 	virtual void notify_retrigger_change (parameter_block * pb);
 	virtual void notify_ratio_change (parameter_block * pb);
@@ -124,7 +124,7 @@ public:
 	virtual void notify_porta_update (parameter_block * pb);
 	virtual void notify_tune (int tune);
 	virtual void notify_tune (parameter_block * pb);
-	virtual void notify_reserved_notes_changed (synthesizer * sth);
+	virtual void notify_reserved_notes_changed (synthesiser * sth);
 	virtual void notify_algo_parameter_changed (parameter_block * pb, int ind);
 	virtual void notify_oscillator_assign (parameter_block * pb, int oscillator);
 	virtual void notify_volume_change (parameter_block * pb);
@@ -136,7 +136,7 @@ public:
 	virtual void notify_dsp_ground (parameter_block * pb);
 	virtual void notify_program_loaded (parameter_block * pb);
 	virtual void notify_dsp_program_loaded (parameter_block * pb);
-	virtual void notify_global_dsp_program_loaded (synthesizer * sth);
+	virtual void notify_global_dsp_program_loaded (synthesiser * sth);
 	virtual void notify_multi_global_dsp_program_loaded (parameter_block * sth);
 	virtual void lock_retrigger (int oscillator);
 protected:
@@ -157,7 +157,7 @@ public:
 	virtual void multi_move_dsp (int samples);
 	// end threaded
 public:
-	oscillator_pool (config * cfg, synthesizer * sth);
+	oscillator_pool (config * cfg, synthesiser * sth);
 	~ oscillator_pool (void);
 };
 

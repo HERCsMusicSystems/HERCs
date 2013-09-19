@@ -449,7 +449,7 @@ void wavetable_bank_cpp :: read_program (SetupFileReader * fr, int program, wave
 	}
 }
 
-wavetable_bank_cpp :: wavetable_bank_cpp (STRING text, synthesizer * sth, int vertical) {
+wavetable_bank_cpp :: wavetable_bank_cpp (STRING text, synthesiser * sth, int vertical) {
 	this -> vertical = vertical;
 	this -> stripes = sth -> stripes;
 	this -> multitimbral = sth -> multitimbral;

@@ -298,7 +298,7 @@ void dsp_parameter_block :: voice_init (void) {
 	for (sub = 0; sub < router_number; sub++) routers [sub] -> voice_init (0);
 }
 
-dsp_parameter_block :: dsp_parameter_block (synthesizer * sth, int ind, int dsp_number) {
+dsp_parameter_block :: dsp_parameter_block (synthesiser * sth, int ind, int dsp_number) {
 	this -> sth = sth;
 	algo_head = sth -> get_default_dsp_algo ();
 	router_number = dsp_number - ind - 1;
@@ -384,7 +384,7 @@ void parameter_block :: reset_global_dsp_parameters (void) {
 	}
 }
 
-parameter_block :: parameter_block (synthesizer * sth, int stripes, int stereo, int vector_size, bool vector_auto_return, int queue, int factory_id, int local_dsp, int global_dsp) {
+parameter_block :: parameter_block (synthesiser * sth, int stripes, int stereo, int vector_size, bool vector_auto_return, int queue, int factory_id, int local_dsp, int global_dsp) {
 	this -> sth = sth;
 	this -> queue = new key_queue (queue);
 	int ind = 0;
@@ -978,7 +978,7 @@ key_queue :: key_queue (int size) {
 
 key_queue :: ~ key_queue (void) {delete [] queue;}
 
-void synthesizer :: constructor (int multitimbral, int stripes, int stereo, int vector_size, bool vector_auto_return, int queue, char * root_directory, bool volume_reset, bool global_dsp_multi, int local_dsp, int global_dsp, bool global_volume_multi, bool global_volume_present) {
+void synthesiser :: constructor (int multitimbral, int stripes, int stereo, int vector_size, bool vector_auto_return, int queue, char * root_directory, bool volume_reset, bool global_dsp_multi, int local_dsp, int global_dsp, bool global_volume_multi, bool global_volume_present) {
 	transport_seconds = 0;
 	tune = 0;
 	pool = NULL;
@@ -1018,15 +1018,15 @@ void synthesizer :: constructor (int multitimbral, int stripes, int stereo, int 
 	reset_banks ();
 }
 
-//synthesizer :: synthesizer (int multitimbral, int stripes, int stereo, int queue, char * root_directory, bool volume_reset) {
+//synthesiser :: synthesiser (int multitimbral, int stripes, int stereo, int queue, char * root_directory, bool volume_reset) {
 //	constructor (multitimbral, stripes, stereo, queue, root_directory, volume_reset);
 //}
 
-synthesizer :: synthesizer (config * cfg) {
+synthesiser :: synthesiser (config * cfg) {
 	constructor (cfg -> multitimbral, cfg -> stripes, cfg -> stereo, cfg -> vector_size, cfg -> vector_auto_return, cfg->key_stream, cfg -> root_directory, cfg -> volume_reset, cfg -> global_dsp_multi, cfg -> local_dsp, cfg -> global_dsp, cfg -> global_volume_multi, cfg -> global_volume_present);
 }
 
-synthesizer :: ~ synthesizer (void) {
+synthesiser :: ~ synthesiser (void) {
 	int ind;
 	for (ind = 0; ind < multitimbral; ind++) {
 		delete data_blocks [ind];
@@ -1040,7 +1040,7 @@ synthesizer :: ~ synthesizer (void) {
 	destroy_banks ();
 }
 
-void synthesizer :: voice_init (void) {
+void synthesiser :: voice_init (void) {
 	notify_tune ();
 	global_volume = 16383;
 //	global_volume = 16383;		moved to the constructor because of the setup file
@@ -1060,46 +1060,46 @@ void synthesizer :: voice_init (void) {
 	}
 }
 
-void synthesizer :: notify_tune (void) {
+void synthesiser :: notify_tune (void) {
 	if (pool == NULL) return;
 	pool -> notify_tune (tune);
 }
 
-void synthesizer :: notify_global_dsp_program_loaded (void) {
+void synthesiser :: notify_global_dsp_program_loaded (void) {
 	if (pool == NULL) return;
 	pool -> notify_global_dsp_program_loaded (this);
 }
 
-void synthesizer :: reset_categories (void) {category_pointer = 0;}
+void synthesiser :: reset_categories (void) {category_pointer = 0;}
 
-void synthesizer :: insert_category (char * name) {
+void synthesiser :: insert_category (char * name) {
 	if (category_pointer >= 128) return;
 	string_copy (categories [category_pointer++], name);
 }
 
-char * synthesizer :: get_category (int ind) {
+char * synthesiser :: get_category (int ind) {
 	if (category_pointer == 0) return "--: <not installed>";
 	if (ind >= category_pointer) ind = 0;
 	return categories [ind];
 }
 
-void synthesizer :: reset_messages (void) {for (int ind = 0; ind < 96; ind++) string_copy (messages [ind], "");}
+void synthesiser :: reset_messages (void) {for (int ind = 0; ind < 96; ind++) string_copy (messages [ind], "");}
 
-void synthesizer :: set_message (int ind, char * messaget) {
+void synthesiser :: set_message (int ind, char * messaget) {
 	ind -= 0x20;
 	if (ind < 0) return;
 	if (ind > 95) return;
 	string_copy (messages [ind], messaget);
 }
 
-char * synthesizer :: get_message (int ind) {
+char * synthesiser :: get_message (int ind) {
 	ind -= 0x20;
 	if (ind < 0 || ind > 95) return "";
 	return messages [ind];
 }
 
-void synthesizer :: reset_banks (void) {for (int ind = 0; ind < 128; ind++) banks [ind] = NULL;}
-void synthesizer :: destroy_banks (void) {
+void synthesiser :: reset_banks (void) {for (int ind = 0; ind < 128; ind++) banks [ind] = NULL;}
+void synthesiser :: destroy_banks (void) {
 	for (int ind = 0; ind < 128; ind++) {
 		if (banks [ind] != NULL) {
 			delete banks [ind];
@@ -1108,45 +1108,45 @@ void synthesizer :: destroy_banks (void) {
 	}
 }
 
-algo_pointer synthesizer :: get_default_algo (void) {
+algo_pointer synthesiser :: get_default_algo (void) {
 	if (pool == NULL) return get_silence_algo ();
 	return pool -> get_default_algo ();			// by default the pool will return silence
 }
 
-algo_pointer synthesizer :: get_silence_algo (void) {return & silence;}
+algo_pointer synthesiser :: get_silence_algo (void) {return & silence;}
 
-pattern_pointer synthesizer :: get_default_pattern (void) {
+pattern_pointer synthesiser :: get_default_pattern (void) {
 	if (arps == NULL) return get_silence_pattern ();
 	return arps -> get_default_pattern ();
 }
 
-pattern_pointer synthesizer :: get_silence_pattern (void) {return & silence_pattern;}
+pattern_pointer synthesiser :: get_silence_pattern (void) {return & silence_pattern;}
 
-dsp_algo_pointer synthesizer :: get_default_dsp_algo (void) {
+dsp_algo_pointer synthesiser :: get_default_dsp_algo (void) {
 	if (pool == NULL) return get_silence_dsp_algo ();
 	return pool -> get_default_dsp_algo ();
 }
 
-dsp_algo_pointer synthesizer :: get_silence_dsp_algo (void) {return & silence_dsp_algo;}
+dsp_algo_pointer synthesiser :: get_silence_dsp_algo (void) {return & silence_dsp_algo;}
 
-void synthesizer :: connect_midi_out (midi_stream * line) {midi_out = line;}
-void synthesizer :: disconnect_midi_out (void) {midi_out = NULL;}
-void synthesizer :: connect_oscillator_pool (oscillator_pool * pool) {this -> pool = pool;}
-void synthesizer :: disconnect_oscillator_pool (void) {pool = NULL;}
-void synthesizer :: connect_arpeggiator_pool (arpeggiator_pool * arps) {
+void synthesiser :: connect_midi_out (midi_stream * line) {midi_out = line;}
+void synthesiser :: disconnect_midi_out (void) {midi_out = NULL;}
+void synthesiser :: connect_oscillator_pool (oscillator_pool * pool) {this -> pool = pool;}
+void synthesiser :: disconnect_oscillator_pool (void) {pool = NULL;}
+void synthesiser :: connect_arpeggiator_pool (arpeggiator_pool * arps) {
 	for (int ind = 0; ind < multitimbral; ind++) data_blocks [ind] -> arp = arps -> get_arpeggiator (ind);
 	this -> arps = arps;
 }
-void synthesizer :: disconnect_arpeggiator_pool (void) {
+void synthesiser :: disconnect_arpeggiator_pool (void) {
 	arps = NULL;
 	for (int ind = 0; ind < multitimbral; ind++) data_blocks [ind] -> arp = NULL;
 }
 
-void synthesizer :: connect_vector_pool (vector_pool * vects) {
+void synthesiser :: connect_vector_pool (vector_pool * vects) {
 	for (int ind = 0; ind < multitimbral; ind++) data_blocks [ind] -> vect = vects -> get_vector (ind);
 	this -> vects = vects;
 }
-void synthesizer :: disconnect_vector_pool (void) {
+void synthesiser :: disconnect_vector_pool (void) {
 	vects = NULL;
 	for (int ind = 0; ind < multitimbral; ind++) data_blocks [ind] -> vect = NULL;
 }

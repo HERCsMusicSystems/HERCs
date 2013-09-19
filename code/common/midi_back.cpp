@@ -5,7 +5,7 @@
 
 #include "data.h"
 
-void synthesizer :: send_identity_reply (int extension, int channel) {
+void synthesiser :: send_identity_reply (int extension, int channel) {
 	if (midi_out == NULL) return;
 	midi_out -> insert_channel_extension (extension);
 	midi_out -> open_generic_system_exclusive ();
@@ -19,7 +19,7 @@ void synthesizer :: send_identity_reply (int extension, int channel) {
 	midi_out -> close_system_exclusive ();
 }
 
-void synthesizer :: send_scale_bulk_dump (int device_id, int program) {
+void synthesiser :: send_scale_bulk_dump (int device_id, int program) {
 	if (midi_out == NULL) return;
 	parameter_block * pb;
 	controllers_parameter_block * cb;
@@ -48,12 +48,12 @@ void synthesizer :: send_scale_bulk_dump (int device_id, int program) {
 	}
 }
 
-void synthesizer :: send_midi_channel_extension (int extension) {
+void synthesiser :: send_midi_channel_extension (int extension) {
 	if (midi_out == NULL) return;
 	midi_out -> insert_channel_extension (extension);
 }
 
-void synthesizer :: send_message (int msb, int extension, int channel, int lsb, char * text) {
+void synthesiser :: send_message (int msb, int extension, int channel, int lsb, char * text) {
 	if (midi_out == NULL) return;
 	msb &= 0x70;
 	channel &= 0x0f;
@@ -67,7 +67,7 @@ void synthesizer :: send_message (int msb, int extension, int channel, int lsb, 
 	midi_out -> close_system_exclusive ();
 }
 
-void synthesizer :: send_message (int msb, int channel, int lsb, char * text) {
+void synthesiser :: send_message (int msb, int channel, int lsb, char * text) {
 	if (midi_out == NULL) return;
 	msb &= 0x70;
 	channel &= 0x0f;
@@ -80,11 +80,11 @@ void synthesizer :: send_message (int msb, int channel, int lsb, char * text) {
 	midi_out -> close_system_exclusive ();
 }
 
-void synthesizer :: send_message (int channel, int id, char * message) {
+void synthesiser :: send_message (int channel, int id, char * message) {
 	send_message (0x10, channel, id, message);
 }
 
-void synthesizer :: send_error (int channel, int error, int msb, int lsb, char * text) {
+void synthesiser :: send_error (int channel, int error, int msb, int lsb, char * text) {
 	if (midi_out == NULL) return;
 	channel &= 0x0f;
 	channel |= 0x70;
@@ -97,7 +97,7 @@ void synthesizer :: send_error (int channel, int error, int msb, int lsb, char *
 	midi_out -> close_system_exclusive ();
 }
 
-void synthesizer :: send_error (int extension, int channel, int error, int msb, int lsb, char * text) {
+void synthesiser :: send_error (int extension, int channel, int error, int msb, int lsb, char * text) {
 	if (midi_out == NULL) return;
 	channel &= 0x0f;
 	channel |= 0x70;
@@ -111,7 +111,7 @@ void synthesizer :: send_error (int extension, int channel, int error, int msb, 
 	midi_out -> close_system_exclusive ();
 }
 
-void synthesizer :: send_transport_data (int sub_selector) {
+void synthesiser :: send_transport_data (int sub_selector) {
 	if (midi_out == NULL) return;
 	if (root == NULL) return;
 	int sub = -1;
@@ -133,7 +133,7 @@ void synthesizer :: send_transport_data (int sub_selector) {
 	midi_out -> close_system_exclusive ();
 }
 
-void synthesizer :: process_transport_request (int sub_selector, midi_stream * line) {
+void synthesiser :: process_transport_request (int sub_selector, midi_stream * line) {
 	if (root == NULL) return;
 	int top;
 	// to do
@@ -146,7 +146,7 @@ void synthesizer :: process_transport_request (int sub_selector, midi_stream * l
 //	}
 }
 
-void synthesizer :: process_transport_data (int sub_selector, midi_stream * line) {
+void synthesiser :: process_transport_data (int sub_selector, midi_stream * line) {
 	if (root == NULL) return;
 	switch (sub_selector) {
 	case 0x8:

@@ -26,9 +26,9 @@
 #define DLL_CLOSE(dll) FreeLibrary (dll)
 #endif
 
-typedef bank * (* creator) (char * parameter, synthesizer * sth, oscillator_pool_cpp * pool);
+typedef bank * (* creator) (char * parameter, synthesiser * sth, oscillator_pool_cpp * pool);
 
-bank * oscillator_pool_cpp :: create_plugin_algo_bank (char * plugin, char * parameter, synthesizer * sth) {
+bank * oscillator_pool_cpp :: create_plugin_algo_bank (char * plugin, char * parameter, synthesiser * sth) {
 	char command [256];
 	sprintf (command, "%s%s", sth -> root_directory, plugin);
 	THREAD dll = DLL_OPEN (command);

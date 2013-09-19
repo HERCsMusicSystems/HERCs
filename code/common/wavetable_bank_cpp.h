@@ -80,7 +80,7 @@ public:
 	virtual char * toString (void);
 	virtual char * toString (int lsb);
 	wave_cell * import_wave (char * name);
-	wavetable_bank_cpp (char * text, synthesizer * sth, int vertical);
+	wavetable_bank_cpp (char * text, synthesiser * sth, int vertical);
 	~ wavetable_bank_cpp (void);
 };
 

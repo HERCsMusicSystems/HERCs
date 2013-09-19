@@ -68,7 +68,7 @@ bool copy_eight (SetupFileReader * fr, midi_stream * line, int id) {
 	return true;
 }
 
-void synthesizer :: transfer_program (SetupFileReader * fr, midi_stream * line) {
+void synthesiser :: transfer_program (SetupFileReader * fr, midi_stream * line) {
 	bool algo_control = false;
 	line -> insert (PROGRAM);
 	bool skip;
@@ -457,7 +457,7 @@ void synthesizer :: transfer_program (SetupFileReader * fr, midi_stream * line) 
 	line -> insert (EARTH);
 }
 
-void synthesizer :: transfer_setup_file (SetupFileReader * fr, midi_stream * line) {
+void synthesiser :: transfer_setup_file (SetupFileReader * fr, midi_stream * line) {
 	int ind;
 	line -> insert (SETUP);
 	while (fr -> get_id ()) {
@@ -605,7 +605,7 @@ void synthesizer :: transfer_setup_file (SetupFileReader * fr, midi_stream * lin
 	line -> insert (EARTH);
 }
 
-void synthesizer :: transfer_program_map (SetupFileReader * fr, midi_stream * line) {
+void synthesiser :: transfer_program_map (SetupFileReader * fr, midi_stream * line) {
 	line -> insert (MSB);
 	while (fr -> get_id ()) {
 		if (fr -> id ("name")) {
@@ -658,7 +658,7 @@ void synthesizer :: transfer_program_map (SetupFileReader * fr, midi_stream * li
 	line -> insert (EARTH);
 }
 
-void synthesizer :: transfer_key_file (SetupFileReader * fr, midi_stream * line) {
+void synthesiser :: transfer_key_file (SetupFileReader * fr, midi_stream * line) {
 	line -> insert (KEY);
 	if (! fr -> get_string ()) return;
 	emit (line, fr -> symbol);
@@ -725,7 +725,7 @@ void copy_two_very_negative (midi_stream * line, SetupFileWriter * tc, char * id
 	tc -> writeln_earth ();
 }
 
-void synthesizer :: transfer_program (midi_stream * line, SetupFileWriter * tc) {
+void synthesiser :: transfer_program (midi_stream * line, SetupFileWriter * tc) {
 	bool algo_control = false;
 	tc -> writeln_id ("program");
 	int command = line -> get ();
@@ -992,7 +992,7 @@ void synthesizer :: transfer_program (midi_stream * line, SetupFileWriter * tc) 
 	}
 }
 
-void synthesizer :: transfer_setup_file (midi_stream * line, SetupFileWriter * tc) {
+void synthesiser :: transfer_setup_file (midi_stream * line, SetupFileWriter * tc) {
 	tc -> writeln_id ("setup");
 	int command = line -> get ();
 	//STRING text;
@@ -1143,7 +1143,7 @@ void synthesizer :: transfer_setup_file (midi_stream * line, SetupFileWriter * t
 	tc -> writeln_earth ();
 }
 
-void synthesizer :: transfer_program_map (midi_stream * line, SetupFileWriter * tc) {
+void synthesiser :: transfer_program_map (midi_stream * line, SetupFileWriter * tc) {
 	tc -> writeln_id ("msb");
 	int command = line -> get ();
 	STRING text;
@@ -1199,7 +1199,7 @@ void synthesizer :: transfer_program_map (midi_stream * line, SetupFileWriter * 
 	tc -> writeln_earth ();
 }
 
-void synthesizer :: transfer_key_file (midi_stream * line, SetupFileWriter * tc) {
+void synthesiser :: transfer_key_file (midi_stream * line, SetupFileWriter * tc) {
 	tc -> write_id ("key");
 	STRING command;
 	line -> get (command);
@@ -1207,7 +1207,7 @@ void synthesizer :: transfer_key_file (midi_stream * line, SetupFileWriter * tc)
 	tc -> write_earth ();
 }
 
-void synthesizer :: transfer (SetupFileReader * fr, midi_stream * line) {
+void synthesiser :: transfer (SetupFileReader * fr, midi_stream * line) {
 	if (! fr -> get_id ()) return;
 	if (fr -> id ("program")) {transfer_program (fr, line); return;}
 	if (fr -> id ("setup")) {transfer_setup_file (fr, line); return;}
@@ -1215,7 +1215,7 @@ void synthesizer :: transfer (SetupFileReader * fr, midi_stream * line) {
 	if (fr -> id ("key")) {transfer_key_file (fr, line); return;}
 }
 
-void synthesizer :: transfer (midi_stream * line, SetupFileWriter * tc) {
+void synthesiser :: transfer (midi_stream * line, SetupFileWriter * tc) {
 	int command = line -> get ();
 	switch (command) {
 	case PROGRAM: transfer_program (line, tc); break;

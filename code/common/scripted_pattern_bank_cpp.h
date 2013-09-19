@@ -113,7 +113,7 @@ public:
 	virtual pattern_pointer get_pattern (int lsb, int program, parameter_block * pb);
 	virtual char * toString (void);
 	virtual char * toString (int lsb);
-	scripted_pattern_bank (STRING text, synthesizer * sth, int style_program_size);
+	scripted_pattern_bank (STRING text, synthesiser * sth, int style_program_size);
 	~ scripted_pattern_bank (void);
 };
 
@@ -131,7 +131,7 @@ public:
 	virtual void program_change (int lsb, int program, parameter_block * pb);
 	virtual char * toString (void);
 	virtual char * toString (int lsb);
-	style_bank (STRING text, synthesizer * sth, int style_program_size);
+	style_bank (STRING text, synthesiser * sth, int style_program_size);
 	~ style_bank (void);
 };
 

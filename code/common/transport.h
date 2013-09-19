@@ -173,13 +173,13 @@ typedef arpeggiator_cpp * arpeggiator_cpp_pointer;
 
 class arpeggiator_pool_cpp : public arpeggiator_pool {
 private:
-	synthesizer * sth;
+	synthesiser * sth;
 	arpeggiator_cpp_pointer * arps;
 	int multitimbral;
 public:
 	virtual arranger_pointer get_arpeggiator (int ind);
 	virtual void move (void);
-	arpeggiator_pool_cpp (config * cfg, synthesizer * sth);
+	arpeggiator_pool_cpp (config * cfg, synthesiser * sth);
 	~ arpeggiator_pool_cpp (void);
 };
 
@@ -245,13 +245,13 @@ typedef vector_cpp * vector_cpp_pointer;
 
 class vector_pool_cpp : public vector_pool {
 public:
-	synthesizer * sth;
+	synthesiser * sth;
 	vector_cpp_pointer * vects;
 	int multitimbral;
 public:
 	virtual vector_pointer get_vector (int ind);
 	virtual void move (void);
-	vector_pool_cpp (config * cfg, synthesizer * sth);
+	vector_pool_cpp (config * cfg, synthesiser * sth);
 	~ vector_pool_cpp (void);
 };
 

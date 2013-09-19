@@ -82,7 +82,7 @@ public:
 	virtual char * toString (int lsb);
 public:
 	rom_wave * import_wave (char * name, int key, int loop_start, int loop_end, bool tail_present);
-	rom_player_bank (char * text, synthesizer * sth, int center_freq, int horizontal, int vertical, int head_room);
+	rom_player_bank (char * text, synthesiser * sth, int center_freq, int horizontal, int vertical, int head_room);
 	~ rom_player_bank (void);
 };
 

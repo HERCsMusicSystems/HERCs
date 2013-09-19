@@ -3,8 +3,8 @@
 //        ALL RIGHTS RESERVED        //
 ///////////////////////////////////////
 
-#ifndef _CORE_SYNTHESIZER
-#define _CORE_SYNTHESIZER
+#ifndef _CORE_SYNTHESISER
+#define _CORE_SYNTHESISER
 
 #include "data.h"
 #include "transport.h"
@@ -13,7 +13,7 @@
 #include "prolog_midi_command.h"
 
 class orthogonal_core;
-class synthesizer_core;
+class synthesiser_core;
 
 extern char * hercs_resource;
 class HERCsServiceClass : public PrologServiceClass {
@@ -40,7 +40,7 @@ private:
 	int arp_sample_counter, arp_sample_sentinel;
 	int vector_sample_counter, vector_sample_sentinel;
 
-	synthesizer * sth;
+	synthesiser * sth;
 	arpeggiator_pool * arps;
 	vector_pool * vects;
 	oscillator_pool_cpp * osc;
@@ -68,8 +68,8 @@ public:
 	// multi threading equivalent
 	float left_out (int sample);
 	float right_out (int sample);
-	void build_synthesizer (config * cfg, PrologResourceLoader * resource_loader = NULL, PrologServiceClassLoader * service_loader = NULL);
-	void destroy_synthesizer (void);
+	void build_synthesiser (config * cfg, PrologResourceLoader * resource_loader = NULL, PrologServiceClassLoader * service_loader = NULL);
+	void destroy_synthesiser (void);
 	bool move (void); // true if finished
 	void conn_move (void);
 	void conn_move (midi_reader * conn);
@@ -89,7 +89,7 @@ public:
 };
 
 
-class synthesizer_core {
+class synthesiser_core {
 private:
 	int horizontal;
 	int security_crash_after;
@@ -104,7 +104,7 @@ private:
 	int arp_sample_counter, arp_sample_sentinel;
 	int vector_sample_counter, vector_sample_sentinel;
 
-	synthesizer * sth;
+	synthesiser * sth;
 	arpeggiator_pool * arps;
 	vector_pool * vects;
 	oscillator_pool_cpp * osc;
@@ -121,8 +121,8 @@ public:
 	float * right_out_pointer (void);
 	float left_out (void);
 	float right_out (void);
-	void build_synthesizer (config * cfg);
-	void destroy_synthesizer (void);
+	void build_synthesiser (config * cfg);
+	void destroy_synthesiser (void);
 	bool move (void); // true if finished
 	void conn_move (void);
 	void conn_move (midi_reader * conn);

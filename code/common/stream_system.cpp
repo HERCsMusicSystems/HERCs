@@ -948,7 +948,7 @@ void drop_setup_controller (midi_stream * line, int mnemonic, int ind, int check
 	line -> insert (control);
 }
 
-void synthesizer :: sub_store_control (midi_stream * line) {
+void synthesiser :: sub_store_control (midi_stream * line) {
 	int ind;
 	int device;
 	int midi_channel;
@@ -1037,7 +1037,7 @@ void synthesizer :: sub_store_control (midi_stream * line) {
 	line -> insert (EARTH);
 }
 
-bool synthesizer :: store_control (midi_stream * line) {
+bool synthesiser :: store_control (midi_stream * line) {
 	if (no_control_store) return false;
 	emit (line, control_file_name);
 	line -> insert (SETUP);
@@ -1046,7 +1046,7 @@ bool synthesizer :: store_control (midi_stream * line) {
 	return true;
 }
 
-bool synthesizer :: store_setup (midi_stream * line) {
+bool synthesiser :: store_setup (midi_stream * line) {
 	if (no_setup_store) return false;
 	emit (line, setup_file_name);
 	line -> insert (SETUP);
@@ -1093,7 +1093,7 @@ bool synthesizer :: store_setup (midi_stream * line) {
 	return true;
 }
 
-void synthesizer :: store_configuration (midi_stream * line) {
+void synthesiser :: store_configuration (midi_stream * line) {
 	if (store_control (line)) return;
 	store_setup (line);
 }

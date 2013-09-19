@@ -32,7 +32,7 @@ class dsp_parameter_block;
 class key_queue;
 class parameter_block;
 class bank;
-class synthesizer;
+class synthesiser;
 class algo_bank;
 class pattern_bank;
 class dsp_algo_bank;
@@ -422,7 +422,7 @@ typedef dsp_router * dsp_router_pointer;
 
 class dsp_parameter_block {
 public:
-	synthesizer * sth;
+	synthesiser * sth;
 	STRING algo_msb;
 	int algo_program;
 	dsp_algo_pointer algo_head;
@@ -433,7 +433,7 @@ public:
 	int parameters [16];
 	bool algo_notification_not_required;
 	void voice_init (void);
-	dsp_parameter_block (synthesizer * sth, int ind, int dsp_number);
+	dsp_parameter_block (synthesiser * sth, int ind, int dsp_number);
 	~ dsp_parameter_block (void);
 };
 
@@ -490,7 +490,7 @@ public:
 	void local_dsp_voice_init (void);
 	void global_dsp_voice_init (void);
 	void reset_global_dsp_parameters (void);
-	parameter_block (synthesizer * sth, int stripes, int stereo, int vector_size, bool vector_auto_return, int queue, int factory_id, int local_dsp, int global_dsp);
+	parameter_block (synthesiser * sth, int stripes, int stereo, int vector_size, bool vector_auto_return, int queue, int factory_id, int local_dsp, int global_dsp);
 	~ parameter_block (void);
 // midi related
 private:
@@ -500,7 +500,7 @@ public:
 	key_queue * queue;
 	int locked_oscillator;
 	int last_key;
-	synthesizer * sth;
+	synthesiser * sth;
 	void nrpn (int data);
 	void rpn (int data);
 	void key_on (int key, int velocity);
@@ -668,10 +668,10 @@ public:
 	virtual char * toString (void);
 	virtual char * toString (int lsb);
 	virtual ~ bank (void);
-	friend class synthesizer;
+	friend class synthesiser;
 };
 
-class synthesizer : public midi_reader {
+class synthesiser : public midi_reader {
 public:
 	STRING root_directory;
 	STRING setup_file_name;
@@ -710,8 +710,8 @@ public:
 
 	PrologRoot * root;
 
-	synthesizer (config * cfg);
-	~ synthesizer (void);
+	synthesiser (config * cfg);
+	~ synthesiser (void);
 	void voice_init (void);
 	void notify_tune (void);
 	void notify_global_dsp_program_loaded (void);
@@ -874,7 +874,7 @@ public:
 	virtual void program_change (int lsb, int program, parameter_block * pb);
 	virtual char * toString (void);
 	virtual char * toString (int lsb);
-	sound_bank (STRING text, synthesizer * sth);
+	sound_bank (STRING text, synthesiser * sth);
 };
 
 class user_sound_bank : public bank {
@@ -884,7 +884,7 @@ public:
 	virtual void program_change (int lsb, int program, parameter_block * pb);
 	virtual char * toString (void);
 	virtual char * toString (int lsb);
-	user_sound_bank (STRING text, synthesizer * sth);
+	user_sound_bank (STRING text, synthesiser * sth);
 };
 
 class dsp_bank : public bank {
@@ -901,7 +901,7 @@ public:
 	virtual void program_change (int lsb, int program, parameter_block * pb);
 	virtual char * toString (void);
 	virtual char * toString (int lsb);
-	dsp_bank (STRING text, synthesizer * sth);
+	dsp_bank (STRING text, synthesiser * sth);
 };
 
 class user_dsp_bank : public bank {
@@ -913,7 +913,7 @@ public:
 	virtual void program_change (int lsb, int program, parameter_block * pb);
 	virtual char * toString (void);
 	virtual char * toString (int lsb);
-	user_dsp_bank (STRING text, synthesizer * sth);
+	user_dsp_bank (STRING text, synthesiser * sth);
 };
 
 

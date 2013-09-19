@@ -77,7 +77,7 @@ int dsp_algo :: get_default (int ind) {return 0;}
 
 dsp_algo silence_dsp_algo;
 
-oscillator_pool :: oscillator_pool (config * cfg, synthesizer * sth) {
+oscillator_pool :: oscillator_pool (config * cfg, synthesiser * sth) {
 	constructor (cfg -> oscillators, cfg -> multitimbral);
 	sth -> connect_oscillator_pool (this);
 }
@@ -120,7 +120,7 @@ oscillator_pool :: ~ oscillator_pool (void) {
 	delete [] keys;
 }
 
-void oscillator_pool :: notify_reserved_notes_changed (synthesizer * sth) {
+void oscillator_pool :: notify_reserved_notes_changed (synthesiser * sth) {
 	int multitimbral = sth -> multitimbral;
 	free_oscillators_from = 0;
 	int reserved_notes;
@@ -212,11 +212,11 @@ algo_pointer oscillator_pool :: get_default_algo (void) {return & silence;}
 dsp_algo_pointer oscillator_pool :: get_default_dsp_algo (void) {return & silence_dsp_algo;}
 preset_algo_bank * oscillator_pool :: create_preset_algo_bank (void) {return NULL;}
 preset_dsp_algo_bank * oscillator_pool :: create_preset_dsp_algo_bank (void) {return NULL;}
-algo_bank * oscillator_pool :: create_rom_player_bank (char * text, synthesizer * sth) {return NULL;}
-algo_bank * oscillator_pool :: create_wavetable_bank (char * text, synthesizer * sth) {return NULL;}
-bank * oscillator_pool :: create_plugin_algo_bank (char * plugin, char * parameter, synthesizer * sth) {return NULL;}
-pattern_bank * oscillator_pool :: create_scripted_pattern_bank (char * text, synthesizer * sth) {return NULL;}
-bank * oscillator_pool :: create_style_bank (char * text, synthesizer * sth) {return NULL;}
+algo_bank * oscillator_pool :: create_rom_player_bank (char * text, synthesiser * sth) {return NULL;}
+algo_bank * oscillator_pool :: create_wavetable_bank (char * text, synthesiser * sth) {return NULL;}
+bank * oscillator_pool :: create_plugin_algo_bank (char * plugin, char * parameter, synthesiser * sth) {return NULL;}
+pattern_bank * oscillator_pool :: create_scripted_pattern_bank (char * text, synthesiser * sth) {return NULL;}
+bank * oscillator_pool :: create_style_bank (char * text, synthesiser * sth) {return NULL;}
 
 void oscillator_pool :: notify_retrigger_change (parameter_block * pb) {}
 void oscillator_pool :: notify_ratio_change (parameter_block * pb) {}
@@ -271,7 +271,7 @@ void oscillator_pool :: notify_key_off (int oscillator) {}
 void oscillator_pool :: notify_ground (int oscillator) {}
 void oscillator_pool :: notify_program_loaded (parameter_block * pb) {}
 void oscillator_pool :: notify_dsp_program_loaded (parameter_block * pb) {}
-void oscillator_pool :: notify_global_dsp_program_loaded (synthesizer * sth) {}
+void oscillator_pool :: notify_global_dsp_program_loaded (synthesiser * sth) {}
 void oscillator_pool :: notify_multi_global_dsp_program_loaded (parameter_block * pb) {}
 void oscillator_pool :: move (void) {}
 void oscillator_pool :: multi_move_parts (int samples) {}
@@ -305,7 +305,7 @@ void dsp_line_pool :: notify_dry_change (parameter_block * pb) {}
 void dsp_line_pool :: notify_dry_wet_change_all (parameter_block * pb) {}
 void dsp_line_pool :: notify_dry_wet_change (parameter_block * pb, int ind) {}
 void dsp_line_pool :: notify_program_loaded (parameter_block * pb) {}
-void dsp_line_pool :: notify_global_dsp_program_loaded (synthesizer * sth) {}
+void dsp_line_pool :: notify_global_dsp_program_loaded (synthesiser * sth) {}
 void dsp_line_pool :: notify_multi_global_dsp_program_loaded (parameter_block * pb) {}
 void dsp_line_pool :: notify_dsp_ground (int factory_id) {}
 extern dsp_algo silence_dsp_algo;

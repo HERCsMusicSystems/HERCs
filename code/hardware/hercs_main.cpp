@@ -86,7 +86,7 @@ config cfg;
 MultiplatformAudio audio_service (0, 2, cfg . sampling_freq, cfg . latency_block);
 
 void main (int args, char * * argv) {
-	core . build_synthesizer (& cfg, & resource_loader, & service_class_loader);
+	core . build_synthesiser (& cfg, & resource_loader, & service_class_loader);
 	printf ("Serial Number [%s]\n", cfg . serial_number);
 	for (int ind = 0; ind < audio_service . getNumberOfInputDevices (); ind++) {
 		printf ("Input Device [%s]\n", audio_service . getInputDeviceName (ind));
@@ -97,7 +97,7 @@ void main (int args, char * * argv) {
 	PrologCommand * console = new PrologWindowsConsole ();
 	core . root -> insertCommander (console);
 	core . root -> resolution ();
-	core . destroy_synthesizer ();
+	core . destroy_synthesiser ();
 	delete console;
 	drop_object_counter ();
 	getchar ();

@@ -8,37 +8,37 @@
 #include "osc.h"
 #include <string.h>
 
-void synthesizer :: configure (void) {
+void synthesiser :: configure (void) {
 	configure_setup ();
 	configure_control ();
 }
 
-void synthesizer :: configure (char * setup, char * control) {
+void synthesiser :: configure (char * setup, char * control) {
 	configure_setup (setup);
 	configure_control (control);
 }
 
-void synthesizer :: configure_setup (void) {
+void synthesiser :: configure_setup (void) {
 	no_setup_store = false;
 	configure (setup_file_name);
 }
 
-void synthesizer :: configure_control (void) {
+void synthesiser :: configure_control (void) {
 	no_control_store = false;
 	configure (control_file_name);
 }
 
-void synthesizer :: configure_setup (char * setup) {
+void synthesiser :: configure_setup (char * setup) {
 	string_copy (setup_file_name, setup);
 	configure_setup ();
 }
 
-void synthesizer :: configure_control (char * control) {
+void synthesiser :: configure_control (char * control) {
 	string_copy (control_file_name, control);
 	configure_control ();
 }
 
-bool synthesizer :: configure (char * file_name) {
+bool synthesiser :: configure (char * file_name) {
 	char command [256];
 	sprintf (command, "%s%s", root_directory, file_name);
 	SetupFileReader * fr = new SetupFileReader (command);
@@ -47,7 +47,7 @@ bool synthesizer :: configure (char * file_name) {
 	return ret;
 }
 
-bool synthesizer :: sub_configure (SetupFileReader * fr) {
+bool synthesiser :: sub_configure (SetupFileReader * fr) {
 	int ind;
 	int sub;
 	STRING id;
@@ -1441,7 +1441,7 @@ void drop_controller (SetupFileWriter * tc, char * mnemonic, int ind, int check,
 	tc -> writeln_id (mnemonic, ind, control);
 }
 
-void synthesizer :: sub_store_control (SetupFileWriter * tc) {
+void synthesiser :: sub_store_control (SetupFileWriter * tc) {
 	int ind;
 	int device;
 	int midi_channel;
@@ -1509,13 +1509,13 @@ void synthesizer :: sub_store_control (SetupFileWriter * tc) {
 	if (tune != 0) tc -> writeln_id ("tune", tune);
 }
 
-void synthesizer :: store_control (SetupFileWriter * tc) {
+void synthesiser :: store_control (SetupFileWriter * tc) {
 	tc -> writeln_id ("setup");
 	sub_store_control (tc);
 	tc -> writeln_earth ();
 }
 
-void synthesizer :: store_setup (SetupFileWriter * tc) {
+void synthesiser :: store_setup (SetupFileWriter * tc) {
 	tc -> writeln_id ("setup");
 	sub_store_control (tc);
 	tc -> writeln_id ("categories");
@@ -1561,7 +1561,7 @@ void synthesizer :: store_setup (SetupFileWriter * tc) {
 	tc -> writeln_earth ();
 }
 
-bool synthesizer :: store_setup (void) {
+bool synthesiser :: store_setup (void) {
 	if (no_setup_store) return false;
 	char path [256];
 	sprintf (path, "%s%s", root_directory, setup_file_name);
@@ -1571,7 +1571,7 @@ bool synthesizer :: store_setup (void) {
 	return true;
 }
 
-bool synthesizer :: store_control (void) {
+bool synthesiser :: store_control (void) {
 	if (no_control_store) return false;
 	char path [256];
 	sprintf (path, "%s%s", root_directory, control_file_name);
@@ -1581,7 +1581,7 @@ bool synthesizer :: store_control (void) {
 	return true;
 }
 
-void synthesizer :: store_setup (char * setup) {
+void synthesiser :: store_setup (char * setup) {
 	char path [256];
 	sprintf (path, "%s%s", root_directory, setup);
 	SetupFileWriter * tc = new SetupFileWriter (path);
@@ -1589,7 +1589,7 @@ void synthesizer :: store_setup (char * setup) {
 	delete tc;
 }
 
-void synthesizer :: store_control (char * control) {
+void synthesiser :: store_control (char * control) {
 	char path [256];
 	sprintf (path, "%s%s", root_directory, control);
 	SetupFileWriter * tc = new SetupFileWriter (path);
@@ -1597,7 +1597,7 @@ void synthesizer :: store_control (char * control) {
 	delete tc;
 }
 
-void synthesizer :: store_configuration (void) {
+void synthesiser :: store_configuration (void) {
 	if (store_control ()) return;
 	store_setup ();
 }

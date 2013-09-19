@@ -40,7 +40,7 @@ typedef dsp_line * dsp_line_pointer;
 
 class dsp_line {
 public:
-	synthesizer * sth;
+	synthesiser * sth;
 	int horizontal;
 	int vertical;
 	int head_room;
@@ -126,16 +126,16 @@ public:
 	virtual void notify_dry_wet_change_all (parameter_block * pb);
 	virtual void notify_dry_wet_change (parameter_block * pb, int ind);
 	virtual void notify_program_loaded (parameter_block * pb);
-	virtual void notify_global_dsp_program_loaded (synthesizer * sth);
+	virtual void notify_global_dsp_program_loaded (synthesiser * sth);
 	virtual void notify_multi_global_dsp_program_loaded (parameter_block * pb);
 	virtual void notify_dsp_ground (int factor_id);
 	virtual dsp_algo_pointer get_default_dsp_algo (void);
 private:
-	void configure (synthesizer * sth, int local_dsp, int global_dsp, bool global_dsp_multi, int multitimbral, int horizontal, int vertical, int head_room, int dco_blocking_freq, int data_size, int line_size);
-	void notify_global_algo_change (synthesizer * sth, int ind);
-	void notify_global_dsp_change (synthesizer * sth, int ind, int parameter);
+	void configure (synthesiser * sth, int local_dsp, int global_dsp, bool global_dsp_multi, int multitimbral, int horizontal, int vertical, int head_room, int dco_blocking_freq, int data_size, int line_size);
+	void notify_global_algo_change (synthesiser * sth, int ind);
+	void notify_global_dsp_change (synthesiser * sth, int ind, int parameter);
 public:
-	float_stereo_dsp_line_pool (config * cfg, synthesizer * sth);
+	float_stereo_dsp_line_pool (config * cfg, synthesiser * sth);
 	~ float_stereo_dsp_line_pool (void);
 };
 
@@ -169,7 +169,7 @@ public:
 
 class oscillator {
 public:
-	synthesizer * sth;
+	synthesiser * sth;
 	parameter_block * pb;
 	oscillator_pool_cpp * pool;
 	int stripes;
@@ -249,7 +249,7 @@ private:
 	int total_adsr_size;
 	int lfo_gate_gap, lfo_gate_gap2;
 	int core_number;
-	void constructor (synthesizer * sth, int horizontal, int center_freq, int vertical, int head_room, int feed_space, dsp_line_pool * dsp, int style_program_size);
+	void constructor (synthesiser * sth, int horizontal, int center_freq, int vertical, int head_room, int feed_space, dsp_line_pool * dsp, int style_program_size);
 public:
 	void initialize_math_support (void);
 private:
@@ -325,11 +325,11 @@ public:
 	virtual dsp_algo_pointer get_default_dsp_algo (void);
 	virtual preset_algo_bank * create_preset_algo_bank (void);
 	virtual preset_dsp_algo_bank * create_preset_dsp_algo_bank (void);
-	virtual algo_bank * create_rom_player_bank (char * text, synthesizer * sth);
-	virtual algo_bank * create_wavetable_bank (char * text, synthesizer * sth);
-	virtual bank * create_plugin_algo_bank (char * plugin, char * parameter, synthesizer * sth);
-	virtual pattern_bank * create_scripted_pattern_bank (char * text, synthesizer * sth);
-	virtual bank * create_style_bank (char * text, synthesizer * sth);
+	virtual algo_bank * create_rom_player_bank (char * text, synthesiser * sth);
+	virtual algo_bank * create_wavetable_bank (char * text, synthesiser * sth);
+	virtual bank * create_plugin_algo_bank (char * plugin, char * parameter, synthesiser * sth);
+	virtual pattern_bank * create_scripted_pattern_bank (char * text, synthesiser * sth);
+	virtual bank * create_style_bank (char * text, synthesiser * sth);
 public:
 	virtual void notify_ratio_change (parameter_block * pb);
 	virtual void notify_freq_shifts_update (parameter_block * pb);
@@ -368,7 +368,7 @@ public:
 	virtual void notify_dry_wet_change (parameter_block * pb, int ind);
 	virtual void notify_program_loaded (parameter_block * pb);
 	virtual void notify_dsp_program_loaded (parameter_block * pb);
-	virtual void notify_global_dsp_program_loaded (synthesizer * sth);
+	virtual void notify_global_dsp_program_loaded (synthesiser * sth);
 	virtual void notify_multi_global_dsp_program_loaded (parameter_block * pb);
 	virtual void lock_retrigger (int oscillator);
 protected:
@@ -385,7 +385,7 @@ public:
 	void move_oscillator (int counter, int samples);
 	void move_oscillators (int from, int to, int samples); // from inclusive to exclusive
 	void transfer_to_dsp (int sample);
-	oscillator_pool_cpp (config * cfg, synthesizer * sth, dsp_line_pool * dsp);
+	oscillator_pool_cpp (config * cfg, synthesiser * sth, dsp_line_pool * dsp);
 	~ oscillator_pool_cpp (void);
 };
 

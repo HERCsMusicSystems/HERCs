@@ -160,7 +160,7 @@ void sound_bank :: extract_banks (SetupFileReader * fr) {
 	}
 	fr -> close ();
 }
-sound_bank :: sound_bank (STRING text, synthesizer * sth) {
+sound_bank :: sound_bank (STRING text, synthesiser * sth) {
 	sprintf (directory, "%s%s", sth -> root_directory, text);
 	sprintf (msb_file_name, "%s%s", directory, "msb.txt");
 	string_copy (msb_name, "SOUND BANK");
@@ -194,7 +194,7 @@ char * user_sound_bank :: toString (int lsb) {
 	if (lsb == 127) return "STORE";
 	return "READ";
 }
-user_sound_bank :: user_sound_bank (STRING text, synthesizer * sth) {
+user_sound_bank :: user_sound_bank (STRING text, synthesiser * sth) {
 	sprintf (directory, "%s%s", sth -> root_directory, text);
 }
 
@@ -297,7 +297,7 @@ void dsp_bank :: extract_banks (SetupFileReader * fr) {
 	}
 	fr -> close ();
 }
-dsp_bank :: dsp_bank (STRING text, synthesizer * sth) {
+dsp_bank :: dsp_bank (STRING text, synthesiser * sth) {
 	global = false;
 	sprintf (directory, "%s%s", sth -> root_directory, text);
 	sprintf (msb_file_name, "%s%s", directory, "dsp_msb.txt");
@@ -337,7 +337,7 @@ void user_dsp_bank :: extract_dsp_type (SetupFileReader * fr) {
 	if (! fr -> get_id ()) return;
 	if (fr -> id ("global_dsp")) global = true;
 }
-user_dsp_bank :: user_dsp_bank (STRING text, synthesizer * sth) {
+user_dsp_bank :: user_dsp_bank (STRING text, synthesiser * sth) {
 	sprintf (directory, "%s%s", sth -> root_directory, text);
 	STRING file_name;
 	sprintf (file_name, "%s%s", directory, "user_dsp_msb.txt");

@@ -664,7 +664,7 @@ void rom_player_bank :: read_program (SetupFileReader * fr, int program, rom_wav
 	}
 }
 
-rom_player_bank :: rom_player_bank (char * text, synthesizer * sth, int center_freq, int horizontal, int vertical, int head_room) {
+rom_player_bank :: rom_player_bank (char * text, synthesiser * sth, int center_freq, int horizontal, int vertical, int head_room) {
 	this -> center_freq = center_freq;
 	this -> horizontal = horizontal;
 	this -> head_room = head_room;

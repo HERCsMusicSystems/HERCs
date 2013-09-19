@@ -317,7 +317,7 @@ pattern * scripted_pattern_bank :: extract_program (SetupFileReader * fr, int ls
 	fr -> close ();
 	return NULL;
 }
-scripted_pattern_bank :: scripted_pattern_bank (STRING text, synthesizer * sth, int style_program_size) {
+scripted_pattern_bank :: scripted_pattern_bank (STRING text, synthesiser * sth, int style_program_size) {
 	scripts = new script_tables (sth -> multitimbral, style_program_size);
 	sprintf (directory, "%s%s", sth -> root_directory, text);
 	sprintf (msb_file_name, "%s%s", directory, "pattern_msb.txt");
@@ -473,7 +473,7 @@ void style_bank :: extract_banks (SetupFileReader * fr) {
 	fr -> skip ();
 }
 
-style_bank :: style_bank (STRING text, synthesizer * sth, int style_program_size) {
+style_bank :: style_bank (STRING text, synthesiser * sth, int style_program_size) {
 	scripts = new script_tables (sth -> multitimbral, style_program_size);
 	sprintf (directory, "%s%s", sth -> root_directory, text);
 	sprintf (msb_file_name, "%s%s", directory, "style_msb.txt");
