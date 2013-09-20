@@ -74,6 +74,7 @@ public:
 	void conn_move (void);
 	void conn_move (midi_reader * conn);
 	bool multi_move (int samples); // true if finished
+	void resolution (config * cfg);
 	void crash (void);
 	void crash_check (unsigned int samples);
 	void set_security_crash_after (int ind);

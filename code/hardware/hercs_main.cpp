@@ -27,12 +27,20 @@
 #include "prolog_midi.h"
 #include "prolog_neural.h"
 #include "prolog_windows_console.h"
+#include "midi_command_prompt.h"
+#include "config.h"
+#include "core.h"
+#include "multiplatform_audio.h"
+
+orthogonal_core core;
+config cfg;
 
 #ifdef WINDOWS_OPERATING_SYSTEM
 #include "resource.h"
 class resource_loader_class : public PrologResourceLoader {
 public:
 	char * load (char * name) {
+		if (strcmp (name, "hercs") == 0 || strcmp (name, "hercs.prc") == 0) return hercs_resource;
 		HRSRC resource = NULL;
 		if (strcmp (name, "studio") == 0) resource = FindResource (NULL, MAKEINTRESOURCE (STUDIO_PRC), RT_RCDATA);
 		if (strcmp (name, "conductor") == 0) resource = FindResource (NULL, MAKEINTRESOURCE (CONDUCTOR_PRC), RT_RCDATA);
@@ -69,6 +77,7 @@ public:
 	PrologServiceClass * load (char * name) {
 		if (strcmp (name, "prolog.conductor") == 0) return new PrologConductorServiceClass ();
 		if (strcmp (name, "prolog.midi") == 0) return new PrologMidiServiceClass ();
+		if (strcmp (name, "hercs") == 0) return new HERCsServiceClass (& core);
 #ifdef LINUX_OPERATING_SYSTEM
 		if (strcmp (name, "prolog.http") == 0) return new PrologHttpServiceClass ();
 #endif
@@ -77,28 +86,93 @@ public:
 	}
 } service_class_loader;
 
-#include "config.h"
-#include "core.h"
-#include "multiplatform_audio.h"
+MultiplatformAudio audio (GetConsoleWindow (), 2, cfg . sampling_freq, cfg . latency_block);
+MidiCommandPrompt command_prompt (& core . conn_midi_source);
 
-orthogonal_core core;
-config cfg;
-MultiplatformAudio audio_service (0, 2, cfg . sampling_freq, cfg . latency_block);
+class Editor : public midi_reader {
+public:
+	virtual void midi_system_exclusive (midi_stream * line) {
+		line -> mark ();
+		if (! line -> check_system_exclusive ()) {line -> restore (); line -> get_f7 (); return;}
+		int selector = line -> get ();
+		AREA area; int ap = 0;
+		switch (selector) {
+		case 0x2a:
+			while ((selector = line -> get ()) != 0xf7) ap = area_cat (area, ap, (char) selector);
+			printf ("%s", area);
+			break;
+		default: line -> get_f7 (); break;
+		}
+	}
+} editor;
+
+static double input_audio_buffer [32768];
+static int read_pointer = 0;
+static int write_pointer = 0;
+
+static void input_callback (int frames, AudioBuffers * buffers) {
+	while (frames-- > 0) {
+		input_audio_buffer [write_pointer++] = buffers -> getStereoLeftRight ();
+		input_audio_buffer [write_pointer++] = buffers -> getStereoLeftRight ();
+		if (write_pointer >= 32768) write_pointer = 0;
+	}
+}
+
+static void multicore_output_callback (int nframes, AudioBuffers * buffers) {
+	if (nframes >= 2048) return;
+	core . conn_move (& editor);
+	for (int ind = 0; ind < nframes; ind++) {
+		core . input_left ((float) input_audio_buffer [read_pointer++], ind);
+		core . input_right ((float) input_audio_buffer [read_pointer++], ind);
+		if (read_pointer >= 32768) read_pointer = 0;
+	}
+	core . multi_move (nframes);
+	for (int ind = 0; ind < nframes; ind++) {
+		buffers -> insertStereo (core . left_out (ind), core . right_out (ind));
+	}
+}
+
+static void singlecore_output_callback (int nframes, AudioBuffers * buffers) {
+	if (nframes >= 2048) return;
+	core . conn_move (& editor);
+	int sample = 0;
+	while (nframes-- > 0) {
+		core . input_left ((float) input_audio_buffer [read_pointer++]);
+		core . input_right ((float) input_audio_buffer [read_pointer++]);
+		if (read_pointer >= 32768) read_pointer = 0;
+		core . move ();
+		buffers -> insertStereo (core . left_out (), core . right_out ());
+	}
+}
 
 void main (int args, char * * argv) {
 	core . build_synthesiser (& cfg, & resource_loader, & service_class_loader);
 	printf ("Serial Number [%s]\n", cfg . serial_number);
-	for (int ind = 0; ind < audio_service . getNumberOfInputDevices (); ind++) {
-		printf ("Input Device [%s]\n", audio_service . getInputDeviceName (ind));
+	for (int ind = 0; ind < audio . getNumberOfInputDevices (); ind++) {
+		printf ("Input Device [%s]\n", audio . getInputDeviceName (ind));
 	}
-	for (int ind = 0; ind < audio_service . getNumberOfOutputDevices (); ind++) {
-		printf ("Output device [%s]\n", audio_service . getOutputDeviceName (ind));
+	for (int ind = 0; ind < audio . getNumberOfOutputDevices (); ind++) {
+		printf ("Output device [%s]\n", audio . getOutputDeviceName (ind));
 	}
-	PrologCommand * console = new PrologWindowsConsole ();
-	core . root -> insertCommander (console);
-	core . root -> resolution ();
+	audio . installInputCallback (input_callback);
+#ifdef MULTI_CORE_HARDWARE
+#ifdef SWITCHABLE_MULTICORE
+	audio . installOutputCallback (cfg . processors > 0 ? multicore_output_callback : singlecore_output_callback);
+#else
+	audio . installOutputCallback (multicore_output_callback);
+#endif
+#else
+	audio . installOutputCallback (singlecore_output_callback);
+#endif
+	//audio . selectInputDevice (0);
+	audio . selectOutputDevice (0);
+	command_prompt . open ();
+	core . resolution (& cfg);
+	audio . selectInputDevice (-1);
+	audio . selectOutputDevice (-1);
 	core . destroy_synthesiser ();
-	delete console;
 	drop_object_counter ();
 	getchar ();
+	command_prompt . close ();
 }
+

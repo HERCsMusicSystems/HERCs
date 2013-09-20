@@ -270,6 +270,12 @@ bool orthogonal_core :: multi_move (int samples) {
 	return resolution_finished;
 }
 
+void orthogonal_core :: resolution (config * cfg) {
+	if (strlen (cfg -> prolog_library_load) > 1) root -> resolution (cfg -> prolog_library_load);
+	else root -> resolution ();
+	resolution_finished = true;
+}
+
 void orthogonal_core :: crash (void) {
 	sth -> destroy_banks ();
 	sth -> voice_init ();

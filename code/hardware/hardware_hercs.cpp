@@ -246,8 +246,7 @@ windows_midi_service console_midi_service;
 pthread_t prolog_thread;
 
 static void * prologRunner (void * parameters) {
-	core . root -> resolution (cfg -> prolog_library_load);
-	core . resolution_finished = true;
+	core . resolution (cfg);
 	return 0;
 }
 

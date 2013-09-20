@@ -734,6 +734,7 @@ static void audio_transmission_dx_init (void) {
 	if (FAILED (hr = DirectSoundEnumerate (DSEnumCallbackProc, NULL))) MessageBox (GetActiveWindow (), "Failed to enumerate transmission devices.", "INFO", MB_OK);
 }
 static void audio_transmission_dx_stop (void) {
+	if (audio_lpds == NULL) return;
 	if (transmission_cont) {
 		transmission_cont = false;
 		while (! transmission_cont) Sleep (20);
