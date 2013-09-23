@@ -12,7 +12,7 @@
 #define MULTI_CORE_HARDWARE
 #define SWITCHABLE_MULTICORE
 
-config * cfg = NULL;
+config cfg;
 
 orthogonal_core core;
 
@@ -69,7 +69,83 @@ static int oscilloscope_gap = 20000;
 static int oscilloscope_shift_sentinel = 0;
 static int oscilloscope_shift = -1;
 static wxOscilloscopeController * oscilloscope_controller = NULL;
-void core_audio_output_callback (int nframes, AudioBuffers * buffers) {
+
+static void processOscilloscope (float left_out, float right_out) {
+	if (! oscilloscope_visible) return;
+	int osc_out = (int) ((left_out + right_out) * 128.0F);
+	if (oscilloscope_gap > 0) oscilloscope_gap--;
+	if (oscilloscope_gap == 0) {
+		if (osc_out >= 0 && previous_osc_out <= 0) {oscilloscope_shift = oscilloscope_shift_sentinel; oscilloscope_gap--;}
+	}
+		if (oscilloscope_shift > 0) oscilloscope_shift--;
+	if (oscilloscope_shift == 0) {oscilloscope_wave_pointer = 0; oscilloscope_shift--;}
+	if (oscilloscope_wave_pointer < 256) {oscilloscope_monitor_wave [oscilloscope_wave_pointer++] = osc_out;}
+	previous_osc_out = osc_out;
+}
+
+static void refreshOscilloscope (void) {
+	if (oscilloscope_controller == NULL) return;
+	if (oscilloscope_gap >= 0) return;
+	if (oscilloscope_wave_pointer < 256) return;
+//	if (! oscilloscope_dialog -> IsShown ()) {oscilloscope_visible = false; return;}
+	oscilloscope_controller -> Refresh ();
+	oscilloscope_gap = oscilloscope_gap_sentinel;
+}
+
+void core_audio_multicore_output_callback (int nframes, AudioBuffers * buffers) {
+	if (nframes >= 2048) return;
+	// transmission from console interface to console input line here....
+	// transmission from console output line to console interface here....
+	console_midi_transmission ();
+	// crash check here....
+	float left_out, right_out;
+	for (int ind = 0; ind < nframes; ind++) {
+		core . input_left (input_audio_buffer [read_pointer++], ind);
+		core . input_right (input_audio_buffer [read_pointer++], ind);
+		if (read_pointer >= 32768) read_pointer = 0;
+	}
+	if (core . multi_move (nframes)) general_quit ();
+	external_midi_transmission ();
+	int sample = 0;
+	while (nframes-- > 0) {
+		// transmission from main interface to main input line here....
+		buffers -> insertStereo (left_out = core . left_out (sample), right_out = core . right_out (sample));
+		sample++;
+		//--------------------------------------
+		processOscilloscope (left_out, right_out);
+		//--------------------------------------
+//		buffers -> insertStereo (core . left_out (), core . right_out ());
+		// transmission from main output line to main interface here....
+	}
+	refreshOscilloscope ();
+}
+
+void core_audio_singlecore_output_callback (int nframes, AudioBuffers * buffers) {
+	if (nframes >= 2048) return;
+	// transmission from console interface to console input line here....
+	// transmission from console output line to console interface here....
+	console_midi_transmission ();
+	// crash check here....
+	float left_out, right_out;
+	int sample = 0;
+	while (nframes-- > 0) {
+		// transmission from main interface to main input line here....
+		core . input_left (input_audio_buffer [read_pointer++]);
+		core . input_right (input_audio_buffer [read_pointer++]);
+		if (read_pointer >= 32768) read_pointer = 0;
+		if (core . move ()) general_quit (); //callback_return = -1;
+		buffers -> insertStereo (left_out = core . left_out (), right_out = core . right_out ());
+		//--------------------------------------
+		processOscilloscope (left_out, right_out);
+		//--------------------------------------
+//		buffers -> insertStereo (core . left_out (), core . right_out ());
+		// transmission from main output line to main interface here....
+	}
+	external_midi_transmission ();
+	refreshOscilloscope ();
+}
+
+/*void core_audio_output_callback_bak (int nframes, AudioBuffers * buffers) {
 	if (nframes >= 2048) return;
 	// transmission from console interface to console input line here....
 	// transmission from console output line to console interface here....
@@ -78,7 +154,7 @@ void core_audio_output_callback (int nframes, AudioBuffers * buffers) {
 	float left_out, right_out; int osc_out;
 	#ifdef MULTI_CORE_HARDWARE
 	#ifdef SWITCHABLE_MULTICORE
-	if (cfg -> processors > 0) {
+	if (cfg . processors > 0) {
 	#endif
 	for (int ind = 0; ind < nframes; ind++) {
 		core . input_left (input_audio_buffer [read_pointer++], ind);
@@ -102,7 +178,7 @@ void core_audio_output_callback (int nframes, AudioBuffers * buffers) {
 		#endif
 		#ifdef MULTI_CORE_HARDWARE
 		#ifdef SWITCHABLE_MULTICORE
-		if (cfg -> processors > 0) {
+		if (cfg . processors > 0) {
 			left_out = core . left_out (sample); right_out = core . right_out (sample); sample++;
 		} else {
 			core . input_left (input_audio_buffer [read_pointer++]);
@@ -139,7 +215,7 @@ void core_audio_output_callback (int nframes, AudioBuffers * buffers) {
 //	if (! oscilloscope_dialog -> IsShown ()) {oscilloscope_visible = false; return;}
 	oscilloscope_controller -> Refresh ();
 	oscilloscope_gap = oscilloscope_gap_sentinel;
-}
+}*/
 
 MultiplatformAudio * audio = NULL;
 
@@ -156,15 +232,30 @@ MultiplatformAudio * audio = NULL;
 class resource_loader_class : public PrologResourceLoader {
 public:
 	char * load (char * name) {
+		if (strcmp (name, "hercs") == 0 || strcmp (name, "hercs.prc") == 0) return hercs_resource;
 		HRSRC resource = NULL;
+		if (strcmp (name, "studio") == 0) resource = FindResource (NULL, MAKEINTRESOURCE (STUDIO_PRC), RT_RCDATA);
+		if (strcmp (name, "conductor") == 0) resource = FindResource (NULL, MAKEINTRESOURCE (CONDUCTOR_PRC), RT_RCDATA);
+		if (strcmp (name, "midi") == 0) resource = FindResource (NULL, MAKEINTRESOURCE (MIDI_PRC), RT_RCDATA);
+		if (strcmp (name, "http") == 0) resource = FindResource (NULL, MAKEINTRESOURCE (HTTP_PRC), RT_RCDATA);
+		if (strcmp (name, "store") == 0) resource = FindResource (NULL, MAKEINTRESOURCE (STORE_PRC), RT_RCDATA);
+		if (strcmp (name, "f1") == 0) resource = FindResource (NULL, MAKEINTRESOURCE (F1_PRC), RT_RCDATA);
+		if (strcmp (name, "help") == 0) resource = FindResource (NULL, MAKEINTRESOURCE (HELP_PRC), RT_RCDATA);
+		if (strcmp (name, "record") == 0) resource = FindResource (NULL, MAKEINTRESOURCE (RECORD_PRC), RT_RCDATA);
+		if (strcmp (name, "neural") == 0) resource = FindResource (NULL, MAKEINTRESOURCE (NEURAL_PRC), RT_RCDATA);
+		if (strcmp (name, "keyboard") == 0) resource = FindResource (NULL, MAKEINTRESOURCE (KEYBOARD_PRC), RT_RCDATA);
+		if (strcmp (name, "sql") == 0) resource = FindResource (NULL, MAKEINTRESOURCE (SQL_PRC), RT_RCDATA);
 		if (strcmp (name, "studio.prc") == 0) resource = FindResource (NULL, MAKEINTRESOURCE (STUDIO_PRC), RT_RCDATA);
+		if (strcmp (name, "conductor.prc") == 0) resource = FindResource (NULL, MAKEINTRESOURCE (CONDUCTOR_PRC), RT_RCDATA);
+		if (strcmp (name, "midi.prc") == 0) resource = FindResource (NULL, MAKEINTRESOURCE (MIDI_PRC), RT_RCDATA);
+		if (strcmp (name, "http.prc") == 0) resource = FindResource (NULL, MAKEINTRESOURCE (HTTP_PRC), RT_RCDATA);
 		if (strcmp (name, "store.prc") == 0) resource = FindResource (NULL, MAKEINTRESOURCE (STORE_PRC), RT_RCDATA);
-		if (strcmp (name, "help.prc") == 0) resource = FindResource (NULL, MAKEINTRESOURCE (HELP_PRC), RT_RCDATA);
-		if (strcmp (name, "keyboard.prc") == 0) resource = FindResource (NULL, MAKEINTRESOURCE (KEYBOARD_PRC), RT_RCDATA);
-		if (strcmp (name, "record.prc") == 0) resource = FindResource (NULL, MAKEINTRESOURCE (RECORD_PRC), RT_RCDATA);
-		if (strcmp (name, "scala_reader.prc") == 0) resource = FindResource (NULL, MAKEINTRESOURCE (SCALA_READER_PRC), RT_RCDATA);
-		if (strcmp (name, "neural.prc") == 0) resource = FindResource (NULL, MAKEINTRESOURCE (NEURAL_PRC), RT_RCDATA);
 		if (strcmp (name, "f1.prc") == 0) resource = FindResource (NULL, MAKEINTRESOURCE (F1_PRC), RT_RCDATA);
+		if (strcmp (name, "help.prc") == 0) resource = FindResource (NULL, MAKEINTRESOURCE (HELP_PRC), RT_RCDATA);
+		if (strcmp (name, "record.prc") == 0) resource = FindResource (NULL, MAKEINTRESOURCE (RECORD_PRC), RT_RCDATA);
+		if (strcmp (name, "neural.prc") == 0) resource = FindResource (NULL, MAKEINTRESOURCE (NEURAL_PRC), RT_RCDATA);
+		if (strcmp (name, "keyboard.prc") == 0) resource = FindResource (NULL, MAKEINTRESOURCE (KEYBOARD_PRC), RT_RCDATA);
+		if (strcmp (name, "sql.prc") == 0) resource = FindResource (NULL, MAKEINTRESOURCE (SQL_PRC), RT_RCDATA);
 		if (! resource) return NULL;
 		HGLOBAL loader = LoadResource (NULL, resource);
 		if (! loader) return NULL;
@@ -172,6 +263,7 @@ public:
 	}
 } resource_loader;
 #endif
+
 
 #ifdef LINUX_OPERATING_SYSTEM
 extern char resource_0 [];
@@ -232,23 +324,23 @@ public:
 	}
 } service_class_loader;
 
+#include "midi_command_prompt.h"
 
 #ifdef WINDOWS_OPERATING_SYSTEM
-#include "windows_midi.h"
-windows_midi_service midi_service (NULL);
-windows_midi_service console_midi_service;
+//#include "windows_midi.h"
+//windows_midi_service midi_service (NULL);
+//windows_midi_service console_midi_service;
 #define menu_height 36
 #endif
-
-#ifdef LINUX_OPERATING_SYSTEM
-#include "midi_command_prompt.h"
 
 pthread_t prolog_thread;
 
 static void * prologRunner (void * parameters) {
-	core . resolution (cfg);
+	core . resolution (& cfg);
 	return 0;
 }
+
+#ifdef LINUX_OPERATING_SYSTEM
 
 #ifdef MAC_OPERATING_SYSTEM
 #include "mac_midi.h"
@@ -260,21 +352,15 @@ mac_midi_service midi_service ("HERCs CORE");
 
 #endif
 
-
-
-class HardwareMidiCommandPrompt : public MidiCommandPrompt {
-public:
-	virtual midi_stream * getLine (void) {return & core . conn_midi_source;}
-} command_console;
-
+MidiCommandPrompt command_console (& core . conn_midi_source);
 
 void build_synthesiser (void) {
-	core . build_synthesiser (cfg, & resource_loader, & service_class_loader);
+	core . build_synthesiser (& cfg, & resource_loader, & service_class_loader);
 	// to do
 //	core . conn_midi_source . connect_thru (& console_feedback);
 //	core . insertMidiSource (& command_line);
 //	core . root -> setMidiPortServiceClass (& midi_service);
-//	command_console = new MidiCommandPrompt (core . conn_midi_in, cfg -> prolog_console_horizontal);
+//	command_console = new MidiCommandPrompt (core . conn_midi_in, cfg . prolog_console_horizontal);
 	command_console . open ();
 	//core . root -> resolution ();
 	pthread_create (& prolog_thread, 0, prologRunner, 0);
@@ -380,9 +466,8 @@ public:
 	virtual void console_print (char * text) {command_console . print (text);}
 #ifdef WINDOWS_OPERATING_SYSTEM
 	virtual void console_operations (int cc, int mm, int ll) {
-		if (command_console == NULL) return;
 		switch (cc) {
-		case 0xb: command_console -> setColors (mm, ll); break;
+		case 0xb: command_console . setColors (mm, ll); break;
 		default: break;
 		}
 	}
@@ -690,10 +775,10 @@ void midi_setup (config * cfg) {
 	MIDISourceCreate (midi_client, CFSTR ("HERCs Main MIDI OUT"), & internal_main_midi_out_endpoint);
 	MIDIDestinationCreate (midi_client, CFSTR ("HERCs Console MIDI IN"), console_midi_in_proc, NULL, & internal_console_midi_in_endpoint);
 	MIDISourceCreate (midi_client, CFSTR ("HERCs Console MIDI OUT"), & internal_console_midi_out_endpoint);
-	set_main_midi_input (cfg -> midi_in);
-	set_main_midi_output (cfg -> midi_out);
-	set_console_midi_input (cfg -> console_midi_in);
-	set_console_midi_output (cfg -> console_midi_out);
+	set_main_midi_input (cfg . midi_in);
+	set_main_midi_output (cfg . midi_out);
+	set_console_midi_input (cfg . console_midi_in);
+	set_console_midi_output (cfg . console_midi_out);
 }
 
 static wxString cf_to_wx (CFStringRef name) {
@@ -868,8 +953,16 @@ void general_quit (void) {callback_return = -1;}
 
 //#define open_audio jack_start
 bool open_audio (config * cfg) {
-	if (audio == NULL) audio = new MultiplatformAudio (NULL, 2, cfg -> sampling_freq, cfg -> latency_block);
-	audio -> installOutputCallback (core_audio_output_callback);
+	if (audio == NULL) audio = new MultiplatformAudio (NULL, 2, cfg . sampling_freq, cfg . latency_block);
+#ifdef MULTI_CORE_HARDWARE
+#ifdef SWITCHABLE_MULTICORE
+	audio -> installOutputCallback (cfg . processors > 0 ? core_audio_multicore_output_callback : core_audio_singlecore_output_callback);
+#else
+	audio -> installOutputCallback (core_audio_multicore_output_callback);
+#endif
+#else
+	audio -> installOutputCallback (core_audio_singlecore_output_callback);
+#endif
 	audio -> selectOutputDevice (0);
 	audio -> installInputCallback (core_audio_input_callback);
 	audio -> selectInputDevice (0);
@@ -993,8 +1086,16 @@ EVT_COMBOBOX(104, MidiHardwareDialogClass :: OnConsoleOutput)
 END_EVENT_TABLE()
 
 bool open_audio (config * cfg) {
-	audio = new MultiplatformAudio (NULL, 2, cfg -> sampling_freq, cfg -> latency_block);
-	audio -> installOutputCallback (core_audio_output_callback);
+	audio = new MultiplatformAudio (NULL, 2, cfg . sampling_freq, cfg . latency_block);
+#ifdef MULTI_CORE_HARDWARE
+#ifdef SWITCHABLE_MULTICORE
+	audio -> installOutputCallback (cfg . processors > 0 ? core_audio_multicore_output_callback : core_audio_singlecore_output_callback);
+#else
+	audio -> installOutputCallback (core_audio_multicore_output_callback);
+#endif
+#else
+	audio -> installOutputCallback (core_audio_singlecore_output_callback);
+#endif
 	audio -> selectOutputDevice (0);
 	audio -> installInputCallback (core_audio_input_callback);
 	audio -> selectInputDevice (0);
@@ -1002,10 +1103,10 @@ bool open_audio (config * cfg) {
 }
 
 void midi_setup (config * cfg) {
-	set_main_midi_input (cfg -> midi_in);
-	set_main_midi_output (cfg -> midi_out);
-	set_console_midi_input (cfg -> console_midi_in);
-	set_console_midi_output (cfg -> console_midi_out);
+	set_main_midi_input (cfg . midi_in);
+	set_main_midi_output (cfg . midi_out);
+	set_console_midi_input (cfg . console_midi_in);
+	set_console_midi_output (cfg . console_midi_out);
 	//midi_reader = new prolog_midi_reader (core . root);
 	//midi_service . set_reader (midi_reader);
 }
@@ -1019,6 +1120,7 @@ void console_midi_transmission (void) {core . conn_move ();}
 
 #endif
 
+/*
 #ifdef WINDOWS_OPERATING_SYSTEM
 
 class MidiHardwareDialogClass : public wxDialog {
@@ -1077,6 +1179,7 @@ EVT_COMBOBOX(104, MidiHardwareDialogClass :: OnConsoleOutput)
 END_EVENT_TABLE()
 
 #endif
+*/
 
 void button_callbackx (int controller_id, double value) {
 	if (controller_id >= part_button_0 && controller_id <= part_button_9) {panel . press_part_button_dx (controller_id - part_button_0); return;}
@@ -1339,7 +1442,7 @@ public:
 //		oscilloscope_visible = true;
 //	}
 	void OnShowAudioHardware (wxCommandEvent & event) {wxAudioDialog dialog (this, audio); dialog . ShowModal ();}
-	void OnShowMidiHardware (wxCommandEvent & event) {MidiHardwareDialogClass dialog (this); dialog . ShowModal ();}
+//	void OnShowMidiHardware (wxCommandEvent & event) {MidiHardwareDialogClass dialog (this); dialog . ShowModal ();}
 	void OnExit (wxCommandEvent & event) {
 //		oscilloscope_controller = NULL;
 		Close ();
@@ -1371,7 +1474,7 @@ EVT_IDLE(EditorFrame :: Idle)
 //EVT_MENU(showcontrollersaction, EditorFrame :: OnShowControllers)
 //EVT_MENU(showoscilloscopeaction, EditorFrame :: OnShowOscilloscope)
 EVT_MENU(showaudiohardwareaction, EditorFrame :: OnShowAudioHardware)
-EVT_MENU(showmidihardwareaction, EditorFrame :: OnShowMidiHardware)
+//EVT_MENU(showmidihardwareaction, EditorFrame :: OnShowMidiHardware)
 EVT_MENU(showexit, EditorFrame :: OnExit)
 #ifdef WINDOWS_OPERATING_SYSTEM
 EVT_MENU(5001, EditorFrame :: OnAccelerator)
@@ -1431,7 +1534,7 @@ EVT_MENU(5053, EditorFrame :: OnAccelerator)
 EVT_MENU(5054, EditorFrame :: OnAccelerator)
 EVT_MENU(5055, EditorFrame :: OnAccelerator)
 EVT_MENU(5056, EditorFrame :: OnShowAudioHardware)
-EVT_MENU(5057, EditorFrame :: OnShowMidiHardware)
+//EVT_MENU(5057, EditorFrame :: OnShowMidiHardware)
 EVT_MENU(5058, EditorFrame :: OnEscape)
 #endif
 END_EVENT_TABLE()
@@ -1449,30 +1552,29 @@ public:
 		wxInitAllImageHandlers ();
 		previous_key_down = -1;
 #ifdef LINUX_OPERATING_SYSTEM
-		cfg = new config ();
 		build_synthesiser ();
 		// to do
 //		midi_service . reader_line = core . external_midi_in;
 #endif
-		panel . preset_bank_msb = cfg -> default_preset_sound_msb;
-		panel . preset_bank_lsb = cfg -> default_preset_sound_lsb;
-		panel . user_bank_msb = cfg -> default_user_sound_msb;
-		panel . user_bank_lsb = cfg -> default_user_sound_lsb;
-		panel . algo_bank_msb = cfg -> default_algo_msb;
-		panel . algo_bank_lsb = cfg -> default_algo_lsb;
-		panel . arp_bank_msb = cfg -> default_pattern_msb;
-		panel . arp_bank_lsb = cfg -> default_pattern_lsb;
-		panel . dsp_algo_bank_msb = cfg -> default_dsp_algo_msb;
-		panel . dsp_algo_bank_lsb = cfg -> default_dsp_algo_lsb;
-		panel . preset_dsp_bank_msb = cfg -> default_preset_dsp_msb;
-		panel . preset_dsp_bank_lsb = cfg -> default_preset_dsp_lsb;
-		panel . user_dsp_bank_msb = cfg -> default_user_dsp_msb;
-		panel . user_dsp_bank_lsb = cfg -> default_user_dsp_lsb;
-		panel . style_bank_msb = cfg -> default_style_msb;
-		panel . style_bank_lsb = cfg -> default_style_lsb;
-		panel . hercules_number = cfg -> stripes;
-		panel . hercules_stereo_number = cfg -> stereo;
-		panel . total_dsp = cfg -> local_dsp + cfg -> global_dsp;
+		panel . preset_bank_msb = cfg . default_preset_sound_msb;
+		panel . preset_bank_lsb = cfg . default_preset_sound_lsb;
+		panel . user_bank_msb = cfg . default_user_sound_msb;
+		panel . user_bank_lsb = cfg . default_user_sound_lsb;
+		panel . algo_bank_msb = cfg . default_algo_msb;
+		panel . algo_bank_lsb = cfg . default_algo_lsb;
+		panel . arp_bank_msb = cfg . default_pattern_msb;
+		panel . arp_bank_lsb = cfg . default_pattern_lsb;
+		panel . dsp_algo_bank_msb = cfg . default_dsp_algo_msb;
+		panel . dsp_algo_bank_lsb = cfg . default_dsp_algo_lsb;
+		panel . preset_dsp_bank_msb = cfg . default_preset_dsp_msb;
+		panel . preset_dsp_bank_lsb = cfg . default_preset_dsp_lsb;
+		panel . user_dsp_bank_msb = cfg . default_user_dsp_msb;
+		panel . user_dsp_bank_lsb = cfg . default_user_dsp_lsb;
+		panel . style_bank_msb = cfg . default_style_msb;
+		panel . style_bank_lsb = cfg . default_style_lsb;
+		panel . hercules_number = cfg . stripes;
+		panel . hercules_stereo_number = cfg . stereo;
+		panel . total_dsp = cfg . local_dsp + cfg . global_dsp;
 		panel . set_midi_out (& core . conn_midi_source);
 		open_close_frame = main_frame = new EditorFrame (NULL, -1, _T ("HERCs CORE"));
 		main_frame -> Show ();
@@ -1490,7 +1592,6 @@ public:
 			core . conn_move ();
 		}
 		destroy_synthesiser ();
-		delete cfg;
 		printf ("Application exit.\n");
 		return wxApp :: OnExit ();
 	}
@@ -1644,11 +1745,19 @@ int CALLBACK main_console_window_proc (HWND hwnd, unsigned int msg, WPARAM wpara
 	switch (msg) {
 	case WM_INITDIALOG:
 		SendMessage (hwnd, WM_SETICON, ICON_BIG, (LPARAM) LoadIcon (hinstance, MAKEINTRESOURCE (IDI_ICON1)));
-		if (audio == NULL) audio = new MultiplatformAudio ((void *) hwnd, 2, cfg -> sampling_freq, cfg -> latency_block);
-		audio -> installOutputCallback (core_audio_output_callback);
+		if (audio == NULL) audio = new MultiplatformAudio ((void *) hwnd, 2, cfg . sampling_freq, cfg . latency_block);
+#ifdef MULTI_CORE_HARDWARE
+#ifdef SWITCHABLE_MULTICORE
+		audio -> installOutputCallback (cfg . processors > 0 ? core_audio_multicore_output_callback : core_audio_singlecore_output_callback);
+#else
+		audio -> installOutputCallback (core_audio_multicore_output_callback);
+#endif
+#else
+		audio -> installOutputCallback (core_audio_singlecore_output_callback);
+#endif
 		audio -> selectOutputDevice (0);
 		audio -> installInputCallback (core_audio_input_callback);
-		audio -> selectInputDevice (0);
+//		audio -> selectInputDevice (0);
 		return true;
 	case WM_COMMAND:
 		switch (LOWORD (wparam)) {
@@ -1689,9 +1798,8 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 	CoInitialize (NULL);
 
-	cfg = new config ();
 	build_synthesiser ();
-	midi_service . set_external_midi_in_line (core . external_midi_in);
+//	midi_service . set_external_midi_in_line (core . external_midi_in);
 
 	build_main_console ();
 

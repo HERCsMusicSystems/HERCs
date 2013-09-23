@@ -62,7 +62,7 @@ public:
 		picture_keyboard_small . LoadFile (_T ("hercs.app/Contents/Resources/picture_keyboard_small.bmp"), wxBITMAP_TYPE_BMP);
 		picture_keyboard . LoadFile (_T ("hercs.app/Contents/Resources/picture_keyboard.bmp"), wxBITMAP_TYPE_BMP);
 		picture_keyboard_big . LoadFile (_T ("hercs.app/Contents/Resources/picture_keyboard_big.png"), wxBITMAP_TYPE_PNG);
-		if (cfg -> layout_small) front_panel . LoadFile (_T ("hercs.app/Contents/Resources/front_panel_small.png"), wxBITMAP_TYPE_PNG);
+		if (cfg . layout_small) front_panel . LoadFile (_T ("hercs.app/Contents/Resources/front_panel_small.png"), wxBITMAP_TYPE_PNG);
 		else front_panel . LoadFile (_T ("hercs.app/Contents/Resources/front_panel.png"), wxBITMAP_TYPE_PNG);
 		//front_panel . LoadFile (_T ("hercs.app/Contents/Resources/front_panel.png"), wxBITMAP_TYPE_PNG);
 		vector_handle . LoadFile (_T ("hercs.app/Contents/Resources/vectorhandle.bmp"), wxBITMAP_TYPE_BMP);
@@ -79,10 +79,10 @@ public:
 		initialise_bitmaps ();
 		int ind = 0;
 		int sub = 0;
-		wxFont font (cfg -> layout_small ? 6 : 7, wxFONTFAMILY_TELETYPE, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false);
-		wxFont parameter_font (cfg -> layout_small ? 8 : 12, wxFONTFAMILY_TELETYPE, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false);
+		wxFont font (cfg . layout_small ? 6 : 7, wxFONTFAMILY_TELETYPE, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false);
+		wxFont parameter_font (cfg . layout_small ? 8 : 12, wxFONTFAMILY_TELETYPE, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false);
 //		parameter_font . SetFaceName (_T ("fixedsys"));
-		wxFont status_font (cfg -> layout_small ? 7 : 8, wxFONTFAMILY_TELETYPE, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false);
+		wxFont status_font (cfg . layout_small ? 7 : 8, wxFONTFAMILY_TELETYPE, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false);
 		ind = ROW_START;
 		ind = ROW_START;
 		(panel . parameter_display = new wxStaticText (this, -1, _T ("PROGRAM NAME"), wxPoint (PARAMETER_TEXT_LOCATION))) -> SetFont (parameter_font);
@@ -133,14 +133,14 @@ public:
 		(panel . enter_button = new wxAnimatedButton (this, sub++, & green_button)) -> setCallback (button_callback) -> locateOnBackground (ENTER_LOCATION, & front_panel);
 		(panel . store_button = new wxAnimatedButton (this, sub++, & green_button)) -> setCallback (button_callback) -> locateOnBackground (STORE_LOCATION, & front_panel);
 		(oscilloscope_controller = new wxOscilloscopeController (this, -1, oscilloscope_monitor_wave)) -> locateOnBackground (1034, 41, & front_panel);
-		if (cfg -> layout_small) oscilloscope_controller -> setScalingFactor (4);
+		if (cfg . layout_small) oscilloscope_controller -> setScalingFactor (4);
 //		oscilloscope_controller -> background = & oscilloscope_background;
 		oscilloscope_visible = true;
-		if (cfg -> layout_small) (new keyboard_controller (this, -1, & picture_keyboard_small, 1)) -> SetSize (108, 267, -1, -1);
+		if (cfg . layout_small) (new keyboard_controller (this, -1, & picture_keyboard_small, 1)) -> SetSize (108, 267, -1, -1);
 		else (new keyboard_controller (this, -1, & picture_keyboard_big, 3)) -> SetSize (108, 267, -1, -1);
 		(panel . vector = new wxAnimatedVector (this, 13, 14, & png_vector_slider, & png_vector_surface)) -> setCallback (controller_callback) -> setMotionRatio (0.2) -> set (0.5, 0.5) -> SetSize (31, 125, -1, -1);
 		(panel . pitch_wheel = new wxAnimatedVector (this, -1, 0, & pitch_handle, & pitch_track)) -> setCallback (controller_callback) -> set (0.0, 0.5) -> loadSpring () -> SetSize (39, 306, -1, -1);
-		(panel . modulation_wheel = new wxAnimatedVector (this, -1, cfg -> modulation_wheel_id, & pitch_handle, & pitch_track)) -> setCallback (controller_callback) -> set (0.0, 0.0) -> SetSize (69, 306, -1, -1);
+		(panel . modulation_wheel = new wxAnimatedVector (this, -1, cfg . modulation_wheel_id, & pitch_handle, & pitch_track)) -> setCallback (controller_callback) -> set (0.0, 0.0) -> SetSize (69, 306, -1, -1);
 		(panel . mono_poly_switch = new wxAnimatedButton (this, 23, & green_button)) -> setCallback (controller_callback) -> locateOnBackground (29, 255, & front_panel);
 		(panel . porta_switch = new wxAnimatedButton (this, 18, & green_button)) -> setCallback (controller_callback) -> locateOnBackground (69, 255, & front_panel);
 		(panel . volume_knob = new wxTravelingBitmapKnob (this, 15, & controller_knob_handle, & controller_knob_track, 13.0)) -> setCallback (controller_callback) -> SetSize (35, 57, -1, -1);
@@ -175,11 +175,11 @@ public:
 				dialog . ShowModal ();
 				return;
 			}
-			if (position . x > 107 && position . x < 152) {
-				MidiHardwareDialogClass dialog (this);
-				dialog . ShowModal ();
-				return;
-			}
+//			if (position . x > 107 && position . x < 152) {
+//				MidiHardwareDialogClass dialog (this);
+//				dialog . ShowModal ();
+//				return;
+//			}
 		}
 	}
 private:
