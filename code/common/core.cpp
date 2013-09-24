@@ -219,11 +219,14 @@ void orthogonal_core :: destroy_synthesiser (void) {
 
 void orthogonal_core :: conn_move (midi_reader * conn) {
 	sth -> read (& conn_midi_source);
+	conn_midi_source . ready ();
 	conn -> read (& conn_midi_feed);
-	if (lines) sth -> read (lines);
 }
 
-void orthogonal_core :: conn_move (void) {sth -> read (& conn_midi_source); if (lines) sth -> read (lines);}
+void orthogonal_core :: conn_move (void) {
+	sth -> read (& conn_midi_source);
+	conn_midi_source . ready ();
+}
 
 bool orthogonal_core :: move (void) {
 //	if (prolog_reader -> is_ready ()) prolog_reader -> read (external_midi_in);
