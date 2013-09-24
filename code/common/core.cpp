@@ -51,7 +51,7 @@ private:
 public:
 	virtual bool connectThru (PrologMidiNativeCode * destination) {core -> conn_midi_source . connect_thru (destination != 0 ? destination -> getLine () : 0); return true;}
 	virtual midi_stream * getLine (void) {return & core -> conn_midi_source;}
-	bool code (PrologElement * parameters, PrologRoot * root) {
+	bool code (PrologElement * parameters, PrologResolution * root) {
 		if (parameters -> isEarth ()) return connectThru (0);
 		if (! parameters -> isPair ()) return false;
 		parameters = parameters -> getLeft ();
@@ -69,7 +69,7 @@ private:
 public:
 	virtual bool connectThru (PrologMidiNativeCode * destination) {core -> conn_midi_feed . connect_thru (destination != 0 ? destination -> getLine () : 0); return true;}
 	virtual midi_stream * getLine (void) {return & core -> conn_midi_feed;}
-	bool code (PrologElement * parameters, PrologRoot * root) {
+	bool code (PrologElement * parameters, PrologResolution * root) {
 		if (parameters -> isEarth ()) return connectThru (0);
 		if (! parameters -> isPair ()) return false;
 		parameters = parameters -> getLeft ();

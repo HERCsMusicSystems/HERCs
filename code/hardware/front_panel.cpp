@@ -984,7 +984,7 @@ void hercs_front_panel :: controller_change (int controller_id, double value) {
 	case 127: break;
 	case 126: line -> insert_pat (channel, 64, data); break;
 	case 125: line -> insert_cat (channel, data); break;
-	case 124: line -> insert_pitchbend (channel, data);
+	case 124: line -> insert_pitchbend (channel, data); break;
 	default: line -> insert_control (channel, controller_id != 23 ? controller_ids [controller_id] : data == 0.0 ? 126 : 127, data); break;
 	}
 //	if (controller_ids [controller_id] == 124) line -> insert_pitchbend (channel, data);
