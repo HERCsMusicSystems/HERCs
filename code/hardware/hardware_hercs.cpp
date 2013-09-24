@@ -775,10 +775,10 @@ void midi_setup (config * cfg) {
 	MIDISourceCreate (midi_client, CFSTR ("HERCs Main MIDI OUT"), & internal_main_midi_out_endpoint);
 	MIDIDestinationCreate (midi_client, CFSTR ("HERCs Console MIDI IN"), console_midi_in_proc, NULL, & internal_console_midi_in_endpoint);
 	MIDISourceCreate (midi_client, CFSTR ("HERCs Console MIDI OUT"), & internal_console_midi_out_endpoint);
-	set_main_midi_input (cfg . midi_in);
-	set_main_midi_output (cfg . midi_out);
-	set_console_midi_input (cfg . console_midi_in);
-	set_console_midi_output (cfg . console_midi_out);
+	set_main_midi_input (cfg -> midi_in);
+	set_main_midi_output (cfg -> midi_out);
+	set_console_midi_input (cfg -> console_midi_in);
+	set_console_midi_output (cfg -> console_midi_out);
 }
 
 static wxString cf_to_wx (CFStringRef name) {
@@ -953,10 +953,10 @@ void general_quit (void) {callback_return = -1;}
 
 //#define open_audio jack_start
 bool open_audio (config * cfg) {
-	if (audio == NULL) audio = new MultiplatformAudio (NULL, 2, cfg . sampling_freq, cfg . latency_block);
+	if (audio == NULL) audio = new MultiplatformAudio (NULL, 2, cfg -> sampling_freq, cfg -> latency_block);
 #ifdef MULTI_CORE_HARDWARE
 #ifdef SWITCHABLE_MULTICORE
-	audio -> installOutputCallback (cfg . processors > 0 ? core_audio_multicore_output_callback : core_audio_singlecore_output_callback);
+	audio -> installOutputCallback (cfg -> processors > 0 ? core_audio_multicore_output_callback : core_audio_singlecore_output_callback);
 #else
 	audio -> installOutputCallback (core_audio_multicore_output_callback);
 #endif
@@ -1086,10 +1086,10 @@ EVT_COMBOBOX(104, MidiHardwareDialogClass :: OnConsoleOutput)
 END_EVENT_TABLE()
 
 bool open_audio (config * cfg) {
-	audio = new MultiplatformAudio (NULL, 2, cfg . sampling_freq, cfg . latency_block);
+	audio = new MultiplatformAudio (NULL, 2, cfg -> sampling_freq, cfg -> latency_block);
 #ifdef MULTI_CORE_HARDWARE
 #ifdef SWITCHABLE_MULTICORE
-	audio -> installOutputCallback (cfg . processors > 0 ? core_audio_multicore_output_callback : core_audio_singlecore_output_callback);
+	audio -> installOutputCallback (cfg -> processors > 0 ? core_audio_multicore_output_callback : core_audio_singlecore_output_callback);
 #else
 	audio -> installOutputCallback (core_audio_multicore_output_callback);
 #endif
@@ -1103,10 +1103,10 @@ bool open_audio (config * cfg) {
 }
 
 void midi_setup (config * cfg) {
-	set_main_midi_input (cfg . midi_in);
-	set_main_midi_output (cfg . midi_out);
-	set_console_midi_input (cfg . console_midi_in);
-	set_console_midi_output (cfg . console_midi_out);
+	set_main_midi_input (cfg -> midi_in);
+	set_main_midi_output (cfg -> midi_out);
+	set_console_midi_input (cfg -> console_midi_in);
+	set_console_midi_output (cfg -> console_midi_out);
 	//midi_reader = new prolog_midi_reader (core . root);
 	//midi_service . set_reader (midi_reader);
 }
@@ -1581,8 +1581,8 @@ public:
 		panel . send_panel_controllers_request ();
 		button_callback (pb0, 1.0);
 #ifdef LINUX_OPERATING_SYSTEM
-		if (! open_audio (cfg)) {destroy_synthesiser (); delete cfg; wxMessageBox (_T ("Jack server is not running."), _T ("INFO"), wxOK, NULL); return false;}
-		midi_setup (cfg);
+		if (! open_audio (& cfg)) {destroy_synthesiser (); wxMessageBox (_T ("Jack server is not running."), _T ("INFO"), wxOK, NULL); return false;}
+		midi_setup (& cfg);
 #endif
 		return true;
 	}
