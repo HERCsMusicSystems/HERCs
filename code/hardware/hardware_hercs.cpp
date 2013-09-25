@@ -361,6 +361,7 @@ void build_synthesiser (void) {
 //	core . insertMidiSource (& command_line);
 //	core . root -> setMidiPortServiceClass (& midi_service);
 //	command_console = new MidiCommandPrompt (core . conn_midi_in, cfg . prolog_console_horizontal);
+	core . root -> insertCommander (& command_console);
 	command_console . open ();
 	//core . root -> resolution ();
 	pthread_create (& prolog_thread, 0, prologRunner, 0);
@@ -1422,6 +1423,7 @@ public:
 	}
 	void Idle (wxIdleEvent & event) {
 		panel . read (& core . conn_midi_feed);
+		core . conn_midi_feed . ready ();
 		event . RequestMore ();
 	}
 //	void OnEraseBackground (wxEraseEvent & event) {wxPaintDC dc (this); dc . DrawBitmap (front_panel, 0, 0, true);}
@@ -1578,7 +1580,7 @@ public:
 		panel . set_midi_out (& core . conn_midi_source);
 		open_close_frame = main_frame = new EditorFrame (NULL, -1, _T ("HERCs CORE"));
 		main_frame -> Show ();
-		panel . send_panel_controllers_request ();
+		//panel . send_panel_controllers_request ();
 		button_callback (pb0, 1.0);
 #ifdef LINUX_OPERATING_SYSTEM
 		if (! open_audio (& cfg)) {destroy_synthesiser (); wxMessageBox (_T ("Jack server is not running."), _T ("INFO"), wxOK, NULL); return false;}

@@ -48,7 +48,7 @@ private:
 
 public:
 	PrologRoot * root;
-	PrologMidiCommand * prolog_console;
+//	PrologMidiCommand * prolog_console;
 	bool resolution_finished;
 	buffered_midi_stream conn_midi_source;
 	buffered_midi_stream conn_midi_feed;
