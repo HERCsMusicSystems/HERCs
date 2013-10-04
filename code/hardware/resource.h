@@ -9,7 +9,7 @@
 #define STUDIO_PRC                      131
 #define STORE_PRC                       132
 #define HELP_PRC                        133
-#define KEYBOARD_PRC                    234
+#define KEYBOARD_PRC                    134
 #define RECORD_PRC                      135
 #define SCALA_READER_PRC                136
 #define NEURAL_PRC                      137
@@ -18,12 +18,13 @@
 #define MIDI_PRC                        140
 #define HTTP_PRC                        141
 #define SQL_PRC                         142
+#define TEST_PRC                        143
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        143
+#define _APS_NEXT_RESOURCE_VALUE        144
 #define _APS_NEXT_COMMAND_VALUE         40001
 #define _APS_NEXT_CONTROL_VALUE         1001
 #define _APS_NEXT_SYMED_VALUE           101
