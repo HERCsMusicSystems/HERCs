@@ -473,7 +473,7 @@ public:
 #ifdef WINDOWS_OPERATING_SYSTEM
 	virtual void console_operations (int cc, int mm, int ll) {
 		switch (cc) {
-		case 0xb: command_console . setColors (mm, ll); break;
+		case 0xb: command_console . setColours (mm, ll); break;
 		default: break;
 		}
 	}
@@ -484,7 +484,7 @@ public:
 		switch (cc) {
 		case 0x01: case 0x02: case 0x03: if (open_close_frame != NULL) open_close_frame -> Show (); break;
 		case 0x05: case 0x06: case 0x07: if (open_close_frame != NULL) open_close_frame -> Show (false); break;
-		case 0xb: command_console . setColors (mm, ll); break;
+		case 0xb: command_console . setColours (mm, ll); break;
 		default: break;
 		}
 	}
@@ -492,7 +492,7 @@ public:
 		char command [256];
 		int fg = core . root -> current_foreground;
 		int bg = core . root -> current_background;
-		core . root -> setColors (0xff, 0);
+		core . root -> setColours (0xff, 0);
 		switch (selector) {
 		//PROGRAMATICALLY DEFINED MESSAGES:
 		case 0x20: core . root -> print ("MANUFACTURER: "); break;
@@ -516,25 +516,25 @@ public:
 		case 0x36: core . root -> print ("WELCOME SCREEN: "); break;
 		default: sprintf (command, "CUSTOM %i: ", selector); core . root -> print (command); break;
 		}
-		core . root -> setColors (0xff00, 0);
+		core . root -> setColours (0xff00, 0);
 		core . root -> print (text);
-		core . root -> setColors (fg, bg);
+		core . root -> setColours (fg, bg);
 		core . root -> print ("\n");
 	}
 	virtual void identity_operations (int * identity) {
 		if (identity [4] != 2) return;
 		int fg = core . root -> current_foreground;
 		int bg = core . root -> current_background;
-		core . root -> setColors (0xff, 0);
+		core . root -> setColours (0xff, 0);
 		core . root -> print ("IDENTITY REPLY:");
-		core . root -> setColors (0xff00, 0);
+		core . root -> setColours (0xff00, 0);
 		char command [32];
 		while (* identity != 0xf7) {
 			sprintf (command, " %02X", (int) * identity++);
 			core . root -> print (command);
 		}
 		core . root -> print (" F7");
-		core . root -> setColors (fg, bg);
+		core . root -> setColours (fg, bg);
 		core . root -> print ("\n");
 	}
 	virtual void error_operations (int channel, int code, int msb, int lsb, char * error) {
@@ -552,11 +552,11 @@ public:
 		case 7: sprintf (command, "ERROR %i [%i %i %i] not installed: ", code, channel, msb, lsb); break;
 		default: sprintf (command, "ERROR %i [%i %i %i] unknown: ", code, channel, msb, lsb); break;
 		}
-		core . root -> setColors (0xff0000, 0);
+		core . root -> setColours (0xff0000, 0);
 		core . root -> print (command);
-		core . root -> setColors (0xff00ff, 0);
+		core . root -> setColours (0xff00ff, 0);
 		core . root -> print (error);
-		core . root -> setColors (fg, bg);
+		core . root -> setColours (fg, bg);
 		core . root -> print ("\n");
 	}
 #endif
