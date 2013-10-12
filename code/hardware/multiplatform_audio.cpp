@@ -227,7 +227,11 @@ static void * start_pcm (void * parameters) {
 			output_callback (res, & buffers);
 		}
 		res = snd_pcm_writei (output_pcm, buffer, res);
-		if (res < 0) {printf ("snd_pcm_writei: %s\n", snd_strerror (res)); playback_running = false; return 0;}
+		if (res < 0) {
+			printf ("snd_pcm_writei: %s\n", snd_strerror (res));
+			res = snd_pcm_recover (output_pcm, res, 0);
+			if (res < 0) {printf ("recovery failed: %s\n", snd_strerror (res)); playback_running = false; return 0;}
+		}
 	}
 	snd_pcm_close (output_pcm);
 //	printf ("		.... playback stopped!\n");
