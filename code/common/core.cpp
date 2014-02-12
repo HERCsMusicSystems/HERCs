@@ -37,7 +37,7 @@ public:
 		if (! parameters -> isAtom ()) return false;
 		PrologNativeCode * machine = parameters -> getAtom () -> getMachine ();
 		if (machine == 0) return false;
-		if (machine -> codeName () != PrologMidiNativeCode :: name ()) return false;
+		if (! machine -> isTypeOf (PrologMidiNativeCode :: name ())) return false;
 		PrologMidiNativeCode * midi = (PrologMidiNativeCode *) machine;
 		core -> insertMidiSource (midi -> getLine ());
 		return true;
@@ -57,7 +57,7 @@ public:
 		parameters = parameters -> getLeft ();
 		if (! parameters -> isAtom ()) return false;
 		PrologNativeCode * machine = parameters -> getAtom () -> getMachine ();
-		if (machine != 0 && machine -> codeName () == PrologMidiNativeCode :: name ()) return connectThru ((PrologMidiNativeCode *) machine);
+		if (machine != 0 && machine -> isTypeOf (PrologMidiNativeCode :: name ())) return connectThru ((PrologMidiNativeCode *) machine);
 		return false;
 	}
 	ConnSource (orthogonal_core * core) {this -> core = core;}
@@ -75,7 +75,7 @@ public:
 		parameters = parameters -> getLeft ();
 		if (! parameters -> isAtom ()) return false;
 		PrologNativeCode * machine = parameters -> getAtom () -> getMachine ();
-		if (machine != 0 && machine -> codeName () == PrologMidiNativeCode :: name ()) return connectThru ((PrologMidiNativeCode *) machine);
+		if (machine != 0 && machine -> isTypeOf (PrologMidiNativeCode :: name ())) return connectThru ((PrologMidiNativeCode *) machine);
 		return false;
 	}
 	ConnDestination (orthogonal_core * core) {this -> core = core;}
