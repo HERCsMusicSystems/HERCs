@@ -8,8 +8,10 @@ cc = ../code/common/
 hc = ../code/hardware/
 oc = ../code/orakle/
 
-prolog_prc_objects = \
+prc_objects = \
 	$(pc)studio.prc\
+	$(pc)conductor.prc\
+	$(pc)midi.prc\
 	$(pc)http.prc\
 	$(pc)store.prc\
 	$(pc)f1.prc\
@@ -17,7 +19,9 @@ prolog_prc_objects = \
 	$(pc)record.prc\
 	$(pc)neural.prc\
 	$(pc)keyboard.prc\
-	$(pc)sql.prc
+	$(pc)sql.prc\
+	$(pc)test.prc\
+	$(pc)xml.prc
 
 prolog_objects = \
 	$(po)prolog_dll_loader.o\
@@ -28,7 +32,8 @@ prolog_objects = \
 	$(po)prolog_studio.o $(po)prolog_http.o \
 	$(po)prolog_transport.o \
 	$(po)prolog_variable.o \
-	$(po)prolog_linux_console.o
+	$(po)prolog_linux_console.o \
+	$(po)prolog_xml.o $(po)tinyxml.o
 
 
 common_objects = \
