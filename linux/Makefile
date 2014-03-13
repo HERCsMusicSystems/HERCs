@@ -21,7 +21,8 @@ prc_objects = \
 	$(pc)keyboard.prc\
 	$(pc)sql.prc\
 	$(pc)test.prc\
-	$(pc)xml.prc
+	$(pc)xml.prc\
+	$(pc)distribution.prc
 
 prolog_objects = \
 	$(po)prolog_dll_loader.o\
@@ -33,7 +34,8 @@ prolog_objects = \
 	$(po)prolog_transport.o \
 	$(po)prolog_variable.o \
 	$(po)prolog_linux_console.o \
-	$(po)prolog_xml.o $(po)tinyxml.o
+	$(po)prolog_xml.o $(po)tinyxml.o \
+	$(po)prolog_distribution.o
 
 
 common_objects = \
