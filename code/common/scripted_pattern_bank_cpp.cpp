@@ -6,6 +6,7 @@
 #include "data.h"
 #include "scripted_pattern_bank_cpp.h"
 #include "string.h"
+#include "prolog_conductor.h"
 
 char * scripted_pattern_cpp :: styleName (parameter_block * pb) {return style_pointer;}
 char * scripted_pattern_cpp :: toString (parameter_block * pb) {return name_pointer;}
@@ -344,10 +345,11 @@ void style_bank :: extract_program (SetupFileReader * fr, int lsb, int program, 
 	int program_location;
 	int track;
 	int x, y;
-	PrologRoot * root;
 	STRING file_name;
 	SetupFileReader * sr;
 	if (! fr -> get_id ("msb")) return;
+	PrologRoot * root = pb -> sth -> root;
+	PrologConductorServiceClass * service = root != 0 ? (PrologConductorServiceClass *) root -> getServiceClass ("conductor") : 0;
 	while (fr -> get_id ()) {
 		if (fr -> id ("lsb")) {
 			location = -1;
@@ -395,18 +397,14 @@ void style_bank :: extract_program (SetupFileReader * fr, int lsb, int program, 
 								x = fr -> int_symbol;
 								if (! fr -> get_int ()) return;
 								y = fr -> int_symbol;
-								root = pb -> sth -> root;
-								// to do
-//								if (root != NULL) root -> transportTempo (x, y);
+								if (service != 0) service -> t . tempo (x, y);
 							}
 							if (fr -> id ("division") && program_location == program && pb -> system -> arranger_assign < 0x7f) {
 								if (! fr -> get_int ()) return;
 								x = fr -> int_symbol;
 								if (! fr -> get_int ()) return;
 								y = fr -> int_symbol;
-								root = pb -> sth -> root;
-								// to do
-//								if (root != NULL) root -> transportDivision (x, y);
+								if (service != 0) service -> t . division (x, y);
 							}
 							if (fr -> id ("pattern")) {
 								if (! fr -> get_int ()) return;

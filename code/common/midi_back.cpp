@@ -4,6 +4,7 @@
 ///////////////////////////////////////
 
 #include "data.h"
+#include "prolog_conductor.h"
 
 void synthesiser :: send_identity_reply (int extension, int channel) {
 	if (midi_out == NULL) return;
@@ -112,17 +113,18 @@ void synthesiser :: send_error (int extension, int channel, int error, int msb, 
 }
 
 void synthesiser :: send_transport_data (int sub_selector) {
-	if (midi_out == NULL) return;
-	if (root == NULL) return;
+	if (midi_out == 0) return;
+	if (root == 0) return;
+	PrologConductorServiceClass * service = (PrologConductorServiceClass *) root -> getServiceClass ("conductor");
+	if (service == 0) return;
 	int sub = -1;
-	// to do
-//	switch (sub_selector) {
-//	case 0x8: sub = root -> getTransportBeatsPerSeconds (); break;
-//	case 0x9: sub = root -> getTransportSeconds (); break;
-//	case 0xa: sub = root -> getTransportBeatsPerBar (); break;
-//	case 0xb: sub = root -> getTransportTicksPerBeat (); break;
-//	default: break;
-//	}
+	switch (sub_selector) {
+	case 0x8: sub = service -> t . getBeatsPerSeconds (); break;
+	case 0x9: sub = service -> t . getBeatSeconds (); break;
+	case 0xa: sub = service -> t . getBeatsPerBar (); break;
+	case 0xb: sub = service -> t . getTicksPerBeat (); break;
+	default: break;
+	}
 	if (sub < 0) return;
 	midi_out -> open_system_exclusive ();
 	midi_out -> insert (0x34);
@@ -134,30 +136,32 @@ void synthesiser :: send_transport_data (int sub_selector) {
 }
 
 void synthesiser :: process_transport_request (int sub_selector, midi_stream * line) {
-	if (root == NULL) return;
+	if (root == 0) return;
+	PrologConductorServiceClass * service = (PrologConductorServiceClass *) root -> getServiceClass ("conductor");
+	if (service == 0) return;
 	int top;
-	// to do
-//	switch (sub_selector) {
-//	case 0x0: root -> stopTransport (); break;
-//	case 0x1: root -> startTransport (); break;
-//	case 0x2: root -> pauseTransport (); break;
-//	case 0xc: top = line -> get (); root -> transportMetrum (top, line -> get ()); break;
-//	default: send_transport_data (sub_selector); break;
-//	}
+	switch (sub_selector) {
+	case 0x0: service -> t . stop (); break;
+	case 0x1: service -> t . start (); break;
+	case 0x2: service -> t . pause (); break;
+	case 0xc: top = line -> get (); service -> t . metrum (top, line -> get ()); break;
+	default: send_transport_data (sub_selector); break;
+	}
 }
 
 void synthesiser :: process_transport_data (int sub_selector, midi_stream * line) {
-	if (root == NULL) return;
+	if (root == 0) return;
+	PrologConductorServiceClass * service = (PrologConductorServiceClass *) root -> getServiceClass ("conductor");
+	if (service == 0) return;
 	switch (sub_selector) {
 	case 0x8:
-	// to do
-//		if (transport_seconds != 0) root -> transportTempo (line -> get_int (), transport_seconds);
-//		else root -> transportTempo (line -> get_int ());
+		if (transport_seconds != 0) service -> t . tempo (line -> get_int (), transport_seconds);
+		else service -> t . tempo ((double) line -> get_int ());
 		transport_seconds = 0;
 		break;
 	case 0x9: transport_seconds = line -> get_int (); break;
-//	case 0xa: root -> transportDivision (line -> get_int ()); break;
-//	case 0xb: root -> transportTickDivision (line -> get_int ()); break;
+	case 0xa: service -> t . division (line -> get_int ()); break;
+	case 0xb: service -> t . tickDivision (line -> get_int ()); break;
 	}
 }
 

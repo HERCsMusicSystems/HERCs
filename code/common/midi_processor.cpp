@@ -5,6 +5,7 @@
 
 #include "osc.h"
 #include "transport.h"
+#include "prolog_conductor.h"
 
 void synthesiser :: midi_keyoff (int channel, int key) {
 	int midi_channel, channel_extension;
@@ -665,20 +666,20 @@ void synthesiser :: midi_timing_clock (void) {
 
 void synthesiser :: midi_start (void) {
 	if (root == NULL) return;
-	// to do
-//	root -> startTransport ();
+	PrologConductorServiceClass * service = (PrologConductorServiceClass *) root -> getServiceClass ("conductor");
+	if (service != 0) service -> t . start ();
 }
 
 void synthesiser :: midi_continue (void) {
 	if (root == NULL) return;
-	// to do
-//	root -> pauseTransport ();
+	PrologConductorServiceClass * service = (PrologConductorServiceClass *) root -> getServiceClass ("conductor");
+	if (service != 0) service -> t . pause ();
 }
 
 void synthesiser :: midi_stop (void) {
 	if (root == NULL) return;
-	// to do
-//	root -> stopTransport ();
+	PrologConductorServiceClass * service = (PrologConductorServiceClass *) root -> getServiceClass ("conductor");
+	if (service != 0) service -> t . stop ();
 }
 
 void parameter_block :: rpn (int data) {
