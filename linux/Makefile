@@ -117,7 +117,7 @@ preset_dsp_algos.o: $(cc)preset_dsp_algos.cpp $(cc)data.h $(cc)osc.h $(cc)osc_cp
 rom_player_bank_cpp.o: $(cc)rom_player_bank_cpp.cpp $(cc)data.h $(cc)osc.h $(cc)osc_cpp.h
 	g++ -Wno-write-strings -I. -I$(pc) $(cc)rom_player_bank_cpp.cpp -c -o rom_player_bank_cpp.o
 scripted_pattern_bank_cpp.o: $(cc)scripted_pattern_bank_cpp.cpp $(cc)data.h $(cc)scripted_pattern_bank_cpp.h $(cc)transport.h $(cc)osc.h $(cc)osc_cpp.h
-	g++ -Wno-write-strings -I. -I$(pc) $(cc)scripted_pattern_bank_cpp.cpp -c -o scripted_pattern_bank_cpp.o
+	g++ -Wno-write-strings -Wno-format-zero-length -I. -I$(pc) $(cc)scripted_pattern_bank_cpp.cpp -c -o scripted_pattern_bank_cpp.o
 setup_file_reader.o: $(cc)setup_file_reader.h $(cc)setup_file_reader.cpp
 	g++ -Wno-write-strings -I. -I$(pc) $(cc)setup_file_reader.cpp -c -o setup_file_reader.o
 stream_system.o: $(cc)stream_system.cpp $(cc)data.h $(cc)mnemonic.h $(cc)osc.h $(cc)osc_cpp.h
